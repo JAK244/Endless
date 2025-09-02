@@ -14,8 +14,12 @@ namespace Endless
     {
         private Texture2D texture;
 
-        private Vector2 Position = new Vector2(64,64);
+        private Vector2 Position = new Vector2(750,420);
 
+        /// <summary>
+        /// Loads the texture
+        /// </summary>
+        /// <param name="content"></param>
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("Void-portal");

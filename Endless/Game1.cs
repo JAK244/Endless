@@ -55,7 +55,7 @@ namespace Endless
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             traveler.Draw(gameTime, spriteBatch);
-
+            portal.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
