@@ -25,6 +25,13 @@
 /processorParam:TextureFormat=Color
 /build:bug.png
 
+#begin Doto-Black.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Doto-Black.spritefont
+
 #begin Power_ball.png
 /importer:TextureImporter
 /processor:TextureProcessor

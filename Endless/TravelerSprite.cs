@@ -19,7 +19,7 @@ namespace Endless
 
         private Texture2D texture;
 
-        private Vector2 position = new Vector2(64, 64);
+        private Vector2 position = new Vector2(400, 350);
 
         private bool flipped;
 
@@ -40,6 +40,7 @@ namespace Endless
         {
             keyboardState = Keyboard.GetState();
 
+            /*
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W)) position += new Vector2(0, -1);
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S)) position += new Vector2(0, 1);
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
@@ -53,6 +54,7 @@ namespace Endless
                 position += new Vector2(1, 0);
                 flipped = false;
             }
+            */
         }
 
         /// <summary>
@@ -63,7 +65,7 @@ namespace Endless
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteEffects spriteEffect = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
-            spriteBatch.Draw(texture, position,null,Color.White,0,new Vector2(64,64),1, spriteEffect,0);
+            spriteBatch.Draw(texture, position,null,Color.White,0,new Vector2(0,0),2, spriteEffect,0);
         }
     }
 }
