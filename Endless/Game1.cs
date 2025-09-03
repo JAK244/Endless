@@ -5,6 +5,9 @@ using SharpDX.Direct3D9;
 
 namespace Endless
 {
+    /// <summary>
+    /// the main game class
+    /// </summary>
     public class Game1 : Game
     {
         private GraphicsDeviceManager graphics;
@@ -23,6 +26,9 @@ namespace Endless
             IsMouseVisible = true;
         }
 
+        /// <summary>
+        /// Initializes the game components and sets up the initial state of the game.
+        /// </summary>
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
@@ -45,6 +51,9 @@ namespace Endless
             base.Initialize();
         }
 
+        /// <summary>
+        /// Loads the conten of the game
+        /// </summary>
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -59,6 +68,10 @@ namespace Endless
             // TODO: use this.Content to load your game content here
         }
 
+        /// <summary>
+        /// updates the games movement/input
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -70,6 +83,10 @@ namespace Endless
             base.Update(gameTime);
         }
 
+        /// <summary>
+        /// Draws the sprites using sprite batch
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
