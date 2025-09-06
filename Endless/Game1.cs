@@ -89,6 +89,8 @@ namespace Endless
 
             // TODO: Add your update logic here
             traveler.Update(gameTime);
+
+            foreach(var bug in  bugs) bug.Update(gameTime);
            
             base.Update(gameTime);
         }

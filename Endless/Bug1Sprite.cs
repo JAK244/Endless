@@ -12,11 +12,29 @@ using Microsoft.Xna.Framework.Content;
 namespace Endless
 {
     /// <summary>
+    /// enum of possible directions
+    /// </summary>
+    public enum Direction
+    {
+        Up, Down,
+    }
+
+    /// <summary>
     /// the bug sprite class
     /// </summary>
     public class Bug1Sprite
     {
         private Texture2D texture;
+
+        /// <summary>
+        /// the direction timer
+        /// </summary>
+        private double directionTimer;
+
+        /// <summary>
+        /// the direction the sprite moves
+        /// </summary>
+        public Direction direction;
 
         /// <summary>
         /// the position of the sprite
@@ -27,6 +45,16 @@ namespace Endless
         /// checks if the sprite is flipped
         /// </summary>
         public bool BugFlipped;
+
+        private static Random rand = new Random();
+
+        /// <summary>
+        /// a bugsprite constructor that offsets the directionTimer
+        /// </summary>
+        public Bug1Sprite()
+        {
+            directionTimer = rand.NextDouble() * 2.0;
+        }
 
         /// <summary>
         /// Loads the texture
@@ -43,7 +71,38 @@ namespace Endless
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
+            directionTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
+            if(directionTimer > 2.0)
+            {
+                switch (direction)
+                {
+                    case Direction.Up:
+                        direction = Direction.Down; 
+                        break;
+                    case Direction.Down:
+                        direction = Direction.Up;
+                        break;
+                }
+                directionTimer -= 2.0;
+            }
+
+            switch(direction)
+            {
+                case Direction.Up:
+                    Position += new Vector2(0, -1) * 20 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    break;
+                case Direction.Down:
+                    Position += new Vector2(0, 1) * 20 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                    //stops it from going out of frame
+                    if (Position.Y >= 353)
+                    {
+                        Position = new Vector2(Position.X, 353);
+                        direction = Direction.Up; 
+                    }
+                    break;
+            }
         }
 
         /// <summary>
@@ -54,6 +113,7 @@ namespace Endless
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteEffects spriteEffect = BugFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            //var source = new Rectangle(64, (int)direction * 64, 64, 64);
 
             spriteBatch.Draw(texture, Position, null, Color.White, 0f, new Vector2(0, 0), 2f, spriteEffect, 0f);
 
