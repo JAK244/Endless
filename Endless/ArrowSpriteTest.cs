@@ -10,25 +10,21 @@ using Microsoft.Xna.Framework.Content;
 using Endless.Collisions;
 
 
-
 namespace Endless
 {
-    /// <summary>
-    /// class for our mc
-    /// </summary>
-    public class TravelerSprite
+    public class ArrowSpriteTest
     {
         private KeyboardState keyboardState;
 
         private Texture2D texture;
 
-        private Vector2 position = new Vector2(400, 350);
+        private Vector2 position = new Vector2(200, 200);
 
         private bool flipped;
 
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 -16,350 -16), 32,32);
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(200 - 16, 200 - 16), 32, 32);
 
-        private float rotation; 
+        private float rotation;
 
         public BoundingRectangle Bounds
         {
@@ -42,7 +38,7 @@ namespace Endless
         public void LoadContent(ContentManager content)
         {
             rotation = 0.0f;
-            texture = content.Load<Texture2D>("Traveler");
+            texture = content.Load<Texture2D>("ArrowSprite");
         }
 
         /// <summary>
@@ -58,7 +54,7 @@ namespace Endless
                 position += new Vector2(-3, 0);
                 flipped = true;
             }
-            
+
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
                 position += new Vector2(3, 0);
@@ -84,10 +80,11 @@ namespace Endless
         /// <param name="spriteBatch">the sprite batch to render with</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-          
+
             SpriteEffects spriteEffect = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
-            spriteBatch.Draw(texture, position,null,Color.White,rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect,0);
-         
+            spriteBatch.Draw(texture, position, null, Color.White, rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect, 0);
+
         }
     }
 }
+

@@ -76,7 +76,7 @@ namespace Endless
 
             // TODO: Add your update logic here
             
-            traveler.Update(gameTime);
+            
 
             foreach (var bug in bugs) bug.Update(gameTime);
             
@@ -88,7 +88,6 @@ namespace Endless
             var sb = SceneManager.Instance.SpriteBatch;
 
             sb.Begin();
-            sb.DrawString(Doto, "TITLE GAME AHHHHHHHHHH", new Vector2(0, 0), Color.Black);
             traveler.Draw(gameTime, sb);
             foreach (var portal in portals)
                 portal.Draw(gameTime, sb);
@@ -98,6 +97,7 @@ namespace Endless
                 star.Draw(gameTime, sb);
             sb.DrawString(Doto, $"Void", new Vector2(300, 100), Color.Black);
             sb.DrawString(Doto, $"Traveler", new Vector2(200, 180), Color.Black);
+            sb.DrawString(Doto, $"Press Enter to start", new Vector2(250, 300), Color.Gold,0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0);
             sb.DrawString(Doto, $"Press ESC to EXIT", new Vector2(520, 0), Color.Gold, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0);
             powerBall.Draw(gameTime, sb);
             sb.End();

@@ -30,7 +30,7 @@ namespace Endless
         protected override void Initialize()
         {
             SceneManager.Instance.Initialize();
-            SceneManager.Instance.Dimensions = new Vector2(800, 600);
+            SceneManager.Instance.Dimensions = new Vector2(800,480);
             graphics.PreferredBackBufferWidth = (int)SceneManager.Instance.Dimensions.X;
             graphics.PreferredBackBufferHeight = (int) SceneManager.Instance.Dimensions.Y;
             graphics.ApplyChanges();
@@ -70,8 +70,9 @@ namespace Endless
                 Exit();
 
             // TODO: Add your update logic here
-           
+            
             base.Update(gameTime);
+           
         }
 
         /// <summary>
