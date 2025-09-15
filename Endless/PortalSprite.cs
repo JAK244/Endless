@@ -27,6 +27,11 @@ namespace Endless
         /// </summary>
         public bool PortalFlipped;
 
+        private double animationTimer;
+
+        private short animationFrame;
+
+
         /// <summary>
         /// Loads the texture
         /// </summary>
@@ -54,7 +59,19 @@ namespace Endless
         {
             SpriteEffects spriteEffect = PortalFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            spriteBatch.Draw(texture,Position,null,Color.White,0f,new Vector2(0,0), 2f,spriteEffect,0f);
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (animationTimer > 0.2)
+            {
+                animationFrame++;
+                if (animationFrame > 10) animationFrame = 0;
+                animationTimer -= 0.2;
+            }
+
+            var source = new Rectangle(animationFrame * 64, 0, 64, 64);
+
+
+            spriteBatch.Draw(texture,Position, source, Color.White,0f,new Vector2(0,0), 2f,spriteEffect,0f);
             
         }
     }

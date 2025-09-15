@@ -18,10 +18,14 @@ namespace Endless
     {
         private Texture2D texture;
 
+        private double animationTimer;
+
+        private short animationFrame;
+
         /// <summary>
         /// the positon of the sprite 
         /// </summary>
-        public Vector2 Position = new Vector2(320, 352);
+        public Vector2 Position = new Vector2(320, 384);
 
         /// <summary>
         /// checks if the the sprite needs to be flipped
@@ -55,7 +59,18 @@ namespace Endless
         {
             SpriteEffects spriteEffect = BallFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            spriteBatch.Draw(texture, Position, null, Color.White, 0f, new Vector2(0, 0), 2f, spriteEffect, 0f);
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (animationTimer > 0.2)
+            {
+                animationFrame++;
+                if (animationFrame > 7) animationFrame = 0;
+                animationTimer -= 0.2;
+            }
+
+
+            var source = new Rectangle(animationFrame * 64, 16, 64, 48);
+            spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(0, 0), 2f, spriteEffect, 0f);
 
         }
     }

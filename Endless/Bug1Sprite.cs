@@ -46,6 +46,10 @@ namespace Endless
         /// </summary>
         public bool BugFlipped;
 
+        private double animationTimer;
+
+        private short animationFrame;
+
         private static Random rand = new Random();
 
         /// <summary>
@@ -71,6 +75,7 @@ namespace Endless
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
+            /*
             directionTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
             if(directionTimer > 2.0)
@@ -103,6 +108,7 @@ namespace Endless
                     }
                     break;
             }
+            */
         }
 
         /// <summary>
@@ -113,9 +119,18 @@ namespace Endless
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteEffects spriteEffect = BugFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            //var source = new Rectangle(64, (int)direction * 64, 64, 64);
 
-            spriteBatch.Draw(texture, Position, null, Color.White, 0f, new Vector2(0, 0), 2f, spriteEffect, 0f);
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (animationTimer > 0.3)
+            {
+                animationFrame++;
+                if (animationFrame > 3) animationFrame = 0;
+                animationTimer -= 0.3;
+            }
+
+            var source = new Rectangle(animationFrame * 64, 16, 64, 48);
+            spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(0, 0), 2f, spriteEffect, 0f);
 
         }
     }

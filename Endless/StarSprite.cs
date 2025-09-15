@@ -58,10 +58,11 @@ namespace Endless
             if(animationTimer > 0.3)
             {
                 animationFrame++;
-                if (animationFrame > 5) animationFrame = 1;
+                if (animationFrame > 5) animationFrame = 0;
                 animationTimer -= 0.3;
             }
 
+            
             var source = new Rectangle(animationFrame * 64,16,64,64);
             spriteBatch.Draw(texture,Position,source,Color.White,0f,new Vector2(0,0),2,SpriteEffects.None,0f);
 

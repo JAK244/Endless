@@ -23,19 +23,19 @@ namespace Endless
 
         public override void Initialize()
         {
-            traveler = new TravelerSprite();
+            traveler = new TravelerSprite() { position = new Vector2(500, 420) };
             portals = new PortalSprite[]
             {
-                new PortalSprite(){Position = new Vector2(700,355)},
-                new PortalSprite(){Position = new Vector2(-25 ,355), PortalFlipped = true},
+                new PortalSprite(){Position = new Vector2(700,350)},
+                new PortalSprite(){Position = new Vector2(-25 ,350), PortalFlipped = true},
             };
 
             bugs = new Bug1Sprite[]
             {
-                new Bug1Sprite(){Position = new Vector2(630,353)},
-                new Bug1Sprite(){Position = new Vector2(550,353)},
-                new Bug1Sprite(){Position = new Vector2(30,353), BugFlipped = true},
-                new Bug1Sprite(){Position = new Vector2(150,353), BugFlipped = true},
+                new Bug1Sprite(){Position = new Vector2(630,384)},
+                new Bug1Sprite(){Position = new Vector2(550,384)},
+                new Bug1Sprite(){Position = new Vector2(30,384), BugFlipped = true},
+                new Bug1Sprite(){Position = new Vector2(150,384), BugFlipped = true},
             };
             powerBall = new PowerBallSprite();
 
@@ -68,7 +68,7 @@ namespace Endless
         {
             
             
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter) || GamePad.GetState(0).IsButtonDown(Buttons.Start)) 
             {
                 SceneManager.Instance.AddScene(new MainGameScene());
             }

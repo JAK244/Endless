@@ -22,7 +22,7 @@ namespace Endless
         public override void Initialize()
         {
             base.Initialize();
-            Traveler = new TravelerSprite();
+            Traveler = new TravelerSprite() { position = new Vector2(500, 420) };
             arrow = new ArrowSpriteTest();
             //camera = new(Vector2.Zero);
             
