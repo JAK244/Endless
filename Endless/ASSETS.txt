@@ -6,4 +6,6 @@ Content/Traveler.png - Created by Jack Jara using Asprite, released under public
 
 Content/Void-portal.png - Created by Jack Jara using Asprite, released under public domain 
 
+Content/Star.png - Created by Jack Jara using Asprite, released under public domain
+
 Content/Doto/Doto-Black.tff - Doto font created by Óliver Lalan, released on google fonts (https://fonts.google.com/specimen/Doto) under the Open Font License

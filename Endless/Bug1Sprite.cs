@@ -16,7 +16,7 @@ namespace Endless
     /// </summary>
     public enum Direction
     {
-        Up, Down,
+        Left, Right,
     }
 
     /// <summary>
@@ -50,15 +50,7 @@ namespace Endless
 
         private short animationFrame;
 
-        private static Random rand = new Random();
-
-        /// <summary>
-        /// a bugsprite constructor that offsets the directionTimer
-        /// </summary>
-        public Bug1Sprite()
-        {
-            directionTimer = rand.NextDouble() * 2.0;
-        }
+        
 
         /// <summary>
         /// Loads the texture
@@ -75,40 +67,40 @@ namespace Endless
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
-            /*
+            
             directionTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(directionTimer > 2.0)
+            if(BugFlipped == true)
             {
                 switch (direction)
                 {
-                    case Direction.Up:
-                        direction = Direction.Down; 
+                    case Direction.Left:
+                        direction = Direction.Right; 
                         break;
-                    case Direction.Down:
-                        direction = Direction.Up;
-                        break;
+                    //case Direction.Right:
+                        //direction = Direction.Left;
+                        //break;
                 }
                 directionTimer -= 2.0;
             }
 
             switch(direction)
             {
-                case Direction.Up:
-                    Position += new Vector2(0, -1) * 20 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                case Direction.Left:
+                    Position += new Vector2(-1, 0) * 20 * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     break;
-                case Direction.Down:
-                    Position += new Vector2(0, 1) * 20 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                case Direction.Right:
+                    Position += new Vector2(1, 0) * 20 * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                     //stops it from going out of frame
                     if (Position.Y >= 353)
                     {
                         Position = new Vector2(Position.X, 353);
-                        direction = Direction.Up; 
+                        direction = Direction.Left; 
                     }
                     break;
             }
-            */
+            
         }
 
         /// <summary>
