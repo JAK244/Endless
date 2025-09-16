@@ -18,6 +18,7 @@ namespace Endless
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
         private StarSprite[] stars;
+        private Bug1Sprite[] bugs;
 
 
         private float rotation;
@@ -43,6 +44,14 @@ namespace Endless
                 new StarSprite(){Position = new Vector2(50,50)},
                 new StarSprite(){Position = new Vector2(600,200) },
             };
+
+            bugs = new Bug1Sprite[]
+            {
+                new Bug1Sprite(){Position = new Vector2(630,352), CanMove = false},
+                //new Bug1Sprite(){Position = new Vector2(550,352), CanMove = false},
+                //new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
+                new Bug1Sprite(){Position = new Vector2(150,352), BugFlipped = true , CanMove = false},
+            };
             //camera = new(Vector2.Zero);
 
         }
@@ -52,6 +61,7 @@ namespace Endless
             base.LoadContent(Content);
             Traveler.LoadContent(Content);
             foreach (var portal in portals) portal.LoadContent(Content);
+            foreach (var bug in bugs) bug.LoadContent(Content);
             foreach (var star in stars) star.LoadContent(Content);
             powerBall.LoadContent(Content);
             arrow.LoadContent(Content);
@@ -73,7 +83,8 @@ namespace Endless
             }
             Traveler.Update(gameTime);
             arrow.Update(gameTime);
-            
+            foreach (var bug in bugs) bug.Update(gameTime);
+
 
             //camera.Follow(Traveler.Bounds, new Vector2(800, 400));
 
@@ -87,11 +98,14 @@ namespace Endless
             sb.Begin(samplerState: SamplerState.PointClamp);
             arrow.Draw(gameTime, sb);
             powerBall.Draw(gameTime, sb);
+
             foreach (var portal in portals)
                 portal.Draw(gameTime, sb);
             foreach (var star in stars)
                 star.Draw(gameTime, sb);
-            sb.DrawString(Doto, "MAIN GAME AHHHHHHHHHH", new Vector2(0, 0), Color.Black);
+            foreach (var bug in bugs)
+                bug.Draw(gameTime, sb);
+
             Traveler.Draw(gameTime, sb);
             sb.End();
             base.Draw(gameTime);

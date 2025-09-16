@@ -66,9 +66,7 @@ namespace Endless
 
             Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
 
-            Vector2 distance = new Vector2();
-            distance.X = mousePosition.X - distance.X;
-            distance.Y = mousePosition.Y - distance.Y;
+            Vector2 distance = mousePosition - position;
 
             rotation = (float)Math.Atan2(distance.Y, distance.X);
         }

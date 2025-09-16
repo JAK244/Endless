@@ -50,7 +50,9 @@ namespace Endless
 
         private short animationFrame;
 
-        
+        public bool CanMove = true;
+
+
 
         /// <summary>
         /// Loads the texture
@@ -67,7 +69,9 @@ namespace Endless
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
-            
+
+            if (!CanMove) return;
+
             directionTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
             if(BugFlipped == true)
@@ -121,8 +125,9 @@ namespace Endless
                 animationTimer -= 0.3;
             }
 
-            var source = new Rectangle(animationFrame * 64, 16, 64, 48);
-            spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(0, 0), 2f, spriteEffect, 0f);
+            var source = new Rectangle(animationFrame * 64, 0, 64, 64);
+            spriteBatch.Draw(texture, Position, source, Color.White, 0f, Vector2.Zero, 2f, spriteEffect, 0f);
+
 
         }
     }

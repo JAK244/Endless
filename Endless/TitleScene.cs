@@ -32,10 +32,10 @@ namespace Endless
 
             bugs = new Bug1Sprite[]
             {
-                new Bug1Sprite(){Position = new Vector2(630,384)},
-                new Bug1Sprite(){Position = new Vector2(550,384)},
-                new Bug1Sprite(){Position = new Vector2(30,384), BugFlipped = true},
-                new Bug1Sprite(){Position = new Vector2(150,384), BugFlipped = true},
+                new Bug1Sprite(){Position = new Vector2(630,352), CanMove = false},
+                new Bug1Sprite(){Position = new Vector2(550,352), CanMove = false},
+                new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
+                new Bug1Sprite(){Position = new Vector2(150,352), BugFlipped = true , CanMove = false},
             };
             powerBall = new PowerBallSprite();
 
