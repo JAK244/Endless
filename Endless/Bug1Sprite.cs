@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Endless.Collisions;
 
 
 namespace Endless
@@ -52,7 +53,23 @@ namespace Endless
 
         public bool CanMove = true;
 
+        private BoundingCircle bounds;
 
+        public BoundingCircle Bounds
+        {
+            get
+            {
+                return bounds;
+            }
+        }
+
+
+        public Bug1Sprite(Vector2 position)
+        {
+           this.Position = position;
+           this.bounds = new BoundingCircle(position - new Vector2(-64, -110), -16); // moves the bounds
+
+        }
 
         /// <summary>
         /// Loads the texture
@@ -104,7 +121,11 @@ namespace Endless
                     }
                     break;
             }
+
             
+
+
+
         }
 
         /// <summary>

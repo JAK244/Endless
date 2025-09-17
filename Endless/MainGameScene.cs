@@ -19,17 +19,23 @@ namespace Endless
         private PowerBallSprite powerBall;
         private StarSprite[] stars;
         private Bug1Sprite[] bugs;
+        private ArmSprite arm;
+
+        private Texture2D ball;
 
 
         private float rotation;
-        private ArrowSpriteTest arrow;
+        
         //private Camera camera;
 
         public override void Initialize()
         {
             base.Initialize();
+
+
             Traveler = new TravelerSprite() { position = new Vector2(500, 420) };
-            arrow = new ArrowSpriteTest();
+            
+            arm = new ArmSprite() { position = new Vector2(500, 420) };
 
             portals = new PortalSprite[]
             {
@@ -47,10 +53,11 @@ namespace Endless
 
             bugs = new Bug1Sprite[]
             {
-                new Bug1Sprite(){Position = new Vector2(630,352), CanMove = false},
+                
+                new Bug1Sprite(new Vector2(630,352)){CanMove = false},
                 //new Bug1Sprite(){Position = new Vector2(550,352), CanMove = false},
                 //new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
-                new Bug1Sprite(){Position = new Vector2(150,352), BugFlipped = true , CanMove = false},
+                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = false},
             };
             //camera = new(Vector2.Zero);
 
@@ -59,12 +66,14 @@ namespace Endless
         public override void LoadContent(ContentManager Content)
         {
             base.LoadContent(Content);
+            ball = Content.Load<Texture2D>("Ball");
             Traveler.LoadContent(Content);
+            arm.LoadContent(Content);
             foreach (var portal in portals) portal.LoadContent(Content);
             foreach (var bug in bugs) bug.LoadContent(Content);
             foreach (var star in stars) star.LoadContent(Content);
             powerBall.LoadContent(Content);
-            arrow.LoadContent(Content);
+            
             rotation = 0.0f;
             Doto = Content.Load<SpriteFont>("Doto-Black");
         }
@@ -81,9 +90,24 @@ namespace Endless
             {
                 SceneManager.Instance.AddScene(new TitleScene());
             }
+
+            Traveler.color = Color.White;
+
+
+
             Traveler.Update(gameTime);
-            arrow.Update(gameTime);
-            foreach (var bug in bugs) bug.Update(gameTime);
+            arm.Update(gameTime);
+            
+            foreach (var bug in bugs)
+            {
+               bug.Update(gameTime);
+               if (bug.Bounds.CollidesWith(Traveler.Bounds))
+                {
+                    Traveler.color = Color.Red;
+                }
+            }
+               
+                
 
 
             //camera.Follow(Traveler.Bounds, new Vector2(800, 400));
@@ -96,7 +120,7 @@ namespace Endless
         {
             var sb = SceneManager.Instance.SpriteBatch;
             sb.Begin(samplerState: SamplerState.PointClamp);
-            arrow.Draw(gameTime, sb);
+
             powerBall.Draw(gameTime, sb);
 
             foreach (var portal in portals)
@@ -104,13 +128,23 @@ namespace Endless
             foreach (var star in stars)
                 star.Draw(gameTime, sb);
             foreach (var bug in bugs)
+            {
                 bug.Draw(gameTime, sb);
+                var rec = new Rectangle((int)(bug.Bounds.Center.X - bug.Bounds.Radius), (int)(bug.Bounds.Center.Y - bug.Bounds.Radius), (int)bug.Bounds.Radius * 2, (int)bug.Bounds.Radius * 2);
 
+                sb.Draw(ball, rec, Color.White);
+            }
+
+            var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
+
+            sb.Draw(ball, rec2, Color.White);
+
+            arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);
             sb.End();
             base.Draw(gameTime);
-        }
 
+        }
 
     }
 }

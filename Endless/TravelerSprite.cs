@@ -28,7 +28,7 @@ namespace Endless
 
         private bool flipped;
 
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 -16,350 -16), 32,32);
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 -16,350 -16), 32,64);
 
        
 
@@ -36,6 +36,8 @@ namespace Endless
         {
             get { return bounds; }
         }
+        
+        public Color color { get; set; } = Color.White;
 
         /// <summary>
         /// Loads the sprite from the content manager
@@ -68,12 +70,26 @@ namespace Endless
                 flipped = false;
             }
 
+            
+            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            {
+                position += new Vector2(0, -3);
+                flipped = true;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+            {
+                position += new Vector2(0, 3);
+                flipped = false;
+            }
+           
+
             position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
             if (gamePadState.ThumbSticks.Left.X < 0) flipped = true;
             if (gamePadState.ThumbSticks.Left.X > 0) flipped = false;
 
-            bounds.X = position.X - bounds.Width / 2f;
-            bounds.Y = position.Y - bounds.Height / 2f;
+            bounds.X = position.X - 16;
+            bounds.Y = position.Y - 16;
 
             Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
 
@@ -93,7 +109,7 @@ namespace Endless
         {
           
             SpriteEffects spriteEffect = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
-            spriteBatch.Draw(texture, position,null,Color.White,0, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect,0);
+            spriteBatch.Draw(texture, position,null,color,0, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect,0);
          
         }
     }
