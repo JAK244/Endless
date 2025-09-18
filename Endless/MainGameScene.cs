@@ -15,6 +15,7 @@ namespace Endless
         
         private SpriteFont Doto;
         private TravelerSprite Traveler;
+        private HelthSprite[] helths;
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
         private StarSprite[] stars;
@@ -59,6 +60,13 @@ namespace Endless
                 //new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
                 new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = false},
             };
+
+            helths = new HelthSprite[]
+            {
+                new HelthSprite(){position = new Vector2(0,0)},
+                new HelthSprite(){position = new Vector2(60,0)},
+                new HelthSprite(){position = new Vector2(120,0)},
+            };
             //camera = new(Vector2.Zero);
 
         }
@@ -72,6 +80,7 @@ namespace Endless
             foreach (var portal in portals) portal.LoadContent(Content);
             foreach (var bug in bugs) bug.LoadContent(Content);
             foreach (var star in stars) star.LoadContent(Content);
+            foreach (var helth in helths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             
             rotation = 0.0f;
@@ -127,6 +136,8 @@ namespace Endless
                 portal.Draw(gameTime, sb);
             foreach (var star in stars)
                 star.Draw(gameTime, sb);
+            foreach (var helth in helths) 
+                helth.Draw(gameTime, sb);
             foreach (var bug in bugs)
             {
                 bug.Draw(gameTime, sb);

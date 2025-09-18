@@ -24,6 +24,8 @@ namespace Endless
 
         private float rotation;
 
+        private bool flipped;
+
         public void LoadContent(ContentManager content)
         {
             rotation = 0.0f;
@@ -38,12 +40,14 @@ namespace Endless
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
                 position += new Vector2(-3, 0);
+               
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                position += new Vector2(3, 0);
-          
+               position += new Vector2(3, 0);
+               
+
             }
 
             position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
@@ -54,14 +58,23 @@ namespace Endless
 
             rotation = (float)Math.Atan2(distance.Y, distance.X);
 
-            
+            if (mousePosition.X < position.X)
+            {
+                flipped = true;
+                // add PI to keep the arm pointing correctly
+                rotation += MathF.PI;
+            }
+            else
+            {
+                flipped = false;
+            }
 
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-
-            spriteBatch.Draw(texture, position, null, Color.White, rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, SpriteEffects.None, 0);
+            SpriteEffects spriteEffect = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            spriteBatch.Draw(texture, position, null, Color.White, rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect, 0);
 
         }
     }
