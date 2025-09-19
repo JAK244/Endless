@@ -17,6 +17,8 @@ namespace Endless
 
         public Vector2 position;
 
+        public bool Damaged { get; set; } = false;
+
         /// <summary>
         /// Loads the sprite from the content manager
         /// </summary>
@@ -43,7 +45,7 @@ namespace Endless
         /// <param name="spriteBatch">the sprite batch to render with</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-
+            if (Damaged) return;
             
             spriteBatch.Draw(texture, position, null, Color.White, 0, new Vector2(0,0), 1f, SpriteEffects.None, 0);
 

@@ -45,6 +45,16 @@ namespace Endless.Collisions
             Height = height;
         }
 
-       
+        public bool CollidesWith(BoundingRectangle other)
+        {
+            return CollisionHelper.Collides(this, other);
+        }
+
+        public bool CollidesWith(BoundingCircle other)
+        {
+            return CollisionHelper.Collides(other, this);
+        }
+
+
     }
 }

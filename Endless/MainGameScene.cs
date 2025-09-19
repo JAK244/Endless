@@ -15,12 +15,16 @@ namespace Endless
         
         private SpriteFont Doto;
         private TravelerSprite Traveler;
-        private HelthSprite[] helths;
+        private HelthSprite[] healths;
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
         private StarSprite[] stars;
         private Bug1Sprite[] bugs;
         private ArmSprite arm;
+        private int healthLeft;
+
+        private double damageCooldown = 0;
+
 
         private Texture2D ball;
 
@@ -61,12 +65,13 @@ namespace Endless
                 new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = false},
             };
 
-            helths = new HelthSprite[]
+            healths = new HelthSprite[]
             {
-                new HelthSprite(){position = new Vector2(0,0)},
-                new HelthSprite(){position = new Vector2(60,0)},
                 new HelthSprite(){position = new Vector2(120,0)},
+                new HelthSprite(){position = new Vector2(60,0)},
+                new HelthSprite(){position = new Vector2(0,0)},
             };
+            healthLeft = healths.Length;
             //camera = new(Vector2.Zero);
 
         }
@@ -80,7 +85,7 @@ namespace Endless
             foreach (var portal in portals) portal.LoadContent(Content);
             foreach (var bug in bugs) bug.LoadContent(Content);
             foreach (var star in stars) star.LoadContent(Content);
-            foreach (var helth in helths) helth.LoadContent(Content);
+            foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             
             rotation = 0.0f;
@@ -106,21 +111,30 @@ namespace Endless
 
             Traveler.Update(gameTime);
             arm.Update(gameTime);
-            
+
+            damageCooldown -= gameTime.ElapsedGameTime.TotalSeconds;
+
             foreach (var bug in bugs)
             {
-               bug.Update(gameTime);
-               if (bug.Bounds.CollidesWith(Traveler.Bounds))
+                bug.Update(gameTime);
+
+                if (damageCooldown <= 0 && bug.Bounds.CollidesWith(Traveler.Bounds))
                 {
-                    Traveler.color = Color.Red;
+                    for (int i = 0; i < healths.Length; i++)
+                    {
+                        if (!healths[i].Damaged)
+                        {
+                            Traveler.color = Color.Red;
+                            healths[i].Damaged = true;
+                            healthLeft--;
+                            damageCooldown = 1.0; // 1 second of invulnerability
+                            break;
+                        }
+                    }
                 }
             }
-               
-                
-
 
             //camera.Follow(Traveler.Bounds, new Vector2(800, 400));
-
 
         }
 
@@ -136,7 +150,7 @@ namespace Endless
                 portal.Draw(gameTime, sb);
             foreach (var star in stars)
                 star.Draw(gameTime, sb);
-            foreach (var helth in helths) 
+            foreach (var helth in healths) 
                 helth.Draw(gameTime, sb);
             foreach (var bug in bugs)
             {
