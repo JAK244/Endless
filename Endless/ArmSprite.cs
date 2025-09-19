@@ -40,35 +40,41 @@ namespace Endless
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
                 position += new Vector2(-3, 0);
-               
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-               position += new Vector2(3, 0);
-               
-
+                position += new Vector2(3, 0);
             }
 
+            // Move with left stick
             position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
 
-            Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
+            // Default: look at mouse
+            Vector2 targetDirection = Mouse.GetState().Position.ToVector2() - position;
 
-            Vector2 distance = mousePosition - position;
+            // If right stick is being used, override with its direction
+            Vector2 rightStick = gamePadState.ThumbSticks.Right;
+            rightStick.Y *= -1; 
 
-            rotation = (float)Math.Atan2(distance.Y, distance.X);
+            if (rightStick.Length() > 0.2f) // deadzone check
+            {
+                targetDirection = rightStick;
+            }
 
-            if (mousePosition.X < position.X)
+            // Rotation from direction
+            rotation = (float)Math.Atan2(targetDirection.Y, targetDirection.X);
+
+            // Handle flipping
+            if (targetDirection.X < 0)
             {
                 flipped = true;
-                // add PI to keep the arm pointing correctly
                 rotation += MathF.PI;
             }
             else
             {
                 flipped = false;
             }
-
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
