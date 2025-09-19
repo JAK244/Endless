@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Windows.Forms.VisualStyles;
 
 
 namespace Endless
@@ -82,6 +83,8 @@ namespace Endless
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            
+
             SceneManager.Instance.Draw(gameTime); // this calls TitleScene.Draw()
 
             base.Draw(gameTime);

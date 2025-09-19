@@ -27,6 +27,7 @@ namespace Endless
 
 
         private Texture2D ball;
+        private Texture2D backGroundImage;
 
 
         private float rotation;
@@ -37,6 +38,7 @@ namespace Endless
         {
             base.Initialize();
 
+            
 
             Traveler = new TravelerSprite() { position = new Vector2(500, 420) };
             
@@ -79,6 +81,7 @@ namespace Endless
         public override void LoadContent(ContentManager Content)
         {
             base.LoadContent(Content);
+            backGroundImage = Content.Load<Texture2D>("ForestBG");
             ball = Content.Load<Texture2D>("Ball");
             Traveler.LoadContent(Content);
             arm.LoadContent(Content);
@@ -110,6 +113,7 @@ namespace Endless
 
 
             Traveler.Update(gameTime);
+            
             arm.Update(gameTime);
 
             damageCooldown -= gameTime.ElapsedGameTime.TotalSeconds;
@@ -143,6 +147,8 @@ namespace Endless
         {
             var sb = SceneManager.Instance.SpriteBatch;
             sb.Begin(samplerState: SamplerState.PointClamp);
+
+            sb.Draw(backGroundImage,new Rectangle(0,0, sb.GraphicsDevice.Viewport.Width, sb.GraphicsDevice.Viewport.Height),Color.White);
 
             powerBall.Draw(gameTime, sb);
 
