@@ -51,10 +51,16 @@ namespace Endless
 
         private short animationFrame;
 
+        /// <summary>
+        /// checks if bug can move
+        /// </summary>
         public bool CanMove = true;
 
         private BoundingCircle bounds;
 
+        /// <summary>
+        /// the bugs bounds
+        /// </summary>
         public BoundingCircle Bounds
         {
             get
@@ -63,7 +69,10 @@ namespace Endless
             }
         }
 
-
+        /// <summary>
+        /// the bug sprite constructor
+        /// </summary>
+        /// <param name="position">the given position</param>
         public Bug1Sprite(Vector2 position)
         {
            this.Position = position;

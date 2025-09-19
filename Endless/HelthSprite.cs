@@ -11,12 +11,21 @@ using Endless.Collisions;
 
 namespace Endless
 {
+    /// <summary>
+    /// the healthsprite class
+    /// </summary>
     public class HelthSprite
     {
         private Texture2D texture;
 
+        /// <summary>
+        /// the position of the sprite
+        /// </summary>
         public Vector2 position;
 
+        /// <summary>
+        /// Damage indicader
+        /// </summary>
         public bool Damaged { get; set; } = false;
 
         /// <summary>

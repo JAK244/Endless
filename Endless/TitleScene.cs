@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Endless
 {
+    /// <summary>
+    /// the title screen class
+    /// </summary>
     public class TitleScene : GameScenes
     {
         private GraphicsDeviceManager graphics;
@@ -21,6 +24,9 @@ namespace Endless
         private StarSprite[] stars;
 
 
+        /// <summary>
+        /// sets the inital state of the game
+        /// </summary>
         public override void Initialize()
         {
             traveler = new TravelerSprite() { position = new Vector2(500, 420) };
@@ -46,6 +52,10 @@ namespace Endless
             };
         }
 
+        /// <summary>
+        /// Uses content manager to load components
+        /// </summary>
+        /// <param name="Content">the content manager</param>
         public override void LoadContent(ContentManager Content)
         {
            
@@ -59,11 +69,18 @@ namespace Endless
             base.LoadContent(Content);
         }
 
+        /// <summary>
+        /// unloads loaded components
+        /// </summary>
         public override void UnloadContent()
         {
             base.UnloadContent();
         }
 
+        /// <summary>
+        /// updates the compontes using gametime
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         public override void Update(GameTime gameTime)
         {
             
@@ -83,6 +100,10 @@ namespace Endless
 
         }
 
+        /// <summary>
+        /// Draws the componets
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         public override void Draw(GameTime gameTime)
         {
             var sb = SceneManager.Instance.SpriteBatch;

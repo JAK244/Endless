@@ -10,6 +10,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Endless
 {
+    /// <summary>
+    /// the main game screen class
+    /// </summary>
     public class MainGameScene : GameScenes
     {
         
@@ -34,6 +37,9 @@ namespace Endless
         
         //private Camera camera;
 
+        /// <summary>
+        /// initializes the content for the scene
+        /// </summary>
         public override void Initialize()
         {
             base.Initialize();
@@ -78,6 +84,10 @@ namespace Endless
 
         }
 
+        /// <summary>
+        /// loads the content for the scene using a content manager
+        /// </summary>
+        /// <param name="Content">the content manager</param>
         public override void LoadContent(ContentManager Content)
         {
             base.LoadContent(Content);
@@ -95,11 +105,18 @@ namespace Endless
             Doto = Content.Load<SpriteFont>("Doto-Black");
         }
 
+        /// <summary>
+        /// unloads the content from the scene
+        /// </summary>
         public override void UnloadContent()
         {
             base.UnloadContent();
         }
 
+        /// <summary>
+        /// updates the content using game time
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -143,6 +160,10 @@ namespace Endless
         }
 
 
+        /// <summary>
+        /// draws the content on screen
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         public override void Draw(GameTime gameTime)
         {
             var sb = SceneManager.Instance.SpriteBatch;
@@ -161,9 +182,9 @@ namespace Endless
             foreach (var bug in bugs)
             {
                 bug.Draw(gameTime, sb);
-                var rec = new Rectangle((int)(bug.Bounds.Center.X - bug.Bounds.Radius), (int)(bug.Bounds.Center.Y - bug.Bounds.Radius), (int)bug.Bounds.Radius * 2, (int)bug.Bounds.Radius * 2);
+                //var rec = new Rectangle((int)(bug.Bounds.Center.X - bug.Bounds.Radius), (int)(bug.Bounds.Center.Y - bug.Bounds.Radius), (int)bug.Bounds.Radius * 2, (int)bug.Bounds.Radius * 2);
 
-                sb.Draw(ball, rec, Color.White);
+                //sb.Draw(ball, rec, Color.White);
             }
 
             //var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);

@@ -6,19 +6,28 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Endless
 {
+    /// <summary>
+    /// the screenManger class
+    /// </summary>
     public class SceneManager
     {
         private static SceneManager instance;
 
-        // This will just store the reference from Game1
+        // This will store the reference from Game1
         private ContentManager content;
 
         private Stack<GameScenes> sceneStack = new Stack<GameScenes>();
         private GameScenes currentScreen;
         private Vector2 dimensions;
 
+        /// <summary>
+        /// the sprite batch
+        /// </summary>
         public SpriteBatch SpriteBatch { get; set; }
 
+        /// <summary>
+        /// the static sceneManager instance
+        /// </summary>
         public static SceneManager Instance
         {
             get
@@ -29,13 +38,19 @@ namespace Endless
             }
         }
 
+        /// <summary>
+        /// the dimensions of the scenc
+        /// </summary>
         public Vector2 Dimensions
         {
             get => dimensions;
             set => dimensions = value;
         }
 
-        // Switch to a new scene
+        /// <summary>
+        /// adds scenes to the stack
+        /// </summary>
+        /// <param name="scene">the given scene</param>
         public void AddScene(GameScenes scene)
         {
             if (currentScreen != null)
@@ -45,16 +60,23 @@ namespace Endless
             currentScreen = scene;
 
             currentScreen.Initialize();
-            // Load content using the same ContentManager from Game1
+            
             currentScreen.LoadContent(content);
         }
 
+        /// <summary>
+        /// initalizes the current scene
+        /// </summary>
         public void Initialize()
         {
             currentScreen = new TitleScene();
             currentScreen.Initialize();
         }
 
+        /// <summary>
+        /// loads the content with a content manager
+        /// </summary>
+        /// <param name="Content">the content manager</param>
         public void LoadContent(ContentManager Content)
         {
             // Just store the reference, don't create a new ContentManager
@@ -62,6 +84,10 @@ namespace Endless
             currentScreen.LoadContent(content);
         }
 
+        /// <summary>
+        /// updates the current screen 
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
             currentScreen?.Update(gameTime);

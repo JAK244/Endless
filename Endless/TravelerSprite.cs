@@ -24,6 +24,9 @@ namespace Endless
 
         private Texture2D texture;
 
+        /// <summary>
+        /// the sprites position
+        /// </summary>
         public Vector2 position;
 
         private bool flipped;
@@ -31,12 +34,17 @@ namespace Endless
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 -16,350 -16), 32,64);
 
        
-
+        /// <summary>
+        /// the sprites bounds
+        /// </summary>
         public BoundingRectangle Bounds
         {
             get { return bounds; }
         }
         
+        /// <summary>
+        /// the sprites color
+        /// </summary>
         public Color color { get; set; } = Color.White;
 
         /// <summary>
@@ -45,12 +53,11 @@ namespace Endless
         /// <param name="content">the contnet manager to load with</param>
         public void LoadContent(ContentManager content)
         {
-            
             texture = content.Load<Texture2D>("Traveler");
         }
 
         /// <summary>
-        /// Updates the sprite;s postion on users input
+        /// Updates the sprites postion based on users input and handles bounds movement
         /// </summary>
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)

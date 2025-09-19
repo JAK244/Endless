@@ -12,6 +12,9 @@ using Endless.Collisions;
 
 namespace Endless
 {
+    /// <summary>
+    /// the arm sprite class
+    /// </summary>
     public class ArmSprite
     {
         private KeyboardState keyboardState;
@@ -20,18 +23,29 @@ namespace Endless
 
         private Texture2D texture;
 
+        /// <summary>
+        /// the arms position
+        /// </summary>
         public Vector2 position;
 
         private float rotation;
 
         private bool flipped;
 
+        /// <summary>
+        /// loads the arm texture using content manager
+        /// </summary>
+        /// <param name="content">the given content manager</param>
         public void LoadContent(ContentManager content)
         {
             rotation = 0.0f;
             texture = content.Load<Texture2D>("TravelerArm");
         }
 
+        /// <summary>
+        /// updates the arms movements
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
             keyboardState = Keyboard.GetState();
@@ -47,25 +61,24 @@ namespace Endless
                 position += new Vector2(3, 0);
             }
 
-            // Move with left stick
             position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
 
-            // Default: look at mouse
+            //looks at mouse by default
             Vector2 targetDirection = Mouse.GetState().Position.ToVector2() - position;
 
-            // If right stick is being used, override with its direction
+            // If right stick is used, override with its direction
             Vector2 rightStick = gamePadState.ThumbSticks.Right;
             rightStick.Y *= -1; 
 
-            if (rightStick.Length() > 0.2f) // deadzone check
+            if (rightStick.Length() > 0.2f) 
             {
                 targetDirection = rightStick;
             }
 
-            // Rotation from direction
+            
             rotation = (float)Math.Atan2(targetDirection.Y, targetDirection.X);
 
-            // Handle flipping
+         
             if (targetDirection.X < 0)
             {
                 flipped = true;
@@ -77,6 +90,11 @@ namespace Endless
             }
         }
 
+        /// <summary>
+        /// draws the arm sprite
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
+        /// <param name="spriteBatch">the spriteBatch</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             SpriteEffects spriteEffect = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
