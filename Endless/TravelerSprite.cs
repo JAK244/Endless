@@ -70,7 +70,7 @@ namespace Endless
                 flipped = false;
             }
 
-            
+            /*
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 position += new Vector2(0, -3);
@@ -82,6 +82,7 @@ namespace Endless
                 position += new Vector2(0, 3);
                 flipped = false;
             }
+            */
            
 
             position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
@@ -91,11 +92,7 @@ namespace Endless
             bounds.X = position.X - 16;
             bounds.Y = position.Y - 16;
 
-            Vector2 mousePosition = Mouse.GetState().Position.ToVector2();
-
-            Vector2 distance = new Vector2();
-            distance.X = mousePosition.X - distance.X;
-            distance.Y = mousePosition.Y - distance.Y;
+            
 
             
         }

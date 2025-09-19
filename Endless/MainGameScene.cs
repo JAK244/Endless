@@ -59,10 +59,10 @@ namespace Endless
             bugs = new Bug1Sprite[]
             {
                 
-                new Bug1Sprite(new Vector2(630,352)){CanMove = false},
+                new Bug1Sprite(new Vector2(630,352)){CanMove = true},
                 //new Bug1Sprite(){Position = new Vector2(550,352), CanMove = false},
                 //new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
-                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = false},
+                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = true},
             };
 
             healths = new HelthSprite[]
@@ -160,9 +160,9 @@ namespace Endless
                 sb.Draw(ball, rec, Color.White);
             }
 
-            var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
+            //var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
 
-            sb.Draw(ball, rec2, Color.White);
+            //sb.Draw(ball, rec2, Color.White);
 
             arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);
@@ -170,6 +170,6 @@ namespace Endless
             base.Draw(gameTime);
 
         }
-
+        
     }
 }

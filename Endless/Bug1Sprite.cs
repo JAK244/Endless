@@ -122,8 +122,8 @@ namespace Endless
                     break;
             }
 
-            
 
+            bounds.Center = Position + new Vector2(64, 100);
 
 
         }
