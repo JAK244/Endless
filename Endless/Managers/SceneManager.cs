@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Endless.Screens;
 
-namespace Endless
+namespace Endless.Managers
 {
     /// <summary>
     /// the screenManger class

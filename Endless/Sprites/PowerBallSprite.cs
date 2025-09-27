@@ -9,12 +9,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 
 
-namespace Endless
+namespace Endless.Sprites
 {
     /// <summary>
-    /// the Star sprite class
+    /// the power ball sprite class
     /// </summary>
-    public class StarSprite
+    public class PowerBallSprite
     {
         private Texture2D texture;
 
@@ -23,18 +23,22 @@ namespace Endless
         private short animationFrame;
 
         /// <summary>
-        /// the positon of the sprite
+        /// the positon of the sprite 
         /// </summary>
         public Vector2 Position;
 
+        /// <summary>
+        /// checks if the the sprite needs to be flipped
+        /// </summary>
+        public bool BallFlipped;
 
         /// <summary>
-        /// Loads the Texture
+        /// Loads the texture
         /// </summary>
-        /// <param name="content">the contentmanaager to load to</param>
+        /// <param name="content">the contentManager to load with</param>
         public void LoadContent(ContentManager content)
         {
-            texture = content.Load<Texture2D>("Star");
+            texture = content.Load<Texture2D>("Power_ball");
         }
 
         /// <summary>
@@ -47,24 +51,26 @@ namespace Endless
         }
 
         /// <summary>
-        /// Draws/animates the game sprite
+        /// Draws the sprite
         /// </summary>
-        /// <param name="gameTime">the game time</param>
-        /// <param name="spriteBatch">the spriteBatch to render with</param>
+        /// <param name="gameTime">the gmae time</param>
+        /// <param name="spriteBatch">the sprite batch to render with</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            SpriteEffects spriteEffect = BallFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
             animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if(animationTimer > 0.3)
+            if (animationTimer > 0.2)
             {
                 animationFrame++;
-                if (animationFrame > 5) animationFrame = 0;
-                animationTimer -= 0.3;
+                if (animationFrame > 7) animationFrame = 0;
+                animationTimer -= 0.2;
             }
 
-            
-            var source = new Rectangle(animationFrame * 64,16,64,64);
-            spriteBatch.Draw(texture,Position,source,Color.White,0f,new Vector2(0,0),2,SpriteEffects.None,0f);
+
+            var source = new Rectangle(animationFrame * 64, 16, 64, 48);
+            spriteBatch.Draw(texture, Position, source, Color.White, 0f, new Vector2(0, 0), 2f, spriteEffect, 0f);
 
         }
     }

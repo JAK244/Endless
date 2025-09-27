@@ -7,47 +7,44 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using Endless.Collisions;
 
-namespace Endless
+namespace Endless.Sprites
 {
     /// <summary>
-    /// the Potal sprite class
+    /// the healthsprite class
     /// </summary>
-    public class PortalSprite
+    public class HelthSprite
     {
         private Texture2D texture;
-        
+
         /// <summary>
         /// the position of the sprite
         /// </summary>
-        public Vector2 Position;
+        public Vector2 position;
 
         /// <summary>
-        /// Checks is the sprite is flipped
+        /// Damage indicader
         /// </summary>
-        public bool PortalFlipped;
-
-        private double animationTimer;
-
-        private short animationFrame;
-
+        public bool Damaged { get; set; } = false;
 
         /// <summary>
-        /// Loads the texture
+        /// Loads the sprite from the content manager
         /// </summary>
-        /// <param name="content">the content manager to load with</param>
+        /// <param name="content">the contnet manager to load with</param>
         public void LoadContent(ContentManager content)
         {
-            texture = content.Load<Texture2D>("Void-portal");
+
+            texture = content.Load<Texture2D>("HealthHeart");
         }
 
         /// <summary>
-        /// updates the sprite
+        /// Updates the sprite;s postion on users input
         /// </summary>
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
-
+           
         }
 
         /// <summary>
@@ -57,22 +54,10 @@ namespace Endless
         /// <param name="spriteBatch">the sprite batch to render with</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            SpriteEffects spriteEffect = PortalFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
-            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (animationTimer > 0.2)
-            {
-                animationFrame++;
-                if (animationFrame > 10) animationFrame = 0;
-                animationTimer -= 0.2;
-            }
-
-            var source = new Rectangle(animationFrame * 64, 0, 64, 64);
-
-
-            spriteBatch.Draw(texture,Position, source, Color.White,0f,new Vector2(0,0), 2f,spriteEffect,0f);
+            if (Damaged) return;
             
+            spriteBatch.Draw(texture, position, null, Color.White, 0, new Vector2(0,0), 1f, SpriteEffects.None, 0);
+
         }
     }
 }

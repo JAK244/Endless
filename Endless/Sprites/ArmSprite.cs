@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Content;
 using Endless.Collisions;
 
 
-namespace Endless
+namespace Endless.Sprites
 {
     /// <summary>
     /// the arm sprite class
@@ -61,6 +61,18 @@ namespace Endless
                 position += new Vector2(3, 0);
             }
 
+            if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            {
+                position += new Vector2(0, -3);
+                
+            }
+
+            if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+            {
+                position += new Vector2(0, 3);
+               
+            }
+
             position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
 
             //looks at mouse by default
@@ -97,7 +109,7 @@ namespace Endless
         /// <param name="spriteBatch">the spriteBatch</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            SpriteEffects spriteEffect = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            SpriteEffects spriteEffect = flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             spriteBatch.Draw(texture, position, null, Color.White, rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect, 0);
 
         }

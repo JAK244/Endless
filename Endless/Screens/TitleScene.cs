@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Endless.Managers;
+using Endless.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Endless
+namespace Endless.Screens
 {
     /// <summary>
     /// the title screen class
@@ -43,7 +45,7 @@ namespace Endless
                 new Bug1Sprite(new Vector2(30,352)){BugFlipped = true , CanMove = false},
                 new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = false},
             };
-            powerBall = new PowerBallSprite();
+            powerBall = new PowerBallSprite() { Position = new Vector2(320, 384) };
 
             stars = new StarSprite[]
             {

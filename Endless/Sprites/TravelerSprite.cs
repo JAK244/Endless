@@ -11,7 +11,7 @@ using Endless.Collisions;
 
 
 
-namespace Endless
+namespace Endless.Sprites
 {
     /// <summary>
     /// class for our mc
@@ -77,7 +77,7 @@ namespace Endless
                 flipped = false;
             }
 
-            /*
+            
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
                 position += new Vector2(0, -3);
@@ -89,7 +89,7 @@ namespace Endless
                 position += new Vector2(0, 3);
                 flipped = false;
             }
-            */
+            
            
 
             position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
@@ -112,7 +112,7 @@ namespace Endless
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
           
-            SpriteEffects spriteEffect = (flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            SpriteEffects spriteEffect = flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             spriteBatch.Draw(texture, position,null,color,0, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect,0);
          
         }

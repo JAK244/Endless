@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Endless.Managers;
+using Endless.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Endless
+namespace Endless.Screens
 {
     /// <summary>
     /// the main game screen class
@@ -52,11 +54,11 @@ namespace Endless
 
             portals = new PortalSprite[]
             {
-                new PortalSprite(){Position = new Vector2(700,350)},
-                new PortalSprite(){Position = new Vector2(-25 ,350), PortalFlipped = true},
+                //new PortalSprite(){Position = new Vector2(700,350)},
+                //new PortalSprite(){Position = new Vector2(-25 ,350), PortalFlipped = true},
             };
 
-            powerBall = new PowerBallSprite();
+            powerBall = new PowerBallSprite() { Position = new Vector2(330, 200) };
 
             stars = new StarSprite[]
             {
@@ -67,10 +69,10 @@ namespace Endless
             bugs = new Bug1Sprite[]
             {
                 
-                new Bug1Sprite(new Vector2(630,352)){CanMove = true},
-                //new Bug1Sprite(){Position = new Vector2(550,352), CanMove = false},
-                //new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
-                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = true},
+                //new Bug1Sprite(new Vector2(630,352)){CanMove = true},
+                    //new Bug1Sprite(){Position = new Vector2(550,352), CanMove = false},
+                    //new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
+                //new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = true},
             };
 
             healths = new HelthSprite[]
@@ -148,7 +150,7 @@ namespace Endless
                             Traveler.color = Color.Red;
                             healths[i].Damaged = true;
                             healthLeft--;
-                            damageCooldown = 1.0; // 1 second of invulnerability
+                            damageCooldown = 1.0; 
                             break;
                         }
                     }

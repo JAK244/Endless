@@ -10,14 +10,14 @@ using Microsoft.Xna.Framework.Content;
 using Endless.Collisions;
 
 
-namespace Endless
+namespace Endless.Sprites
 {
     /// <summary>
     /// enum of possible directions
     /// </summary>
     public enum Direction
     {
-        Left, Right,
+        Left, Right, Up, Down
     }
 
     /// <summary>
@@ -75,8 +75,8 @@ namespace Endless
         /// <param name="position">the given position</param>
         public Bug1Sprite(Vector2 position)
         {
-           this.Position = position;
-           this.bounds = new BoundingCircle(position - new Vector2(-64, -110), -16); // moves the bounds
+           Position = position;
+           bounds = new BoundingCircle(position - new Vector2(-64, -110), -16); // moves the bounds
 
         }
 
