@@ -23,13 +23,12 @@ namespace Endless.Screens
         private HelthSprite[] healths;
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
-        private StarSprite[] stars;
         private Bug1Sprite[] bugs;
         private ArmSprite arm;
         private int healthLeft;
+        public Matrix _translation;
 
         private double damageCooldown = 0;
-
 
         private Texture2D ball;
         private Texture2D backGroundImage;
@@ -37,7 +36,6 @@ namespace Endless.Screens
 
         private float rotation;
         
-        //private Camera camera;
 
         /// <summary>
         /// initializes the content for the scene
@@ -60,19 +58,14 @@ namespace Endless.Screens
 
             powerBall = new PowerBallSprite() { Position = new Vector2(330, 200) };
 
-            stars = new StarSprite[]
-            {
-                new StarSprite(){Position = new Vector2(50,50)},
-                new StarSprite(){Position = new Vector2(600,200) },
-            };
-
+            
             bugs = new Bug1Sprite[]
             {
                 
-                //new Bug1Sprite(new Vector2(630,352)){CanMove = true},
+                new Bug1Sprite(new Vector2(630,352)){CanMove = true},
                     //new Bug1Sprite(){Position = new Vector2(550,352), CanMove = false},
                     //new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
-                //new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = true},
+                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = true},
             };
 
             healths = new HelthSprite[]
@@ -84,6 +77,14 @@ namespace Endless.Screens
             healthLeft = healths.Length;
             //camera = new(Vector2.Zero);
 
+        }
+
+        private void CalculateTranslation()
+        {
+            var dx = (SceneManager.Instance.Dimensions.X / 2) - Traveler.position.X;
+            var dy = (SceneManager.Instance.Dimensions.Y / 2) - Traveler.position.Y;
+            _translation = Matrix.CreateTranslation(dx, dy, 0f);
+            SceneManager.Instance.CurrentTranslation = _translation;
         }
 
         /// <summary>
@@ -99,7 +100,7 @@ namespace Endless.Screens
             arm.LoadContent(Content);
             foreach (var portal in portals) portal.LoadContent(Content);
             foreach (var bug in bugs) bug.LoadContent(Content);
-            foreach (var star in stars) star.LoadContent(Content);
+            
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             
@@ -129,7 +130,7 @@ namespace Endless.Screens
 
             Traveler.color = Color.White;
 
-
+            CalculateTranslation();
 
             Traveler.Update(gameTime);
             
@@ -139,7 +140,7 @@ namespace Endless.Screens
 
             foreach (var bug in bugs)
             {
-                bug.Update(gameTime);
+                bug.Update(gameTime, Traveler.position);
 
                 if (damageCooldown <= 0 && bug.Bounds.CollidesWith(Traveler.Bounds))
                 {
@@ -169,7 +170,8 @@ namespace Endless.Screens
         public override void Draw(GameTime gameTime)
         {
             var sb = SceneManager.Instance.SpriteBatch;
-            sb.Begin(samplerState: SamplerState.PointClamp);
+
+            sb.Begin(transformMatrix: _translation, samplerState: SamplerState.PointClamp);
 
             sb.Draw(backGroundImage,new Rectangle(0,0, sb.GraphicsDevice.Viewport.Width, sb.GraphicsDevice.Viewport.Height),Color.White);
 
@@ -177,21 +179,20 @@ namespace Endless.Screens
 
             foreach (var portal in portals)
                 portal.Draw(gameTime, sb);
-            foreach (var star in stars)
-                star.Draw(gameTime, sb);
+            
             foreach (var helth in healths) 
                 helth.Draw(gameTime, sb);
             foreach (var bug in bugs)
             {
                 bug.Draw(gameTime, sb);
-                //var rec = new Rectangle((int)(bug.Bounds.Center.X - bug.Bounds.Radius), (int)(bug.Bounds.Center.Y - bug.Bounds.Radius), (int)bug.Bounds.Radius * 2, (int)bug.Bounds.Radius * 2);
+                var rec = new Rectangle((int)(bug.Bounds.Center.X - bug.Bounds.Radius), (int)(bug.Bounds.Center.Y - bug.Bounds.Radius), (int)bug.Bounds.Radius * 2, (int)bug.Bounds.Radius * 2);
 
-                //sb.Draw(ball, rec, Color.White);
+                sb.Draw(ball, rec, Color.White);
             }
 
-            //var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
+            var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
 
-            //sb.Draw(ball, rec2, Color.White);
+            sb.Draw(ball, rec2, Color.White);
 
             arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);

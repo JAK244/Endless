@@ -97,7 +97,7 @@ namespace Endless.Screens
             
             
 
-            foreach (var bug in bugs) bug.Update(gameTime);
+            foreach (var bug in bugs) bug.Update(gameTime, Vector2.Zero);
             
 
         }

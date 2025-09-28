@@ -93,49 +93,28 @@ namespace Endless.Sprites
         /// updates the sprite
         /// </summary>
         /// <param name="gameTime">the game time</param>
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Vector2 playerPosition)
         {
-
             if (!CanMove) return;
 
-            directionTimer += gameTime.ElapsedGameTime.TotalSeconds;
+      
+            Vector2 bugCenter = Position + new Vector2(60,100);
 
-            if(BugFlipped == true)
-            {
-                switch (direction)
-                {
-                    case Direction.Left:
-                        direction = Direction.Right; 
-                        break;
-                    //case Direction.Right:
-                        //direction = Direction.Left;
-                        //break;
-                }
-                directionTimer -= 2.0;
-            }
+          
+            Vector2 toPlayer = playerPosition - bugCenter;
 
-            switch(direction)
-            {
-                case Direction.Left:
-                    Position += new Vector2(-1, 0) * 20 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    break;
-                case Direction.Right:
-                    Position += new Vector2(1, 0) * 20 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (toPlayer != Vector2.Zero)
+                toPlayer.Normalize();
 
-                    //stops it from going out of frame
-                    if (Position.Y >= 353)
-                    {
-                        Position = new Vector2(Position.X, 353);
-                        direction = Direction.Left; 
-                    }
-                    break;
-            }
+            float speed = 60f;
+            Position += toPlayer * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            BugFlipped = toPlayer.X > 0;
 
-            bounds.Center = Position + new Vector2(64, 100);
-
-
+           
+            bounds.Center = bugCenter;
         }
+
 
         /// <summary>
         /// Draws the sprite

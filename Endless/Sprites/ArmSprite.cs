@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Endless.Collisions;
+using Endless.Managers;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-using Endless.Collisions;
 
 
 namespace Endless.Sprites
@@ -20,6 +21,14 @@ namespace Endless.Sprites
         private KeyboardState keyboardState;
 
         private GamePadState gamePadState;
+
+        private MouseState mouseState;
+        private MouseState currentMouse;
+        private MouseState previousMouse;
+
+        private Texture2D bulletTexture;
+
+        public List<BulletSprite> Bullets = new List<BulletSprite>();
 
         private Texture2D texture;
 
@@ -40,6 +49,7 @@ namespace Endless.Sprites
         {
             rotation = 0.0f;
             texture = content.Load<Texture2D>("TravelerArm");
+            bulletTexture = content.Load<Texture2D>("Bullet");
         }
 
         /// <summary>
@@ -50,6 +60,8 @@ namespace Endless.Sprites
         {
             keyboardState = Keyboard.GetState();
             gamePadState = GamePad.GetState(0);
+            previousMouse = currentMouse;
+            currentMouse = Mouse.GetState();
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
@@ -73,24 +85,23 @@ namespace Endless.Sprites
                
             }
 
-            position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
+            position += gamePadState.ThumbSticks.Left * new Vector2(3, -3);
+           
 
-            //looks at mouse by default
-            Vector2 targetDirection = Mouse.GetState().Position.ToVector2() - position;
+            var mouseState = Mouse.GetState();
+            Vector2 mouseWorld = Vector2.Transform(mouseState.Position.ToVector2(),Matrix.Invert(SceneManager.Instance.CurrentTranslation));
 
-            // If right stick is used, override with its direction
+            // Look toward mouse
+            Vector2 targetDirection = mouseWorld - position;
+
+            // Right stick override
             Vector2 rightStick = gamePadState.ThumbSticks.Right;
-            rightStick.Y *= -1; 
-
-            if (rightStick.Length() > 0.2f) 
-            {
+            rightStick.Y *= -1;
+            if (rightStick.Length() > 0.2f)
                 targetDirection = rightStick;
-            }
 
-            
             rotation = (float)Math.Atan2(targetDirection.Y, targetDirection.X);
 
-         
             if (targetDirection.X < 0)
             {
                 flipped = true;
@@ -99,6 +110,29 @@ namespace Endless.Sprites
             else
             {
                 flipped = false;
+            }
+
+            if (currentMouse.LeftButton == ButtonState.Pressed && previousMouse.LeftButton == ButtonState.Released)
+            {
+                // Get mouse position
+                Vector2 mousePos = new Vector2(currentMouse.X, currentMouse.Y);
+
+                // Calculate direction vector from Traveler to mouse
+                Vector2 direction = mousePos - position;
+                if (direction != Vector2.Zero)
+                    direction.Normalize();
+
+                // Create bullet at Traveler’s center
+                var bullet = new BulletSprite(position, direction);
+                bullet.texture = bulletTexture;
+                Bullets.Add(bullet);
+            }
+
+            foreach (var bullet in Bullets.ToList())
+            {
+                bullet.Update(gameTime);
+                if (bullet.IsRemoved)
+                    Bullets.Remove(bullet);
             }
         }
 
@@ -111,6 +145,9 @@ namespace Endless.Sprites
         {
             SpriteEffects spriteEffect = flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             spriteBatch.Draw(texture, position, null, Color.White, rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect, 0);
+
+            foreach (var bullet in Bullets)
+                bullet.Draw(gameTime, spriteBatch);
 
         }
     }

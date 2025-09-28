@@ -22,7 +22,11 @@ namespace Endless.Sprites
 
         private GamePadState gamePadState;
 
+        
+
         private Texture2D texture;
+
+        
 
         /// <summary>
         /// the sprites position
@@ -54,6 +58,7 @@ namespace Endless.Sprites
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("Traveler");
+            
         }
 
         /// <summary>
@@ -64,6 +69,8 @@ namespace Endless.Sprites
         {
             keyboardState = Keyboard.GetState();
             gamePadState = GamePad.GetState(0);
+            
+
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
@@ -92,16 +99,17 @@ namespace Endless.Sprites
             
            
 
-            position += gamePadState.ThumbSticks.Left * new Vector2(3, 0);
+            position += gamePadState.ThumbSticks.Left * new Vector2(3, -3);
             if (gamePadState.ThumbSticks.Left.X < 0) flipped = true;
             if (gamePadState.ThumbSticks.Left.X > 0) flipped = false;
 
             bounds.X = position.X - 16;
             bounds.Y = position.Y - 16;
 
-            
 
-            
+           
+
+
         }
 
         /// <summary>
@@ -114,7 +122,9 @@ namespace Endless.Sprites
           
             SpriteEffects spriteEffect = flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             spriteBatch.Draw(texture, position,null,color,0, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect,0);
-         
+
+            
+
         }
     }
 }

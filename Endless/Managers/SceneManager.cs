@@ -26,6 +26,10 @@ namespace Endless.Managers
         /// </summary>
         public SpriteBatch SpriteBatch { get; set; }
 
+
+        public Matrix CurrentTranslation { get; set; } = Matrix.Identity;
+
+
         /// <summary>
         /// the static sceneManager instance
         /// </summary>
