@@ -127,11 +127,11 @@ namespace Endless.Sprites
 
             animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (animationTimer > 0.3)
+            if (animationTimer > 0.2)
             {
                 animationFrame++;
                 if (animationFrame > 3) animationFrame = 0;
-                animationTimer -= 0.3;
+                animationTimer -= 0.2;
             }
 
             var source = new Rectangle(animationFrame * 64, 0, 64, 64);

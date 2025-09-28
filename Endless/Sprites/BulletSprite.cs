@@ -1,4 +1,5 @@
 ﻿using Endless.Collisions;
+using Endless.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -34,11 +35,27 @@ namespace Endless.Sprites
 
         private short animationFrame;
 
+        private BoundingCircle bounds;
+
+        
+
+        /// <summary>
+        /// the bugs bounds
+        /// </summary>
+        public BoundingCircle Bounds
+        {
+            get
+            {
+                return bounds;
+            }
+        }
+
         public BulletSprite( Vector2 position, Vector2 direction)
         {
             Position = position;
             Direction = direction;
             Direction.Normalize(); // make sure it's unit length
+            bounds = new BoundingCircle(position - new Vector2(-64, -110), -16);
         }
 
         /// <summary>
@@ -53,6 +70,7 @@ namespace Endless.Sprites
 
         public void Update(GameTime gameTime)
         {
+            Vector2 bulletCenter = Position + new Vector2(-90, 0);
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (timer >= lifeSpan)
@@ -61,6 +79,10 @@ namespace Endless.Sprites
             }
 
             Position += Direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            
+            bounds.Center = bulletCenter;
+
+            
         }
 
         public void Draw(GameTime gameTime,SpriteBatch spriteBatch)

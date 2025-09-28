@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +33,8 @@ namespace Endless.Sprites
 
         private Texture2D texture;
 
+        private Texture2D ball;
+
         /// <summary>
         /// the arms position
         /// </summary>
@@ -40,6 +43,8 @@ namespace Endless.Sprites
         private float rotation;
 
         private bool flipped;
+
+
 
         /// <summary>
         /// loads the arm texture using content manager
@@ -50,6 +55,7 @@ namespace Endless.Sprites
             rotation = 0.0f;
             texture = content.Load<Texture2D>("TravelerArm");
             bulletTexture = content.Load<Texture2D>("Bullet");
+            ball = content.Load<Texture2D>("Ball");
         }
 
         /// <summary>
@@ -114,18 +120,27 @@ namespace Endless.Sprites
 
             if (currentMouse.LeftButton == ButtonState.Pressed && previousMouse.LeftButton == ButtonState.Released)
             {
-                // Get mouse position
-                Vector2 mousePos = new Vector2(currentMouse.X, currentMouse.Y);
-
-                // Calculate direction vector from Traveler to mouse
-                Vector2 direction = mousePos - position;
+                Vector2 direction = mouseWorld - position;
                 if (direction != Vector2.Zero)
                     direction.Normalize();
 
-                // Create bullet at Traveler’s center
-                var bullet = new BulletSprite(position, direction);
+                // How far forward the barrel tip is from the arm center
+                float barrelLength = (texture.Width * 0.5f * 2f) + 4f;
+                // ^ texture.Width * 0.5f = half width of arm
+                //   * 2f = because you’re scaling the sprite
+                //   + 4f = extra so it spawns just outside the barrel
+
+                // Rotate offset to match arm’s rotation
+                Vector2 barrelOffset = new Vector2((float)Math.Cos(rotation),(float)Math.Sin(rotation)) * barrelLength;
+
+                // Final bullet spawn point = arm position + rotated offset
+                Vector2 bulletSpawnPos = (position + barrelOffset) + new Vector2(87, 14);
+
+                // Spawn bullet
+                var bullet = new BulletSprite(bulletSpawnPos, direction);
                 bullet.texture = bulletTexture;
                 Bullets.Add(bullet);
+
             }
 
             foreach (var bullet in Bullets.ToList())
@@ -147,7 +162,12 @@ namespace Endless.Sprites
             spriteBatch.Draw(texture, position, null, Color.White, rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect, 0);
 
             foreach (var bullet in Bullets)
+            {
+                var rec = new Rectangle((int)(bullet.Bounds.Center.X - bullet.Bounds.Radius), (int)(bullet.Bounds.Center.Y - bullet.Bounds.Radius), (int)bullet.Bounds.Radius * 2, (int)bullet.Bounds.Radius * 2);
+                spriteBatch.Draw(ball, rec, Color.White);
+
                 bullet.Draw(gameTime, spriteBatch);
+            }
 
         }
     }
