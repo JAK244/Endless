@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Endless.Screens
 {
@@ -23,10 +24,13 @@ namespace Endless.Screens
         private HelthSprite[] healths;
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
-        private Bug1Sprite[] bugs;
+        private List<Bug1Sprite> bugs;
         private ArmSprite arm;
         private int healthLeft;
         public Matrix _translation;
+        private List<BulletSprite> bullets = new List<BulletSprite>();
+        
+
 
         private double damageCooldown = 0;
 
@@ -50,6 +54,8 @@ namespace Endless.Screens
             
             arm = new ArmSprite() { position = new Vector2(500, 420) };
 
+            
+
             portals = new PortalSprite[]
             {
                 //new PortalSprite(){Position = new Vector2(700,350)},
@@ -58,14 +64,11 @@ namespace Endless.Screens
 
             powerBall = new PowerBallSprite() { Position = new Vector2(330, 200) };
 
-            
-            bugs = new Bug1Sprite[]
+
+            bugs = new List<Bug1Sprite>
             {
-                
-                new Bug1Sprite(new Vector2(630,352)){CanMove = true},
-                    //new Bug1Sprite(){Position = new Vector2(550,352), CanMove = false},
-                    //new Bug1Sprite(){Position = new Vector2(30,352), BugFlipped = true , CanMove = false},
-                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = true},
+                new Bug1Sprite(new Vector2(630,352)) { IsAlive = true },
+                new Bug1Sprite(new Vector2(150,352)) { BugFlipped = true, IsAlive = true }
             };
 
             healths = new HelthSprite[]
@@ -156,9 +159,23 @@ namespace Endless.Screens
                         }
                     }
                 }
+
+              
             }
 
-            //camera.Follow(Traveler.Bounds, new Vector2(800, 400));
+            foreach (var bullet in arm.Bullets.ToList())
+            {
+                foreach (var bug in bugs.ToList())
+                {
+                    if (bullet.Bounds.CollidesWith(bug.Bounds))
+                    {
+                        bullet.IsRemoved = true;
+                        bug.IsAlive = false; // mark as dead
+                    }
+                }
+            }
+
+            
 
         }
 
@@ -175,6 +192,7 @@ namespace Endless.Screens
 
             sb.Draw(backGroundImage,new Rectangle(0,0, sb.GraphicsDevice.Viewport.Width, sb.GraphicsDevice.Viewport.Height),Color.White);
 
+
             powerBall.Draw(gameTime, sb);
 
             foreach (var portal in portals)
@@ -185,14 +203,15 @@ namespace Endless.Screens
             foreach (var bug in bugs)
             {
                 bug.Draw(gameTime, sb);
-                var rec = new Rectangle((int)(bug.Bounds.Center.X - bug.Bounds.Radius), (int)(bug.Bounds.Center.Y - bug.Bounds.Radius), (int)bug.Bounds.Radius * 2, (int)bug.Bounds.Radius * 2);
-
-                sb.Draw(ball, rec, Color.White);
+                //var rec = new Rectangle((int)(bug.Bounds.Center.X - bug.Bounds.Radius), (int)(bug.Bounds.Center.Y - bug.Bounds.Radius), (int)bug.Bounds.Radius * 2, (int)bug.Bounds.Radius * 2);
+                //sb.Draw(ball, rec, Color.White);
             }
 
-            var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
+            foreach (var bullet in bullets)
+                bullet.Draw(gameTime, sb);
 
-            sb.Draw(ball, rec2, Color.White);
+            //var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
+            //sb.Draw(ball, rec2, Color.White);
 
             arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);

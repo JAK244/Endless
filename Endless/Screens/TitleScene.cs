@@ -40,10 +40,10 @@ namespace Endless.Screens
 
             bugs = new Bug1Sprite[]
             {
-                new Bug1Sprite(new Vector2(630,352)){CanMove = false},
-                new Bug1Sprite(new Vector2(550,352)){CanMove = false},
-                new Bug1Sprite(new Vector2(30,352)){BugFlipped = true , CanMove = false},
-                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , CanMove = false},
+                new Bug1Sprite(new Vector2(630,352)){IsAlive = false},
+                new Bug1Sprite(new Vector2(550,352)){IsAlive = false},
+                new Bug1Sprite(new Vector2(30,352)){BugFlipped = true , IsAlive = false},
+                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , IsAlive = false},
             };
             powerBall = new PowerBallSprite() { Position = new Vector2(320, 384) };
 

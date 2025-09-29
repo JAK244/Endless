@@ -80,6 +80,12 @@
 /processorParam:TextureFormat=Color
 /build:ForestBG.png
 
+#begin GunShotSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:GunShotSound.wav
+
 #begin HealthHeart.png
 /importer:TextureImporter
 /processor:TextureProcessor

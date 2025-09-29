@@ -52,9 +52,10 @@ namespace Endless.Sprites
         private short animationFrame;
 
         /// <summary>
-        /// checks if bug can move
+        /// checks if bug is Alive
         /// </summary>
-        public bool CanMove = true;
+        public bool IsAlive = true;
+        public Color color { get; set; } = Color.White;
 
         private BoundingCircle bounds;
 
@@ -65,7 +66,7 @@ namespace Endless.Sprites
         {
             get
             {
-                return bounds;
+                    return bounds;
             }
         }
 
@@ -95,7 +96,11 @@ namespace Endless.Sprites
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime, Vector2 playerPosition)
         {
-            if (!CanMove) return;
+            if (!IsAlive)
+            {
+                bounds.Center = new Vector2(10000, 1000000); // removes the bounds in a goofy way
+                return;
+            }
 
       
             Vector2 bugCenter = Position + new Vector2(60,100);
@@ -127,11 +132,26 @@ namespace Endless.Sprites
 
             animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (animationTimer > 0.2)
+            if (IsAlive)
             {
-                animationFrame++;
-                if (animationFrame > 3) animationFrame = 0;
-                animationTimer -= 0.2;
+                if (animationTimer > 0.2)
+                {
+                    animationFrame++;
+                    if (animationFrame > 3) animationFrame = 0;
+                    animationTimer -= 0.2;
+                }
+            }
+            else
+            {
+                if (animationFrame < 7) 
+                {
+                    if (animationTimer > 0.2)
+                    {
+                        animationFrame++;
+                        animationTimer = 0; 
+                    }
+                }
+                
             }
 
             var source = new Rectangle(animationFrame * 64, 0, 64, 64);

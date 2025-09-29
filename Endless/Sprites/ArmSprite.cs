@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Audio;
 
 
 namespace Endless.Sprites
@@ -35,6 +36,8 @@ namespace Endless.Sprites
 
         private Texture2D ball;
 
+        private SoundEffect gunShotSound;
+
         /// <summary>
         /// the arms position
         /// </summary>
@@ -56,6 +59,7 @@ namespace Endless.Sprites
             texture = content.Load<Texture2D>("TravelerArm");
             bulletTexture = content.Load<Texture2D>("Bullet");
             ball = content.Load<Texture2D>("Ball");
+            gunShotSound = content.Load<SoundEffect>("GunShotSound");
         }
 
         /// <summary>
@@ -108,15 +112,7 @@ namespace Endless.Sprites
 
             rotation = (float)Math.Atan2(targetDirection.Y, targetDirection.X);
 
-            if (targetDirection.X < 0)
-            {
-                flipped = true;
-                rotation += MathF.PI;
-            }
-            else
-            {
-                flipped = false;
-            }
+            flipped = targetDirection.X < 0;
 
             if (currentMouse.LeftButton == ButtonState.Pressed && previousMouse.LeftButton == ButtonState.Released)
             {
@@ -124,22 +120,15 @@ namespace Endless.Sprites
                 if (direction != Vector2.Zero)
                     direction.Normalize();
 
-                // How far forward the barrel tip is from the arm center
                 float barrelLength = (texture.Width * 0.5f * 2f) + 4f;
-                // ^ texture.Width * 0.5f = half width of arm
-                //   * 2f = because you’re scaling the sprite
-                //   + 4f = extra so it spawns just outside the barrel
-
-                // Rotate offset to match arm’s rotation
+                
                 Vector2 barrelOffset = new Vector2((float)Math.Cos(rotation),(float)Math.Sin(rotation)) * barrelLength;
-
-                // Final bullet spawn point = arm position + rotated offset
                 Vector2 bulletSpawnPos = (position + barrelOffset) + new Vector2(87, 14);
 
-                // Spawn bullet
                 var bullet = new BulletSprite(bulletSpawnPos, direction);
                 bullet.texture = bulletTexture;
                 Bullets.Add(bullet);
+                gunShotSound.Play();
 
             }
 
@@ -158,13 +147,13 @@ namespace Endless.Sprites
         /// <param name="spriteBatch">the spriteBatch</param>
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            SpriteEffects spriteEffect = flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            SpriteEffects spriteEffect = flipped ? SpriteEffects.FlipVertically : SpriteEffects.None;
             spriteBatch.Draw(texture, position, null, Color.White, rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect, 0);
 
             foreach (var bullet in Bullets)
             {
-                var rec = new Rectangle((int)(bullet.Bounds.Center.X - bullet.Bounds.Radius), (int)(bullet.Bounds.Center.Y - bullet.Bounds.Radius), (int)bullet.Bounds.Radius * 2, (int)bullet.Bounds.Radius * 2);
-                spriteBatch.Draw(ball, rec, Color.White);
+                //var rec = new Rectangle((int)(bullet.Bounds.Center.X - bullet.Bounds.Radius), (int)(bullet.Bounds.Center.Y - bullet.Bounds.Radius), (int)bullet.Bounds.Radius * 2, (int)bullet.Bounds.Radius * 2);
+                //spriteBatch.Draw(ball, rec, Color.White);
 
                 bullet.Draw(gameTime, spriteBatch);
             }
