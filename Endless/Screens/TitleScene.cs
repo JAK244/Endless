@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace Endless.Screens
 {
@@ -24,6 +25,7 @@ namespace Endless.Screens
         private SpriteFont Doto;
         private PowerBallSprite powerBall;
         private StarSprite[] stars;
+        private Song backGroundMusic;
 
 
         /// <summary>
@@ -67,7 +69,10 @@ namespace Endless.Screens
             foreach (var bug in bugs) bug.LoadContent(Content);
             foreach (var star in stars) star.LoadContent(Content);
             powerBall.LoadContent(Content);
-            
+            backGroundMusic = Content.Load<Song>("Synthwave Loop");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(backGroundMusic);
+
             base.LoadContent(Content);
         }
 
@@ -90,6 +95,7 @@ namespace Endless.Screens
             if (Keyboard.GetState().IsKeyDown(Keys.Enter) || GamePad.GetState(0).IsButtonDown(Buttons.Start)) 
             {
                 SceneManager.Instance.AddScene(new MainGameScene());
+                MediaPlayer.Stop();
             }
             
 

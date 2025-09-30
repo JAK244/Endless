@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Endless.Screens
 {
@@ -29,7 +30,9 @@ namespace Endless.Screens
         private int healthLeft;
         public Matrix _translation;
         private List<BulletSprite> bullets = new List<BulletSprite>();
-        
+        private Song backGroundMusic_nonC;
+        private Song backGroundMusic_InC;
+
 
 
         private double damageCooldown = 0;
@@ -109,6 +112,12 @@ namespace Endless.Screens
             
             rotation = 0.0f;
             Doto = Content.Load<SpriteFont>("Doto-Black");
+
+            backGroundMusic_nonC = Content.Load<Song>("if Anyone Dies (instrumental)");
+            backGroundMusic_InC = content.Load<Song>("Arena Theme");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(backGroundMusic_nonC);
+            
         }
 
         /// <summary>

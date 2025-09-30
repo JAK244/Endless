@@ -13,6 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Arena Theme.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Arena Theme.mp3
+
 #begin ArrowSprite.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -98,6 +104,12 @@
 /processorParam:TextureFormat=Color
 /build:HealthHeart.png
 
+#begin If Anyone Dies (Instrumental).mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:If Anyone Dies (Instrumental).mp3
+
 #begin Power_ball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -121,6 +133,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Star.png
+
+#begin Synthwave Loop.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Synthwave Loop.mp3
 
 #begin Traveler.png
 /importer:TextureImporter
@@ -157,4 +175,10 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Void-portal.png
+
+#begin WeirdBugSound.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:WeirdBugSound.wav
 
