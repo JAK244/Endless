@@ -1,18 +1,62 @@
-﻿using System;
+﻿using Endless.Sprites;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using SharpDX.Direct3D9;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Endless
 {
     public class Map
     {
-        private readonly Point mapTileSize = new Point(4, 3);
+        private Texture2D tileSheet;
+        public int TileWidth = 16;
+        public int TileHeight = 16;
+        private const int TileCount = 5;
 
+        private int[,] tiles;
 
+        public int mapWidth = 100;  // in tiles
+        public int mapHeight = 100; // in tiles
+
+        public int Scale = 5; // how much you’re scaling when drawing
+
+        public int PixelWidth => mapWidth * TileWidth * Scale;
+        public int PixelHeight => mapHeight * TileHeight * Scale;
+
+        public void LoadContent(ContentManager content)
+        {
+            tileSheet = content.Load<Texture2D>("RockTileMap-Sheet");
+
+            tiles = new int[mapHeight, mapWidth];
+            Random rand = new Random();
+
+            
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    tiles[y, x] = rand.Next(TileCount);
+                }
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            for (int y = 0; y < mapHeight; y++)
+            {
+                for (int x = 0; x < mapWidth; x++)
+                {
+                    int tileIndex = tiles[y, x];
+                    Rectangle source = new Rectangle(0, tileIndex * TileHeight, TileWidth, TileHeight);
+
+                    spriteBatch.Draw(tileSheet, new Vector2(x * TileWidth * 2, y * TileHeight * 2), source, Color.White, 0f, Vector2.Zero, 5f, SpriteEffects.None, 0f);
+                }
+            }
+        }
     }
 }

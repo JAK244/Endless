@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Endless.Collisions;
+using SharpDX.MediaFoundation;
 
 
 
@@ -22,11 +23,9 @@ namespace Endless.Sprites
 
         private GamePadState gamePadState;
 
-        
-
         private Texture2D texture;
 
-        
+        private Vector2 minPos, maxPos;
 
         /// <summary>
         /// the sprites position
@@ -61,56 +60,59 @@ namespace Endless.Sprites
             
         }
 
-        /// <summary>
-        /// Updates the sprites postion based on users input and handles bounds movement
-        /// </summary>
-        /// <param name="gameTime">the game time</param>
+
+        public void SetBounds(Point mapSize, Point tileSize)
+        {
+            // min is top-left of map
+            minPos = new Vector2(0, 0);
+
+            // max is bottom-right of map (scaled by tiles)
+            maxPos = new Vector2(mapSize.X * tileSize.X * 2,  // times 2 because you scaled tiles in Map
+                                 mapSize.Y * tileSize.Y * 2);
+        }
+
         public void Update(GameTime gameTime)
         {
             keyboardState = Keyboard.GetState();
             gamePadState = GamePad.GetState(0);
-            
 
+            Vector2 move = Vector2.Zero;
 
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                position += new Vector2(-3, 0);
+                move.X -= 3;
                 flipped = true;
             }
-            
+
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                position += new Vector2(3, 0);
+                move.X += 3;
                 flipped = false;
             }
 
-            
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
-            {
-                position += new Vector2(0, -3);
-                flipped = true;
-            }
+                move.Y -= 3;
 
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
-            {
-                position += new Vector2(0, 3);
-                flipped = false;
-            }
-            
-           
+                move.Y += 3;
 
-            position += gamePadState.ThumbSticks.Left * new Vector2(3, -3);
+            move += gamePadState.ThumbSticks.Left * new Vector2(3, -3);
             if (gamePadState.ThumbSticks.Left.X < 0) flipped = true;
             if (gamePadState.ThumbSticks.Left.X > 0) flipped = false;
 
+            // update position
+            position += move;
+
+            // clamp inside map
+            position.X = MathHelper.Clamp(position.X, minPos.X + 16, maxPos.X - 16);
+            position.Y = MathHelper.Clamp(position.Y, minPos.Y + 16, maxPos.Y - 16);
+
+            // update bounds
             bounds.X = position.X - 16;
             bounds.Y = position.Y - 16;
-
-
-           
-
-
         }
+
+
 
         /// <summary>
         /// Draws the sprite

@@ -38,7 +38,8 @@ namespace Endless.Screens
         private double damageCooldown = 0;
 
         private Texture2D ball;
-        private Texture2D backGroundImage;
+        //private Texture2D backGroundImage;
+        private Map map;
 
 
         private float rotation;
@@ -57,6 +58,7 @@ namespace Endless.Screens
             
             arm = new ArmSprite() { position = new Vector2(500, 420) };
 
+            map = new Map();
             
 
             portals = new PortalSprite[]
@@ -87,8 +89,16 @@ namespace Endless.Screens
 
         private void CalculateTranslation()
         {
-            var dx = (SceneManager.Instance.Dimensions.X / 2) - Traveler.position.X;
-            var dy = (SceneManager.Instance.Dimensions.Y / 2) - Traveler.position.Y;
+            var halfScreenW = SceneManager.Instance.Dimensions.X / 2;
+            var halfScreenH = SceneManager.Instance.Dimensions.Y / 2;
+
+            var dx = halfScreenW - Traveler.position.X;
+            var dy = halfScreenH - Traveler.position.Y;
+
+            // clamp against pixel map size
+            dx = MathHelper.Clamp(dx, -(map.PixelWidth - SceneManager.Instance.Dimensions.X), 0);
+            dy = MathHelper.Clamp(dy, -(map.PixelHeight - SceneManager.Instance.Dimensions.Y), 0);
+
             _translation = Matrix.CreateTranslation(dx, dy, 0f);
             SceneManager.Instance.CurrentTranslation = _translation;
         }
@@ -100,10 +110,13 @@ namespace Endless.Screens
         public override void LoadContent(ContentManager Content)
         {
             base.LoadContent(Content);
-            backGroundImage = Content.Load<Texture2D>("ForestBG");
+            //backGroundImage = Content.Load<Texture2D>("ForestBG");
             ball = Content.Load<Texture2D>("Ball");
             Traveler.LoadContent(Content);
             arm.LoadContent(Content);
+            map.LoadContent(Content);
+            Traveler.SetBounds(new Point(50, 30), new Point(16, 16));
+            arm.SetBounds(new Point(50, 30), new Point(16, 16));
             foreach (var portal in portals) portal.LoadContent(Content);
             foreach (var bug in bugs) bug.LoadContent(Content);
             
@@ -117,6 +130,7 @@ namespace Endless.Screens
             backGroundMusic_InC = content.Load<Song>("Arena Theme");
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(backGroundMusic_nonC);
+
             
         }
 
@@ -199,7 +213,8 @@ namespace Endless.Screens
 
             sb.Begin(transformMatrix: _translation, samplerState: SamplerState.PointClamp);
 
-            sb.Draw(backGroundImage,new Rectangle(0,0, sb.GraphicsDevice.Viewport.Width, sb.GraphicsDevice.Viewport.Height),Color.White);
+            map.Draw(sb);
+            //sb.Draw(backGroundImage,new Rectangle(0,0, sb.GraphicsDevice.Viewport.Width, sb.GraphicsDevice.Viewport.Height),Color.White);
 
 
             powerBall.Draw(gameTime, sb);
@@ -218,6 +233,7 @@ namespace Endless.Screens
 
             foreach (var bullet in bullets)
                 bullet.Draw(gameTime, sb);
+
 
             //var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
             //sb.Draw(ball, rec2, Color.White);

@@ -28,6 +28,8 @@ namespace Endless.Sprites
         private MouseState currentMouse;
         private MouseState previousMouse;
 
+        private float previousRightTrigger;
+
         private Texture2D bulletTexture;
 
         public List<BulletSprite> Bullets = new List<BulletSprite>();
@@ -47,6 +49,8 @@ namespace Endless.Sprites
 
         private bool flipped;
 
+        private Vector2 minPos, maxPos;
+
 
 
         /// <summary>
@@ -60,6 +64,16 @@ namespace Endless.Sprites
             bulletTexture = content.Load<Texture2D>("Bullet");
             ball = content.Load<Texture2D>("Ball");
             gunShotSound = content.Load<SoundEffect>("GunShotSound");
+        }
+
+        public void SetBounds(Point mapSize, Point tileSize)
+        {
+            // min is the top-left of map
+            minPos = new Vector2(0, 0);
+
+            // max is bottom-right of map 
+            maxPos = new Vector2(mapSize.X * tileSize.X * 5, 
+                                 mapSize.Y * tileSize.Y * 5);
         }
 
         /// <summary>
@@ -110,6 +124,26 @@ namespace Endless.Sprites
             if (rightStick.Length() > 0.2f)
                 targetDirection = rightStick;
 
+            if (gamePadState.Triggers.Right > 0.5f && previousRightTrigger <= 0.5f)
+            {
+                Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
+                if (direction != Vector2.Zero)
+                    direction.Normalize();
+
+                float barrelLength = (texture.Width * 0.5f * 2f) + 4f;
+
+                Vector2 barrelOffset = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation)) * barrelLength;
+                Vector2 bulletSpawnPos = (position + barrelOffset) + new Vector2(87, 14);
+
+                var bullet = new BulletSprite(bulletSpawnPos, direction);
+                bullet.texture = bulletTexture;
+                Bullets.Add(bullet);
+                gunShotSound.Play();
+            }
+
+     
+            previousRightTrigger = gamePadState.Triggers.Right;
+
             rotation = (float)Math.Atan2(targetDirection.Y, targetDirection.X);
 
             flipped = targetDirection.X < 0;
@@ -138,6 +172,12 @@ namespace Endless.Sprites
                 if (bullet.IsRemoved)
                     Bullets.Remove(bullet);
             }
+
+            // clamp inside map
+            position.X = MathHelper.Clamp(position.X, minPos.X + 16, maxPos.X - 16);
+            position.Y = MathHelper.Clamp(position.Y, minPos.Y + 16, maxPos.Y - 16);
+
+            
         }
 
         /// <summary>
