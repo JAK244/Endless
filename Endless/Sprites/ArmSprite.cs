@@ -16,7 +16,7 @@ using Microsoft.Xna.Framework.Audio;
 namespace Endless.Sprites
 {
     /// <summary>
-    /// the arm sprite class
+    /// the travelrs arm sprite class
     /// </summary>
     public class ArmSprite
     {
@@ -32,6 +32,9 @@ namespace Endless.Sprites
 
         private Texture2D bulletTexture;
 
+        /// <summary>
+        /// the list of bullets
+        /// </summary>
         public List<BulletSprite> Bullets = new List<BulletSprite>();
 
         private Texture2D texture;
@@ -66,14 +69,18 @@ namespace Endless.Sprites
             gunShotSound = content.Load<SoundEffect>("GunShotSound");
         }
 
+        /// <summary>
+        /// the bounds of how far the arm can go 
+        /// </summary>
+        /// <param name="mapSize">the mapSize</param>
+        /// <param name="tileSize">the TitleSize</param>
         public void SetBounds(Point mapSize, Point tileSize)
         {
-            // min is the top-left of map
+            
             minPos = new Vector2(0, 0);
 
-            // max is bottom-right of map 
-            maxPos = new Vector2(mapSize.X * tileSize.X * 5, 
-                                 mapSize.Y * tileSize.Y * 5);
+           
+            maxPos = new Vector2(mapSize.X * tileSize.X * 5,mapSize.Y * tileSize.Y * 5);
         }
 
         /// <summary>

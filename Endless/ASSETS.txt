@@ -12,6 +12,12 @@ Content/HealthHeart.png - Created by Jack Jara using Asprite, released under pub
 
 Content/TravelerArm.png - Created by Jack Jara using Asprite, released under public domain
 
-Content/ForestBG.png - Created by ansimuz, realeased on OpenGamerArt.org (https://opengameart.org/content/forest-background) under public domain 
+Content/RockTileMap-Sheet.png - Created by Jack Jara using Asprite, released under public domain
+
+Content/GunShotSound.Wav - Created by Jack Jara using Bfxr, realeased under public domain
+
+Content/Synthwave loop.mp3 - Created by Steven O'Brien, released on steven-obrien.net (https://www.steven-obrien.net/#popcorn-~-loading-theme) free use with proper credit given 
+
+Content/If Anyone Dies(instrumental).mp3 - Created by Steven O'Brien, released on steven-obrien.net (https://www.steven-obrien.net/#popcorn-~-loading-theme) free use with proper credit given 
 
 Content/Doto/Doto-Black.tff - Doto font created by Óliver Lalan, released on google fonts (https://fonts.google.com/specimen/Doto) under the Open Font License

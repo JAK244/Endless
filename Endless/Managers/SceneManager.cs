@@ -13,10 +13,7 @@ namespace Endless.Managers
     public class SceneManager
     {
         private static SceneManager instance;
-
-        // This will store the reference from Game1
         private ContentManager content;
-
         private Stack<GameScenes> sceneStack = new Stack<GameScenes>();
         private GameScenes currentScreen;
         private Vector2 dimensions;
@@ -26,7 +23,9 @@ namespace Endless.Managers
         /// </summary>
         public SpriteBatch SpriteBatch { get; set; }
 
-
+        /// <summary>
+        /// the currentTranslation 
+        /// </summary>
         public Matrix CurrentTranslation { get; set; } = Matrix.Identity;
 
 
@@ -98,6 +97,10 @@ namespace Endless.Managers
             currentScreen?.Update(gameTime);
         }
 
+        /// <summary>
+        /// Draws the current scene 
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
         public void Draw(GameTime gameTime)
         {
             currentScreen?.Draw(gameTime);

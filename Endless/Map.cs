@@ -11,23 +11,56 @@ using System.Threading.Tasks;
 
 namespace Endless
 {
+    /// <summary>
+    /// the map class
+    /// </summary>
     public class Map
     {
         private Texture2D tileSheet;
-        public int TileWidth = 16;
-        public int TileHeight = 16;
-        private const int TileCount = 5;
 
+        /// <summary>
+        /// the width of the tile
+        /// </summary>
+        public int TileWidth = 16;
+
+        /// <summary>
+        /// the height of the tile
+        /// </summary>
+        public int TileHeight = 16;
+
+        private const int TileCount = 5;
         private int[,] tiles;
 
-        public int mapWidth = 100;  // in tiles
-        public int mapHeight = 100; // in tiles
+        /// <summary>
+        /// the map Width in tiles
+        /// </summary>
+        public int mapWidth = 100;
+        
+        /// <summary>
+        /// the map height in tiles
+        /// </summary>
+        public int mapHeight = 100;
 
-        public int Scale = 5; // how much you’re scaling when drawing
+        /// <summary>
+        /// the scale used when drawing
+        /// </summary>
+        public int Scale = 5; 
 
+        /// <summary>
+        /// the pixle width
+        /// </summary>
         public int PixelWidth => mapWidth * TileWidth * Scale;
+
+        /// <summary>
+        /// the pixle height
+        /// </summary>
         public int PixelHeight => mapHeight * TileHeight * Scale;
 
+
+        /// <summary>
+        /// loads content using content manager
+        /// </summary>
+        /// <param name="content">the content manager</param>
         public void LoadContent(ContentManager content)
         {
             tileSheet = content.Load<Texture2D>("RockTileMap-Sheet");
@@ -45,6 +78,10 @@ namespace Endless
             }
         }
 
+        /// <summary>
+        /// Draws the map with a sprite batch
+        /// </summary>
+        /// <param name="spriteBatch">the spriteBatch</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             for (int y = 0; y < mapHeight; y++)
