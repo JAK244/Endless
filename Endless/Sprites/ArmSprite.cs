@@ -72,8 +72,8 @@ namespace Endless.Sprites
             minPos = new Vector2(0, 0);
 
             // max is bottom-right of map 
-            maxPos = new Vector2(mapSize.X * tileSize.X * 5, 
-                                 mapSize.Y * tileSize.Y * 5);
+            maxPos = new Vector2(mapSize.X * tileSize.X * 2, 
+                                 mapSize.Y * tileSize.Y * 2);
         }
 
         /// <summary>

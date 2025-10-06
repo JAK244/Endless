@@ -78,9 +78,9 @@ namespace Endless.Screens
 
             healths = new HelthSprite[]
             {
-                new HelthSprite(){position = new Vector2(120,0)},
-                new HelthSprite(){position = new Vector2(60,0)},
-                new HelthSprite(){position = new Vector2(0,0)},
+                new HelthSprite(),
+                new HelthSprite(),
+                new HelthSprite(),
             };
             healthLeft = healths.Length;
             //camera = new(Vector2.Zero);
@@ -115,8 +115,8 @@ namespace Endless.Screens
             Traveler.LoadContent(Content);
             arm.LoadContent(Content);
             map.LoadContent(Content);
-            Traveler.SetBounds(new Point(50, 30), new Point(16, 16));
-            arm.SetBounds(new Point(50, 30), new Point(16, 16));
+            Traveler.SetBounds(new Point(50, 49), new Point(16, 16));
+            arm.SetBounds(new Point(50, 49), new Point(16, 16));
             foreach (var portal in portals) portal.LoadContent(Content);
             foreach (var bug in bugs) bug.LoadContent(Content);
             
@@ -214,16 +214,13 @@ namespace Endless.Screens
             sb.Begin(transformMatrix: _translation, samplerState: SamplerState.PointClamp);
 
             map.Draw(sb);
-            //sb.Draw(backGroundImage,new Rectangle(0,0, sb.GraphicsDevice.Viewport.Width, sb.GraphicsDevice.Viewport.Height),Color.White);
-
-
             powerBall.Draw(gameTime, sb);
+            //sb.Draw(backGroundImage,new Rectangle(0,0, sb.GraphicsDevice.Viewport.Width, sb.GraphicsDevice.Viewport.Height),Color.White);
 
             foreach (var portal in portals)
                 portal.Draw(gameTime, sb);
             
-            foreach (var helth in healths) 
-                helth.Draw(gameTime, sb);
+            
             foreach (var bug in bugs)
             {
                 bug.Draw(gameTime, sb);
@@ -241,9 +238,29 @@ namespace Endless.Screens
             arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);
             sb.End();
-            base.Draw(gameTime);
 
+
+            sb.Begin(samplerState: SamplerState.PointClamp);
+
+            int spacing = 70; // pixels between hearts
+            int startX = 10; 
+            int totalHearts = healths.Length;
+
+            for (int i = 0; i < totalHearts; i++)
+            {
+                int heartIndex = totalHearts - 1 - i;
+
+                if (!healths[heartIndex].Damaged)
+                {
+                    Vector2 heartPos = new Vector2(startX + (i * spacing), 10);
+
+                    healths[heartIndex].position = heartPos;
+                    healths[heartIndex].Draw(gameTime, sb);
+                }
+            }
+
+            sb.End();
+            base.Draw(gameTime);
         }
-        
     }
 }

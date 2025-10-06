@@ -20,10 +20,10 @@ namespace Endless
 
         private int[,] tiles;
 
-        public int mapWidth = 100;  // in tiles
-        public int mapHeight = 100; // in tiles
+        public int mapWidth = 50;  // in tiles
+        public int mapHeight = 50; // in tiles
 
-        public int Scale = 5; // how much you’re scaling when drawing
+        public int Scale = 2; // how much you’re scaling when drawing
 
         public int PixelWidth => mapWidth * TileWidth * Scale;
         public int PixelHeight => mapHeight * TileHeight * Scale;
