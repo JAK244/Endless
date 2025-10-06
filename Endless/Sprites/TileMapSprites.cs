@@ -10,14 +10,28 @@ using System.Threading.Tasks;
 
 namespace Endless.Sprites
 {
+    /// <summary>
+    /// the tilemap sprite class
+    /// </summary>
     public class TileMapSprites
     {
         private Texture2D texture;
 
+        /// <summary>
+        /// the sprites position
+        /// </summary>
         public Vector2 Position;
 
+        /// <summary>
+        /// the sprites origin
+        /// </summary>
         public Vector2 Origin;
 
+        /// <summary>
+        /// TileMapSprites constructor
+        /// </summary>
+        /// <param name="texture">the texture</param>
+        /// <param name="position">the position</param>
         public TileMapSprites(Texture2D texture,Vector2 position)
         {
             this.texture = texture;
@@ -25,6 +39,10 @@ namespace Endless.Sprites
             Origin = new(texture.Width/2, texture.Height/2);
         }
 
+
+        /// <summary>
+        /// draws the tilemap sprites
+        /// </summary>
         public void Draw()
         {
             var sb = SceneManager.Instance.SpriteBatch;

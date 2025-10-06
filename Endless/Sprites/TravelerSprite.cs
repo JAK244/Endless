@@ -61,9 +61,14 @@ namespace Endless.Sprites
         }
 
 
+        /// <summary>
+        /// sets the bounds for the sprite to travle in
+        /// </summary>
+        /// <param name="mapSize">the given map size</param>
+        /// <param name="tileSize">the given tile size</param>
         public void SetBounds(Point mapSize, Point tileSize)
         {
-            // min is top-left of map
+          
             minPos = new Vector2(0, 0);
 
             // max is bottom-right of map (scaled by tiles)
@@ -71,6 +76,11 @@ namespace Endless.Sprites
                                  mapSize.Y * tileSize.Y * 2);
         }
 
+
+        /// <summary>
+        /// updates the sprite using gametime
+        /// </summary>
+        /// <param name="gameTime">the gametime</param>
         public void Update(GameTime gameTime)
         {
             keyboardState = Keyboard.GetState();
@@ -103,7 +113,7 @@ namespace Endless.Sprites
             // update position
             position += move;
 
-            // clamp inside map
+            // clamps inside the map
             position.X = MathHelper.Clamp(position.X, minPos.X + 16, maxPos.X - 16);
             position.Y = MathHelper.Clamp(position.Y, minPos.Y + 16, maxPos.Y - 16);
 

@@ -28,14 +28,17 @@ namespace Endless.Screens
         private List<Bug1Sprite> bugs;
         private ArmSprite arm;
         private int healthLeft;
-        public Matrix _translation;
         private List<BulletSprite> bullets = new List<BulletSprite>();
         private Song backGroundMusic_nonC;
         private Song backGroundMusic_InC;
-
-
-
         private double damageCooldown = 0;
+
+        /// <summary>
+        /// the translation matrix
+        /// </summary>
+        public Matrix _translation;
+
+
 
         private Texture2D ball;
         //private Texture2D backGroundImage;
@@ -83,7 +86,6 @@ namespace Endless.Screens
                 new HelthSprite(),
             };
             healthLeft = healths.Length;
-            //camera = new(Vector2.Zero);
 
         }
 
@@ -95,7 +97,7 @@ namespace Endless.Screens
             var dx = halfScreenW - Traveler.position.X;
             var dy = halfScreenH - Traveler.position.Y;
 
-            // clamp against pixel map size
+            // clamp against the pixel map size
             dx = MathHelper.Clamp(dx, -(map.PixelWidth - SceneManager.Instance.Dimensions.X), 0);
             dy = MathHelper.Clamp(dy, -(map.PixelHeight - SceneManager.Instance.Dimensions.Y), 0);
 
@@ -193,7 +195,7 @@ namespace Endless.Screens
                     if (bullet.Bounds.CollidesWith(bug.Bounds))
                     {
                         bullet.IsRemoved = true;
-                        bug.IsAlive = false; // mark as dead
+                        bug.IsAlive = false; 
                     }
                 }
             }

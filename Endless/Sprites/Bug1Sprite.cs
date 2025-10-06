@@ -55,6 +55,10 @@ namespace Endless.Sprites
         /// checks if bug is Alive
         /// </summary>
         public bool IsAlive = true;
+
+        /// <summary>
+        /// the color of the sprite
+        /// </summary>
         public Color color { get; set; } = Color.White;
 
         private BoundingCircle bounds;
