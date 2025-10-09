@@ -36,6 +36,9 @@ namespace Endless
 
         public int Scale = 2; // how much you’re scaling when drawing
 
+        
+
+
         /// <summary>
         /// the pixle width
         /// </summary>
@@ -46,6 +49,27 @@ namespace Endless
         /// </summary>
         public int PixelHeight => mapHeight * TileHeight * Scale;
 
+        /// <summary>
+        /// helps place tiles depending on weights 
+        /// </summary>
+        /// <param name="weights">the tile weight</param>
+        /// <param name="rand">random</param>
+        /// <returns></returns>
+        private int GetWeightedRandom(int[] weights, Random rand)
+        {
+            int totalWeight = 0;
+            foreach (int w in weights) totalWeight += w;
+
+            int r = rand.Next(totalWeight);
+            int sum = 0;
+            for (int i = 0; i < weights.Length; i++)
+            {
+                sum += weights[i];
+                if (r < sum)
+                    return i;
+            }
+            return weights.Length - 1;
+        }
 
         /// <summary>
         /// loads content using content manager
@@ -63,7 +87,8 @@ namespace Endless
             {
                 for (int x = 0; x < mapWidth; x++)
                 {
-                    tiles[y, x] = rand.Next(TileCount);
+                    int[] tileWeights = { 80, 5,5, 5, 5 }; // tiles (0, 1,...)
+                    tiles[y, x] = GetWeightedRandom(tileWeights, rand);
                 }
             }
         }

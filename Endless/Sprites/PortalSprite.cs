@@ -27,6 +27,11 @@ namespace Endless.Sprites
         /// </summary>
         public bool PortalFlipped;
 
+        /// <summary>
+        /// checks if the protal is at the top or bottme of the screen
+        /// </summary>
+        public bool PortialTB = false;
+
         private double animationTimer;
 
         private short animationFrame;
@@ -61,14 +66,27 @@ namespace Endless.Sprites
 
             animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (animationTimer > 0.2)
+            if (!PortialTB)
             {
-                animationFrame++;
-                if (animationFrame > 10) animationFrame = 0;
-                animationTimer -= 0.2;
+                if (animationTimer > 0.2)
+                {
+                    animationFrame++;
+                    if (animationFrame > 10) animationFrame = 0;
+                    animationTimer -= 0.2;
+                }
             }
+            else
+            {
+                if (animationTimer > 0.2)
+                {
+                    animationFrame++;
+                    if (animationFrame > 18) animationFrame = 11;
+                    animationTimer -= 0.2;
+                }
+            }
+     
 
-            var source = new Rectangle(animationFrame * 64, 0, 64, 64);
+                var source = new Rectangle(animationFrame * 64, 0, 64, 64);
 
 
             spriteBatch.Draw(texture,Position, source, Color.White,0f,new Vector2(0,0), 2f,spriteEffect,0f);

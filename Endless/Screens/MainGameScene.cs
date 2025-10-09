@@ -66,18 +66,21 @@ namespace Endless.Screens
 
             portals = new PortalSprite[]
             {
-                //new PortalSprite(){Position = new Vector2(700,350)},
-                //new PortalSprite(){Position = new Vector2(-25 ,350), PortalFlipped = true},
+                new PortalSprite(){Position = new Vector2(0,725), PortalFlipped = true},
+                new PortalSprite(){Position = new Vector2(1450, 725)},
+                new PortalSprite(){Position = new Vector2(725,0), PortialTB = true},
+                new PortalSprite(){Position = new Vector2(725,1450), PortialTB = true},
             };
 
-            powerBall = new PowerBallSprite() { Position = new Vector2(330, 200) };
+            powerBall = new PowerBallSprite() { Position = new Vector2(725, 725) }; //1450, 1450 max screen size
 
 
             bugs = new List<Bug1Sprite>
             {
+                
                 new Bug1Sprite(new Vector2(630,352)) { IsAlive = true },
                 new Bug1Sprite(new Vector2(150,352)) { BugFlipped = true, IsAlive = true }
-            };
+            }; 
 
             healths = new HelthSprite[]
             {
@@ -112,7 +115,6 @@ namespace Endless.Screens
         public override void LoadContent(ContentManager Content)
         {
             base.LoadContent(Content);
-            //backGroundImage = Content.Load<Texture2D>("ForestBG");
             ball = Content.Load<Texture2D>("Ball");
             Traveler.LoadContent(Content);
             arm.LoadContent(Content);
@@ -166,6 +168,7 @@ namespace Endless.Screens
 
             damageCooldown -= gameTime.ElapsedGameTime.TotalSeconds;
 
+            //bugs interacting with player
             foreach (var bug in bugs)
             {
                 bug.Update(gameTime, Traveler.position);
@@ -184,10 +187,9 @@ namespace Endless.Screens
                         }
                     }
                 }
-
-              
             }
 
+            // bullets interacting with bugs
             foreach (var bullet in arm.Bullets.ToList())
             {
                 foreach (var bug in bugs.ToList())
