@@ -27,6 +27,12 @@ namespace Endless.Sprites
 
         private Vector2 minPos, maxPos;
 
+        private double animationTimer;
+
+        private short animationFrame;
+
+        private bool IsMoving = false;
+
         /// <summary>
         /// the sprites position
         /// </summary>
@@ -56,7 +62,7 @@ namespace Endless.Sprites
         /// <param name="content">the contnet manager to load with</param>
         public void LoadContent(ContentManager content)
         {
-            texture = content.Load<Texture2D>("Traveler");
+            texture = content.Load<Texture2D>("DuckTravler");
             
         }
 
@@ -88,28 +94,43 @@ namespace Endless.Sprites
 
             Vector2 move = Vector2.Zero;
 
+            IsMoving = false;
+
+            // Movement input
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
                 move.X -= 3;
                 flipped = true;
+                IsMoving = true;
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
                 move.X += 3;
                 flipped = false;
+                IsMoving = true;
             }
 
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            {
                 move.Y -= 3;
+                IsMoving = true;
+            }
 
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+            {
                 move.Y += 3;
+                IsMoving = true;
+            }
 
+            // Gamepad movement
             move += gamePadState.ThumbSticks.Left * new Vector2(3, -3);
-            if (gamePadState.ThumbSticks.Left.X < 0) flipped = true;
-            if (gamePadState.ThumbSticks.Left.X > 0) flipped = false;
-
+            if (gamePadState.ThumbSticks.Left.Length() > 0.2f)
+            {
+                IsMoving = true;
+                if (gamePadState.ThumbSticks.Left.X < 0) flipped = true;
+                if (gamePadState.ThumbSticks.Left.X > 0) flipped = false;
+            }
             // update position
             position += move;
 
@@ -133,7 +154,30 @@ namespace Endless.Sprites
         {
           
             SpriteEffects spriteEffect = flipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            spriteBatch.Draw(texture, position,null,color,0, new Vector2(texture.Width / 2f, texture.Height / 2f), 2, spriteEffect,0);
+
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (!IsMoving)
+            {
+                if (animationTimer > 0.2)
+                {
+                    animationFrame++;
+                    if (animationFrame > 3) animationFrame = 0;
+                    animationTimer -= 0.2;
+                }
+            }
+            else
+            {
+                if (animationTimer > 0.2)
+                {
+                    animationFrame++;
+                    if (animationFrame > 7) animationFrame = 4;
+                    animationTimer -= 0.2;
+                }
+            }
+
+                var source = new Rectangle(animationFrame * 64, 0, 64, 64);
+            spriteBatch.Draw(texture, position,source,color,0, new Vector2(32, 32), 2, spriteEffect,0);
 
             
 

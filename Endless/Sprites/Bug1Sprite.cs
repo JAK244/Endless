@@ -12,13 +12,7 @@ using Endless.Collisions;
 
 namespace Endless.Sprites
 {
-    /// <summary>
-    /// enum of possible directions
-    /// </summary>
-    public enum Direction
-    {
-        Left, Right, Up, Down
-    }
+   
 
     /// <summary>
     /// the bug sprite class
@@ -32,10 +26,7 @@ namespace Endless.Sprites
         /// </summary>
         private double directionTimer;
 
-        /// <summary>
-        /// the direction the sprite moves
-        /// </summary>
-        public Direction direction;
+        public float Speed = 60f;
 
         /// <summary>
         /// the position of the sprite
@@ -115,8 +106,8 @@ namespace Endless.Sprites
             if (toPlayer != Vector2.Zero)
                 toPlayer.Normalize();
 
-            float speed = 60f;
-            Position += toPlayer * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            
+            Position += toPlayer * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             BugFlipped = toPlayer.X > 0;
 

@@ -11,6 +11,9 @@ using Endless.Sprites;
 
 namespace Endless.Managers
 {
+    /// <summary>
+    /// the waveManager Class
+    /// </summary>
     public class WaveManager
     {
         private Random ran = new Random();
@@ -23,7 +26,14 @@ namespace Endless.Managers
         private double spawnTimer;
         private int enemiesToSpawn;
 
+        /// <summary>
+        /// checks if there is an active wave
+        /// </summary>
         public bool WaveActive { get; private set; }
+
+        /// <summary>
+        /// gets or sets the current wave
+        /// </summary>
         public int CurrentWave {  get; private set; }
 
         private List<PortalSprite> portals;
@@ -31,9 +41,22 @@ namespace Endless.Managers
 
         private ContentManager content;
 
+        /// <summary>
+        /// starts the wave
+        /// </summary>
         public event Action<int> OnWaveStart;
+
+        /// <summary>
+        /// ends the wave
+        /// </summary>
         public event Action<int> OnWaveEnd;
 
+        /// <summary>
+        /// the waveManager constructor
+        /// </summary>
+        /// <param name="portals">the portals</param>
+        /// <param name="bugs">the bugs</param>
+        /// <param name="content">the contnet manager</param>
         public WaveManager(List<PortalSprite> portals, List<Bug1Sprite> bugs, ContentManager content)
         {
             this.portals = portals;
@@ -41,11 +64,19 @@ namespace Endless.Managers
             this.content = content;
         }
 
+        /// <summary>
+        /// Loads content using a contentManager
+        /// </summary>
+        /// <param name="Content">the content manager</param>
         public void LoadContent(ContentManager Content)
         {
             Doto = Content.Load<SpriteFont>("Doto-Black");
         }
 
+        /// <summary>
+        /// initalizes and shows the wave message
+        /// </summary>
+        /// <param name="message">the given message</param>
         public void ShowWaveMessage(string message)
         {
             waveMessage = message;
@@ -54,16 +85,24 @@ namespace Endless.Managers
             showingMessage = true;
         }
 
+        /// <summary>
+        /// initalizes and starts the wave
+        /// </summary>
+        /// <param name="waveNumber">the waveNumber</param>
         public void StartWave(int waveNumber)
         {
             CurrentWave = waveNumber;
             WaveActive = true;
-            enemiesToSpawn = 10 + (waveNumber - 1) * 5;
+            enemiesToSpawn = 10 + (waveNumber - 1) * 5; // increments each round by 5
             spawnTimer = 0;
 
             OnWaveStart?.Invoke(CurrentWave);
         }
 
+        /// <summary>
+        /// updates the waveManager using gameTime
+        /// </summary>
+        /// <param name="gameTime">the gameTime</param>
         public void Update(GameTime gameTime)
         {
             if (showingMessage)
@@ -99,20 +138,25 @@ namespace Endless.Managers
             }
         }
 
+        /// <summary>
+        /// Draws the message using a spriteBatch and GameTime
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
+        /// <param name="sb">the sprite batch</param>
         public void Draw(GameTime gameTime, SpriteBatch sb)
         {
             if (showingMessage && !string.IsNullOrEmpty(waveMessage))
             {
                 var size = Doto.MeasureString(waveMessage);
-                var pos = new Vector2(
-                    (SceneManager.Instance.Dimensions.X - size.X) / 2,
-                    100
-                );
+                var pos = new Vector2((SceneManager.Instance.Dimensions.X - size.X) / 2, 100);
 
                 sb.DrawString(Doto, waveMessage, pos, Color.White * messageAlpha);
             }
         }
 
+        /// <summary>
+        /// spwans the bugs from the portals position at random
+        /// </summary>
         private void SpawnBug()
         {
             var portal = portals[ran.Next(portals.Count)];

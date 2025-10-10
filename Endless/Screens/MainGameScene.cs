@@ -34,22 +34,26 @@ namespace Endless.Screens
         private double damageCooldown = 0;
         private bool showInteractPrompt = false;
         private WaveManager waveManager;
+        private Texture2D ball;
+        private Map map;
+        private float rotation;
+        private float shakeDuration = 0f;
+        private float shakeMagnitude = 5f;
+        private Random random = new Random();
+        private Vector2 shakeOffset = Vector2.Zero;
+
+        //private Texture2D backGroundImage;
 
         /// <summary>
         /// the translation matrix
         /// </summary>
         public Matrix _translation;
 
-
-
-        private Texture2D ball;
-        //private Texture2D backGroundImage;
-        private Map map;
-
-
-        private float rotation;
-
-
+        public void TriggerShake(float duration, float magnitude = 5f)
+        {
+            shakeDuration = duration;
+            shakeMagnitude = magnitude;
+        }
 
         private void HandleWaveStart(int wave)
         {
@@ -140,8 +144,7 @@ namespace Endless.Screens
             Traveler.SetBounds(new Point(50, 49), new Point(16, 16));
             arm.SetBounds(new Point(50, 49), new Point(16, 16));
             foreach (var portal in portals) portal.LoadContent(Content);
-            foreach (var bug in bugs) bug.LoadContent(Content);
-            
+            foreach (var bug in bugs) bug.LoadContent(Content);   
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             
@@ -200,7 +203,8 @@ namespace Endless.Screens
                             Traveler.color = Color.Red;
                             healths[i].Damaged = true;
                             healthLeft--;
-                            damageCooldown = 1.0; 
+                            damageCooldown = 1.0;
+                            TriggerShake(0.3f, 8f);
                             break;
                         }
                     }
@@ -237,6 +241,21 @@ namespace Endless.Screens
                 showInteractPrompt = false;
             }
 
+            // my screen shake
+            if (shakeDuration > 0)
+            {
+                shakeDuration -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                // Random offset within magnitude range
+                shakeOffset = new Vector2(
+                    (float)(random.NextDouble() * 2 - 1) * shakeMagnitude,
+                    (float)(random.NextDouble() * 2 - 1) * shakeMagnitude
+                );
+
+                if (shakeDuration <= 0)
+                    shakeOffset = Vector2.Zero;
+            }
+
 
         }
 
@@ -249,7 +268,8 @@ namespace Endless.Screens
         {
             var sb = SceneManager.Instance.SpriteBatch;
 
-            sb.Begin(transformMatrix: _translation, samplerState: SamplerState.PointClamp);
+            Matrix shakeTransform = _translation * Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0);
+            sb.Begin(transformMatrix: shakeTransform, samplerState: SamplerState.PointClamp);
 
             map.Draw(sb);
 
@@ -283,9 +303,12 @@ namespace Endless.Screens
 
             arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);
+
+
             sb.End();
 
 
+            // handles the UI
             sb.Begin(samplerState: SamplerState.PointClamp);
 
             int spacing = 70; // pixels between hearts
