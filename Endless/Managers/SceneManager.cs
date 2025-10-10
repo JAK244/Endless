@@ -51,6 +51,8 @@ namespace Endless.Managers
             set => dimensions = value;
         }
 
+        public ContentManager Content => content;
+
         /// <summary>
         /// adds scenes to the stack
         /// </summary>

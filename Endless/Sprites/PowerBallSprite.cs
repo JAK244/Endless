@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Endless.Collisions;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
 
 
 namespace Endless.Sprites
@@ -32,6 +33,16 @@ namespace Endless.Sprites
         /// </summary>
         public bool BallFlipped;
 
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(770, 760), 32, 64);
+
+        /// <summary>
+        /// the sprites bounds
+        /// </summary>
+        public BoundingRectangle Bounds
+        {
+            get { return bounds; }
+        }
+
         /// <summary>
         /// Loads the texture
         /// </summary>
@@ -47,7 +58,8 @@ namespace Endless.Sprites
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
-
+            bounds.X = Position.X - 16;
+            bounds.Y = Position.Y - 16;
         }
 
         /// <summary>

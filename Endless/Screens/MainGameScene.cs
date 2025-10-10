@@ -32,6 +32,8 @@ namespace Endless.Screens
         private Song backGroundMusic_nonC;
         private Song backGroundMusic_InC;
         private double damageCooldown = 0;
+        private bool showInteractPrompt = false;
+        private WaveManager waveManager;
 
         /// <summary>
         /// the translation matrix
@@ -46,7 +48,23 @@ namespace Endless.Screens
 
 
         private float rotation;
-        
+
+
+
+        private void HandleWaveStart(int wave)
+        {
+            waveManager.ShowWaveMessage($"Wave {wave} Start!");
+            MediaPlayer.Stop();
+            MediaPlayer.Play(backGroundMusic_InC);
+        }
+
+        private void HandleWaveEnd(int wave)
+        {
+            waveManager.ShowWaveMessage($"Wave {wave} Complete!");
+            MediaPlayer.Stop();
+            MediaPlayer.Play(backGroundMusic_nonC);
+        }
+
 
         /// <summary>
         /// initializes the content for the scene
@@ -57,30 +75,30 @@ namespace Endless.Screens
 
             
 
-            Traveler = new TravelerSprite() { position = new Vector2(500, 420) };
+            Traveler = new TravelerSprite() { position = new Vector2(500, 780) };
             
-            arm = new ArmSprite() { position = new Vector2(500, 420) };
+            arm = new ArmSprite() { position = new Vector2(500, 780) };
 
             map = new Map();
             
 
             portals = new PortalSprite[]
             {
-                new PortalSprite(){Position = new Vector2(0,725), PortalFlipped = true},
-                new PortalSprite(){Position = new Vector2(1450, 725)},
-                new PortalSprite(){Position = new Vector2(725,0), PortialTB = true},
-                new PortalSprite(){Position = new Vector2(725,1450), PortialTB = true},
+                new PortalSprite(){Position = new Vector2(0,725), PortalFlipped = true}, // top
+                new PortalSprite(){Position = new Vector2(1450, 725)}, // bottom
+                new PortalSprite(){Position = new Vector2(725,0), PortialTB = true}, // right
+                new PortalSprite(){Position = new Vector2(725,1450), PortialTB = true}, // left
             };
 
             powerBall = new PowerBallSprite() { Position = new Vector2(725, 725) }; //1450, 1450 max screen size
 
 
-            bugs = new List<Bug1Sprite>
-            {
-                
-                new Bug1Sprite(new Vector2(630,352)) { IsAlive = true },
-                new Bug1Sprite(new Vector2(150,352)) { BugFlipped = true, IsAlive = true }
-            }; 
+            bugs = new List<Bug1Sprite>{};
+
+            waveManager = new WaveManager(portals.ToList(), bugs, SceneManager.Instance.Content);
+            waveManager.LoadContent(SceneManager.Instance.Content);
+            waveManager.OnWaveStart += HandleWaveStart;
+            waveManager.OnWaveEnd += HandleWaveEnd;
 
             healths = new HelthSprite[]
             {
@@ -202,7 +220,23 @@ namespace Endless.Screens
                 }
             }
 
-            
+            // traveler interacting with powerball
+            waveManager.Update(gameTime);
+
+            if (Traveler.Bounds.CollidesWith(powerBall.Bounds))
+            {
+                showInteractPrompt = true;
+
+                if (Keyboard.GetState().IsKeyDown(Keys.F) && !waveManager.WaveActive)
+                {
+                    waveManager.StartWave(waveManager.CurrentWave + 1);
+                }
+            }
+            else
+            {
+                showInteractPrompt = false;
+            }
+
 
         }
 
@@ -218,8 +252,16 @@ namespace Endless.Screens
             sb.Begin(transformMatrix: _translation, samplerState: SamplerState.PointClamp);
 
             map.Draw(sb);
+
             powerBall.Draw(gameTime, sb);
-            //sb.Draw(backGroundImage,new Rectangle(0,0, sb.GraphicsDevice.Viewport.Width, sb.GraphicsDevice.Viewport.Height),Color.White);
+            //var rec3 = new Rectangle((int)powerBall.Bounds.X,(int)powerBall.Bounds.Y,(int)powerBall.Bounds.Width,(int)powerBall.Bounds.Height);
+            //sb.Draw(ball, rec3, Color.White);
+
+            if (showInteractPrompt)
+            {
+                Vector2 textPos = powerBall.Position + new Vector2(40, -80);
+                sb.DrawString(Doto, "F", textPos, Color.Black);
+            }
 
             foreach (var portal in portals)
                 portal.Draw(gameTime, sb);
@@ -262,6 +304,8 @@ namespace Endless.Screens
                     healths[heartIndex].Draw(gameTime, sb);
                 }
             }
+
+            waveManager.Draw(gameTime, sb);
 
             sb.End();
             base.Draw(gameTime);
