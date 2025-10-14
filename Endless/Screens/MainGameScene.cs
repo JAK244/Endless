@@ -42,6 +42,7 @@ namespace Endless.Screens
         private Random random = new Random();
         private Vector2 shakeOffset = Vector2.Zero;
 
+
         //private Texture2D backGroundImage;
 
         /// <summary>
@@ -147,7 +148,9 @@ namespace Endless.Screens
             foreach (var bug in bugs) bug.LoadContent(Content);   
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
+
             
+
             rotation = 0.0f;
             Doto = Content.Load<SpriteFont>("Doto-Black");
 
@@ -255,6 +258,8 @@ namespace Endless.Screens
                 if (shakeDuration <= 0)
                     shakeOffset = Vector2.Zero;
             }
+
+            
 
 
         }

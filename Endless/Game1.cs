@@ -52,7 +52,7 @@ namespace Endless
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            SceneManager.Instance.LoadContent(Content);
+            SceneManager.Instance.LoadContent(Content, GraphicsDevice);
             SceneManager.Instance.SpriteBatch = spriteBatch;
 
             

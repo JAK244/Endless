@@ -17,6 +17,8 @@ namespace Endless.Managers
         private Stack<GameScenes> sceneStack = new Stack<GameScenes>();
         private GameScenes currentScreen;
         private Vector2 dimensions;
+        private GraphicsDevice graphicsDevice;
+        public GraphicsDevice GraphicsDevice => graphicsDevice;
 
         /// <summary>
         /// the sprite batch
@@ -83,10 +85,10 @@ namespace Endless.Managers
         /// loads the content with a content manager
         /// </summary>
         /// <param name="Content">the content manager</param>
-        public void LoadContent(ContentManager Content)
+        public void LoadContent(ContentManager Content, GraphicsDevice graphics)
         {
-            // Just store the reference, don't create a new ContentManager
             content = Content;
+            graphicsDevice = graphics;
             currentScreen.LoadContent(content);
         }
 
