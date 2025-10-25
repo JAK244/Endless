@@ -21,13 +21,13 @@ namespace Endless.Screens
     {
         
         private SpriteFont Doto;
-        public TravelerSprite Traveler;
+        private TravelerSprite Traveler;
         private HelthSprite[] healths;
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
         private List<Bug1Sprite> bugs;
         private ArmSprite arm;
-        public int healthLeft;
+        private int healthLeft;
         private List<BulletSprite> bullets = new List<BulletSprite>();
         private Song backGroundMusic_nonC;
         private Song backGroundMusic_InC;
@@ -35,16 +35,21 @@ namespace Endless.Screens
         private bool showInteractPrompt = false;
         public WaveManager waveManager;
         private Texture2D ball;
-        public Map map;
+        private Map map;
         private float rotation;
         private float shakeDuration = 0f;
         private float shakeMagnitude = 5f;
         private Random random = new Random();
         private Vector2 shakeOffset = Vector2.Zero;
+        private Texture2D VideoBorder;
+
+        private Video video;
+        private VideoPlayer vPlayer;
+        private Texture2D videoTexture;
+        private bool isPlaying = false;
 
 
-
-        //private Texture2D backGroundImage;
+      
 
         /// <summary>
         /// the translation matrix
@@ -149,7 +154,14 @@ namespace Endless.Screens
             foreach (var bug in bugs) bug.LoadContent(Content);   
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
+            VideoBorder = Content.Load<Texture2D>("VideoBorderFinal");
 
+            video = Content.Load<Video>("MEMEThoughts2");
+            vPlayer = new VideoPlayer();
+            
+
+            vPlayer.Play(video);
+            isPlaying = true;
             
 
             rotation = 0.0f;
@@ -260,7 +272,11 @@ namespace Endless.Screens
                     shakeOffset = Vector2.Zero;
             }
 
-            
+
+            if (isPlaying && vPlayer.State == MediaState.Stopped)
+            {
+                vPlayer.Play(video); // restart when finished
+            }
 
 
         }
@@ -273,6 +289,8 @@ namespace Endless.Screens
         public override void Draw(GameTime gameTime)
         {
             var sb = SceneManager.Instance.SpriteBatch;
+
+            
 
             Matrix shakeTransform = _translation * Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0);
             sb.Begin(transformMatrix: shakeTransform, samplerState: SamplerState.PointClamp);
@@ -337,6 +355,21 @@ namespace Endless.Screens
             waveManager.Draw(gameTime, sb);
 
             sb.End();
+
+
+            if (isPlaying && vPlayer.State == MediaState.Playing)
+            {
+                videoTexture = vPlayer.GetTexture();
+                if (videoTexture != null)
+                {
+                    sb.Begin();
+                    sb.Draw(videoTexture, new Rectangle(1030, 20, 150, 150), Color.White); // the video 
+                    sb.Draw(VideoBorder, new Rectangle(1030, 20, 150, 150), Color.White); // the video border
+                    sb.End();
+                }
+
+            }
+
             base.Draw(gameTime);
         }
     }

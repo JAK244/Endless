@@ -193,6 +193,18 @@
 /processorParam:TextureFormat=Color
 /build:TravelerArm.png
 
+#begin VideoBorderFinal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:VideoBorderFinal.png
+
 #begin Void-portal.png
 /importer:TextureImporter
 /processor:TextureProcessor
