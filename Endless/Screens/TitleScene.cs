@@ -79,7 +79,7 @@ namespace Endless.Screens
             backGroundMusic = Content.Load<Song>("Synthwave Loop");
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(backGroundMusic);
-            menuItems = new List<string> { "New Game", "Load Game", "Controls", "Exit" };
+            menuItems = new List<string> { "New Game", "Controls", "Exit" };
 
             base.LoadContent(Content);
         }

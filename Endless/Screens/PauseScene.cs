@@ -24,7 +24,7 @@ namespace Endless.Screens
         public override void LoadContent(ContentManager content)
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
-            menuItems = new List<string> { "Resume", "Save Game", "Load Game", "Title Screen" };
+            menuItems = new List<string> { "Resume", "Title Screen" };
         }
 
         public override void Update(GameTime game)
@@ -44,11 +44,7 @@ namespace Endless.Screens
                     
                     SceneManager.Instance.RemoveScene();
                 }
-                else if(selectedIndex == 1) // Save game
-                {
-                    SceneManager.Instance.ChangeScene(new SaveGameScene());
-                }
-                else if (selectedIndex == 3) // exit
+                else if (selectedIndex == 1) // exit
                 {
                     
                     SceneManager.Instance.ChangeScene(new TitleScene());

@@ -44,6 +44,7 @@ namespace Endless.Managers
             }
         }
 
+
         /// <summary>
         /// the dimensions of the scenc
         /// </summary>
