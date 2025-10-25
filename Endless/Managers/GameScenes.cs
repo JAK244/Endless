@@ -11,6 +11,8 @@ public class GameScenes
     /// </summary>
     protected ContentManager content;
 
+    public bool IsPaused;
+
     /// <summary>
     /// a virtual initalize method
     /// </summary>

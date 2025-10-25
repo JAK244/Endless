@@ -35,7 +35,7 @@ namespace Endless
         protected override void Initialize()
         {
             SceneManager.Instance.Initialize();
-            SceneManager.Instance.Dimensions = new Vector2(800,480);
+            SceneManager.Instance.Dimensions = new Vector2(1200,720); //800,480 original screen size/1200,720 preferred screen size
             graphics.PreferredBackBufferWidth = (int)SceneManager.Instance.Dimensions.X;
             graphics.PreferredBackBufferHeight = (int) SceneManager.Instance.Dimensions.Y;
             graphics.ApplyChanges();
@@ -86,7 +86,7 @@ namespace Endless
         /// <param name="gameTime">the game time</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Gray);
             
 
             SceneManager.Instance.Draw(gameTime); // this calls TitleScene.Draw()

@@ -22,10 +22,17 @@ namespace Endless.Screens
         private TravelerSprite traveler;
         private PortalSprite[] portals;
         private Bug1Sprite[] bugs;
-        private SpriteFont Doto;
         private PowerBallSprite powerBall;
         private StarSprite[] stars;
         private Song backGroundMusic;
+
+        private SpriteFont Doto;
+        private List<string> menuItems;
+        private int selectedIndex;
+        private KeyboardState oldState;
+        private bool ignoreInput = true;
+
+
 
 
         /// <summary>
@@ -33,26 +40,26 @@ namespace Endless.Screens
         /// </summary>
         public override void Initialize()
         {
-            traveler = new TravelerSprite() { position = new Vector2(500, 420) };
+            traveler = new TravelerSprite() { position = new Vector2(500, 687) };
             portals = new PortalSprite[]
             {
-                new PortalSprite(){Position = new Vector2(700,350)},
-                new PortalSprite(){Position = new Vector2(-25 ,350), PortalFlipped = true},
+                new PortalSprite(){Position = new Vector2(1100,590)},// x, y
+                new PortalSprite(){Position = new Vector2(-25 ,590), PortalFlipped = true},
             };
 
             bugs = new Bug1Sprite[]
             {
-                new Bug1Sprite(new Vector2(630,352)){IsAlive = false},
-                new Bug1Sprite(new Vector2(550,352)){IsAlive = false},
-                new Bug1Sprite(new Vector2(30,352)){BugFlipped = true , IsAlive = false},
-                new Bug1Sprite(new Vector2(150,352)){BugFlipped = true , IsAlive = false},
+                new Bug1Sprite(new Vector2(1000,590)){IsAlive = false},
+                new Bug1Sprite(new Vector2(800,590)){IsAlive = false},
+                new Bug1Sprite(new Vector2(30,590)){BugFlipped = true , IsAlive = false},
+                new Bug1Sprite(new Vector2(200,590)){BugFlipped = true , IsAlive = false},
             };
-            powerBall = new PowerBallSprite() { Position = new Vector2(320, 384) };
+            powerBall = new PowerBallSprite() { Position = new Vector2(525, 625) };
 
             stars = new StarSprite[]
             {
-                new StarSprite(){Position = new Vector2(50,50)},
-                new StarSprite(){Position = new Vector2(600,200) },
+                new StarSprite(){Position = new Vector2(260,80)},
+                new StarSprite(){Position = new Vector2(800,80) },
             };
         }
 
@@ -72,6 +79,7 @@ namespace Endless.Screens
             backGroundMusic = Content.Load<Song>("Synthwave Loop");
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(backGroundMusic);
+            menuItems = new List<string> { "New Game", "Load Game", "Controls", "Exit" };
 
             base.LoadContent(Content);
         }
@@ -90,18 +98,38 @@ namespace Endless.Screens
         /// <param name="gameTime">the game time</param>
         public override void Update(GameTime gameTime)
         {
-            
-            
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter) || GamePad.GetState(0).IsButtonDown(Buttons.Start)) 
-            {
-                SceneManager.Instance.AddScene(new MainGameScene());
-                MediaPlayer.Stop();
-            }
-            
+            var keyboard = Keyboard.GetState();
 
-            // TODO: Add your update logic here
-            
-            
+            if (ignoreInput)
+            {
+                oldState = keyboard;
+                ignoreInput = false;
+                return; // skip update for 1 frame
+            }
+
+            if (IsKeyPressed(Keys.Up, keyboard))
+                selectedIndex = (selectedIndex - 1 + menuItems.Count) % menuItems.Count;
+
+            if (IsKeyPressed(Keys.Down, keyboard))
+                selectedIndex = (selectedIndex + 1) % menuItems.Count;
+
+            if (IsKeyPressed(Keys.Enter, keyboard))
+            {
+                if (selectedIndex == 0)
+                {
+                    // start game
+                    SceneManager.Instance.AddScene(new MainGameScene());
+                }
+                else if (selectedIndex == 3)
+                {
+                    // exit
+                    System.Environment.Exit(0);
+                }
+            }
+
+            oldState = keyboard;
+
+
 
             foreach (var bug in bugs) bug.Update(gameTime, Vector2.Zero);
             
@@ -124,12 +152,43 @@ namespace Endless.Screens
                 bug.Draw(gameTime, sb);
             foreach (var star in stars)
                 star.Draw(gameTime, sb);
-            sb.DrawString(Doto, $"Void", new Vector2(300, 100), Color.Black);
-            sb.DrawString(Doto, $"Traveler", new Vector2(200, 180), Color.Black);
-            sb.DrawString(Doto, $"Press Enter to start", new Vector2(250, 300), Color.Gold,0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0);
-            sb.DrawString(Doto, $"Press ESC to EXIT", new Vector2(520, 0), Color.Gold, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0);
             powerBall.Draw(gameTime, sb);
+
+
+            sb.DrawString(Doto, $"Void", new Vector2(500, 0), Color.Black);
+            sb.DrawString(Doto, $"Traveler", new Vector2(400, 70), Color.Black);
+            //sb.DrawString(Doto, $"Press Enter to start", new Vector2(250, 300), Color.Gold,0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0);
+
+            Vector2 pos = new Vector2(400, 180);
+            
+
+            for (int i = 0; i < menuItems.Count; i++)
+            {
+                var text = menuItems[i];
+                var color = (i == selectedIndex) ? Color.Gold : Color.White;
+
+                // draw selection mark for clarity
+                if (i == selectedIndex)
+                {
+                    sb.DrawString(Doto, "> " + text, pos, color);
+                }
+                else
+                {
+                    sb.DrawString(Doto, text, pos, color);
+                }
+
+                pos.Y += 100f;
+            }
+
             sb.End();
+        }
+
+        /// <summary>
+        /// returns true if the given key was just pressed this frame (edge detection)
+        /// </summary>
+        private bool IsKeyPressed(Keys key, KeyboardState current)
+        {
+            return current.IsKeyDown(key) && oldState.IsKeyUp(key);
         }
     }
 }

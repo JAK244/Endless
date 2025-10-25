@@ -21,26 +21,27 @@ namespace Endless.Screens
     {
         
         private SpriteFont Doto;
-        private TravelerSprite Traveler;
+        public TravelerSprite Traveler;
         private HelthSprite[] healths;
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
         private List<Bug1Sprite> bugs;
         private ArmSprite arm;
-        private int healthLeft;
+        public int healthLeft;
         private List<BulletSprite> bullets = new List<BulletSprite>();
         private Song backGroundMusic_nonC;
         private Song backGroundMusic_InC;
         private double damageCooldown = 0;
         private bool showInteractPrompt = false;
-        private WaveManager waveManager;
+        public WaveManager waveManager;
         private Texture2D ball;
-        private Map map;
+        public Map map;
         private float rotation;
         private float shakeDuration = 0f;
         private float shakeMagnitude = 5f;
         private Random random = new Random();
         private Vector2 shakeOffset = Vector2.Zero;
+
 
 
         //private Texture2D backGroundImage;
@@ -179,7 +180,7 @@ namespace Endless.Screens
             base.Update(gameTime);
             if (Keyboard.GetState().IsKeyDown(Keys.U))
             {
-                SceneManager.Instance.AddScene(new TitleScene());
+                SceneManager.Instance.AddScene(new PauseScene());
             }
 
             Traveler.color = Color.White;

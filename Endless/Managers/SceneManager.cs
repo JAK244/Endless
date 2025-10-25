@@ -15,7 +15,7 @@ namespace Endless.Managers
         private static SceneManager instance;
         private ContentManager content;
         private Stack<GameScenes> sceneStack = new Stack<GameScenes>();
-        private GameScenes currentScreen;
+        public GameScenes currentScreen;
         private Vector2 dimensions;
         private GraphicsDevice graphicsDevice;
         public GraphicsDevice GraphicsDevice => graphicsDevice;
@@ -59,17 +59,49 @@ namespace Endless.Managers
         /// adds scenes to the stack
         /// </summary>
         /// <param name="scene">the given scene</param>
-        public void AddScene(GameScenes scene)
+        public void AddScene(GameScenes scene, bool pauseCurrent = true)
         {
-            if (currentScreen != null)
-                currentScreen.UnloadContent();
+            if (currentScreen != null && pauseCurrent)
+                currentScreen.IsPaused = true; // optional, if you track pause state
 
             sceneStack.Push(scene);
             currentScreen = scene;
 
             currentScreen.Initialize();
-            
             currentScreen.LoadContent(content);
+        }
+
+        public void RemoveScene()
+        {
+            if (sceneStack.Count == 0) return;
+
+            // Remove current scene
+            currentScreen.UnloadContent();
+            sceneStack.Pop();
+
+            // Resume previous scene
+            if (sceneStack.Count > 0)
+            {
+                currentScreen = sceneStack.Peek();
+                currentScreen.IsPaused = false; // optional
+            }
+            else
+            {
+                currentScreen = null;
+            }
+        }
+
+        public void ChangeScene(GameScenes newScene)
+        {
+            // Unload all existing scenes
+            while (sceneStack.Count > 0)
+            {
+                var scene = sceneStack.Pop();
+                scene.UnloadContent();
+            }
+
+            // Add the new scene
+            AddScene(newScene, pauseCurrent: false);
         }
 
         /// <summary>

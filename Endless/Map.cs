@@ -110,5 +110,17 @@ namespace Endless
                 }
             }
         }
+
+        public int[,] SerializeTiles()
+        {
+            return tiles; // returns the current tiles array
+        }
+
+        public void DeserializeTiles(int[,] savedTiles)
+        {
+            tiles = savedTiles;
+            mapWidth = tiles.GetLength(1);
+            mapHeight = tiles.GetLength(0);
+        }
     }
 }
