@@ -41,12 +41,19 @@ namespace Endless.Screens
         private float shakeMagnitude = 5f;
         private Random random = new Random();
         private Vector2 shakeOffset = Vector2.Zero;
-        private Texture2D VideoBorder;
+
+        private PlayerInventory playerInventory;
+        private KeyboardState previousKeyboardState;
+
+
 
         private Video video;
         private VideoPlayer vPlayer;
         private Texture2D videoTexture;
         private bool isPlaying = false;
+        private Texture2D VideoBorder;
+      
+       
 
 
       
@@ -87,8 +94,8 @@ namespace Endless.Screens
             
 
             Traveler = new TravelerSprite() { position = new Vector2(500, 780) };
-            
-            arm = new ArmSprite() { position = new Vector2(500, 780) };
+
+            arm = new ArmSprite(Traveler);
 
             map = new Map();
             
@@ -118,6 +125,9 @@ namespace Endless.Screens
                 new HelthSprite(),
             };
             healthLeft = healths.Length;
+
+            playerInventory = new PlayerInventory(new TeleportingControlItem());
+
 
         }
 
@@ -158,13 +168,16 @@ namespace Endless.Screens
 
             video = Content.Load<Video>("MEMEThoughts2");
             vPlayer = new VideoPlayer();
-            
-
-            vPlayer.Play(video);
+           
+            //vPlayer.Play(video);
             isPlaying = true;
             
+            
 
-            rotation = 0.0f;
+
+
+
+                rotation = 0.0f;
             Doto = Content.Load<SpriteFont>("Doto-Black");
 
             backGroundMusic_nonC = Content.Load<Song>("if Anyone Dies (instrumental)");
@@ -181,6 +194,24 @@ namespace Endless.Screens
         public override void UnloadContent()
         {
             base.UnloadContent();
+
+            try
+            {
+                if (vPlayer != null)
+                {
+                    if (vPlayer.State != MediaState.Stopped)
+                        vPlayer.Stop();
+
+                    vPlayer.Dispose();
+                    
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Video cleanup failed: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -190,9 +221,13 @@ namespace Endless.Screens
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            KeyboardState currentKeyboardState = Keyboard.GetState();
+
             if (Keyboard.GetState().IsKeyDown(Keys.U))
             {
                 SceneManager.Instance.AddScene(new PauseScene());
+               
             }
 
             Traveler.color = Color.White;
@@ -275,8 +310,18 @@ namespace Endless.Screens
 
             if (isPlaying && vPlayer.State == MediaState.Stopped)
             {
-                vPlayer.Play(video); // restart when finished
+                //vPlayer.Play(video); // restart when finished
             }
+
+            if (currentKeyboardState.IsKeyDown(Keys.E) && !previousKeyboardState.IsKeyDown(Keys.E))
+            {
+                playerInventory.UseItem(Traveler);
+                
+            }
+
+            // Save state for next frame
+            previousKeyboardState = currentKeyboardState;
+
 
 
         }
@@ -367,6 +412,7 @@ namespace Endless.Screens
                     sb.Draw(VideoBorder, new Rectangle(1030, 20, 150, 150), Color.White); // the video border
                     sb.End();
                 }
+                
 
             }
 

@@ -97,6 +97,7 @@ namespace Endless.Managers
             // Unload all existing scenes
             while (sceneStack.Count > 0)
             {
+                currentScreen.UnloadContent();
                 var scene = sceneStack.Pop();
                 scene.UnloadContent();
             }

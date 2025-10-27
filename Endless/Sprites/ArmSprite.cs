@@ -47,6 +47,7 @@ namespace Endless.Sprites
         /// the arms position
         /// </summary>
         public Vector2 position;
+        private TravelerSprite player;
 
         private float rotation;
 
@@ -55,6 +56,11 @@ namespace Endless.Sprites
         private Vector2 minPos, maxPos;
 
 
+        public ArmSprite(TravelerSprite player)
+        {
+            this.player = player;
+            position = player.position;
+        }
 
         /// <summary>
         /// loads the arm texture using content manager
@@ -95,6 +101,8 @@ namespace Endless.Sprites
             previousMouse = currentMouse;
             currentMouse = Mouse.GetState();
 
+            position = player.position;
+            
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
                 position += new Vector2(-3, 0);
