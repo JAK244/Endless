@@ -15,5 +15,7 @@ namespace Endless.Sprites
 
 
         public abstract void Use(TravelerSprite sprite);
+
+        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
     }
 }

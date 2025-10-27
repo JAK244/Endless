@@ -13,9 +13,14 @@ namespace Endless.Sprites
     {
         private Vector2? savedPosition = null;
 
-        public TeleportingControlItem()
+        private double animationTimer;
+        private short animationFrame;
+
+
+        public TeleportingControlItem(Texture2D icon)
         {
             Name = "Teleport Controller"; 
+            Icon = icon;
         }
 
         public override void Use(TravelerSprite player)
@@ -29,8 +34,27 @@ namespace Endless.Sprites
             {
                 player.position = savedPosition.Value;
                 Debug.WriteLine("Position reversed!");
-                savedPosition = null; // reset, can be reused if desired
+                savedPosition = null; // reset
             }
+        }
+
+        
+
+        public override void Draw(GameTime gameTime, SpriteBatch sb)
+        {
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (animationTimer > 0.2)
+            {
+                animationFrame++;
+                if (animationFrame > 6) animationFrame = 0;
+                animationTimer -= 0.2;
+            }
+
+
+            var source = new Rectangle(animationFrame * 32, 0, 32, 32);
+            sb.Draw(Icon, new Vector2(210, 10), source, Color.White,0f,Vector2.Zero,2f,SpriteEffects.None,0f);
+            
         }
 
         

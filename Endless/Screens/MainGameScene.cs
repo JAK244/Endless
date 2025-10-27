@@ -126,7 +126,7 @@ namespace Endless.Screens
             };
             healthLeft = healths.Length;
 
-            playerInventory = new PlayerInventory(new TeleportingControlItem());
+            
 
 
         }
@@ -165,6 +165,8 @@ namespace Endless.Screens
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             VideoBorder = Content.Load<Texture2D>("VideoBorderFinal");
+            playerInventory = new PlayerInventory(new TeleportingControlItem(Content.Load<Texture2D>("TelaItem")));
+
 
             video = Content.Load<Video>("MEMEThoughts2");
             vPlayer = new VideoPlayer();
@@ -335,12 +337,12 @@ namespace Endless.Screens
         {
             var sb = SceneManager.Instance.SpriteBatch;
 
-            
-
             Matrix shakeTransform = _translation * Matrix.CreateTranslation(shakeOffset.X, shakeOffset.Y, 0);
             sb.Begin(transformMatrix: shakeTransform, samplerState: SamplerState.PointClamp);
 
             map.Draw(sb);
+
+            
 
             powerBall.Draw(gameTime, sb);
             //var rec3 = new Rectangle((int)powerBall.Bounds.X,(int)powerBall.Bounds.Y,(int)powerBall.Bounds.Width,(int)powerBall.Bounds.Height);
@@ -367,11 +369,11 @@ namespace Endless.Screens
                 bullet.Draw(gameTime, sb);
 
 
-            //var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
-            //sb.Draw(ball, rec2, Color.White);
 
             arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);
+            //var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
+            //sb.Draw(ball, rec2, Color.White);
 
 
             sb.End();
@@ -398,6 +400,7 @@ namespace Endless.Screens
             }
 
             waveManager.Draw(gameTime, sb);
+            playerInventory.Draw(gameTime,sb);
 
             sb.End();
 
