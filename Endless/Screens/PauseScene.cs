@@ -19,25 +19,38 @@ namespace Endless.Screens
         private List<string> menuItems;
         private int selectedIndex;
         private KeyboardState oldState;
+        private GamePadState oldPadState;
 
 
         public override void LoadContent(ContentManager content)
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
-            menuItems = new List<string> { "Resume", "Title Screen" };
+            menuItems = new List<string> { "Resume", "Exit Game" };
         }
 
         public override void Update(GameTime game)
         {
             var keyboard = Keyboard.GetState();
+            var gamepad = GamePad.GetState(0);
 
-            if (IsKeyPressed(Keys.Up, keyboard))
+            if (IsKeyPressed(Keys.Up, keyboard) ||
+                (gamepad.DPad.Up == ButtonState.Pressed && oldPadState.DPad.Up == ButtonState.Released) ||
+                (gamepad.ThumbSticks.Left.Y > 0.5f && oldPadState.ThumbSticks.Left.Y <= 0.5f))
+            {
                 selectedIndex = (selectedIndex - 1 + menuItems.Count) % menuItems.Count;
+            }
 
-            if (IsKeyPressed(Keys.Down, keyboard))
+            // Move down
+            if (IsKeyPressed(Keys.Down, keyboard) ||
+                (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
+                (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
+            {
                 selectedIndex = (selectedIndex + 1) % menuItems.Count;
+            }
 
-            if (IsKeyPressed(Keys.Enter, keyboard))
+            // Select (Enter or A)
+            if (IsKeyPressed(Keys.Enter, keyboard) ||
+                (gamepad.Buttons.A == ButtonState.Pressed && oldPadState.Buttons.A == ButtonState.Released))
             {
                 if (selectedIndex == 0) // start game
                 {
@@ -46,12 +59,13 @@ namespace Endless.Screens
                 }
                 else if (selectedIndex == 1) // exit
                 {
-                    
-                    SceneManager.Instance.ChangeScene(new TitleScene());
+
+                    System.Environment.Exit(0);
                 }
             }
 
             oldState = keyboard;
+            oldPadState = gamepad;
         }
 
         public override void Draw(GameTime game)

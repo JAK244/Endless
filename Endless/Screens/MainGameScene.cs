@@ -1,16 +1,17 @@
-﻿using System;
+﻿using Endless.Managers;
+using Endless.Sprites;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using SharpDX.XInput;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Endless.Managers;
-using Endless.Sprites;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Media;
 
 namespace Endless.Screens
 {
@@ -41,6 +42,10 @@ namespace Endless.Screens
         private float shakeMagnitude = 5f;
         private Random random = new Random();
         private Vector2 shakeOffset = Vector2.Zero;
+        private Texture2D ItemFrame;
+        private TextMessageManager floatingTextManager;
+        private GamePadState oldPadState;
+
 
         private PlayerInventory playerInventory;
         private KeyboardState previousKeyboardState;
@@ -165,13 +170,17 @@ namespace Endless.Screens
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             VideoBorder = Content.Load<Texture2D>("VideoBorderFinal");
-            playerInventory = new PlayerInventory(new TeleportingControlItem(Content.Load<Texture2D>("TelaItem")));
+            playerInventory = new PlayerInventory(new TeleportingControlItem(Content.Load<Texture2D>("TelaItem"), Content.Load<Texture2D>("TPItemMarker")));
+            ItemFrame = Content.Load<Texture2D>("CurrentItemFrame");
+            Doto = Content.Load<SpriteFont>("Doto-Black");
+            floatingTextManager = new TextMessageManager(Doto);
+
 
 
             video = Content.Load<Video>("MEMEThoughts2");
             vPlayer = new VideoPlayer();
            
-            //vPlayer.Play(video);
+            vPlayer.Play(video);
             isPlaying = true;
             
             
@@ -180,7 +189,6 @@ namespace Endless.Screens
 
 
                 rotation = 0.0f;
-            Doto = Content.Load<SpriteFont>("Doto-Black");
 
             backGroundMusic_nonC = Content.Load<Song>("if Anyone Dies (instrumental)");
             backGroundMusic_InC = content.Load<Song>("Arena Theme");
@@ -225,8 +233,9 @@ namespace Endless.Screens
             base.Update(gameTime);
 
             KeyboardState currentKeyboardState = Keyboard.GetState();
+            GamePadState currentPadState = GamePad.GetState(0);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.U))
+            if (Keyboard.GetState().IsKeyDown(Keys.U) || currentPadState.Buttons.Start == ButtonState.Pressed && oldPadState.Buttons.B == ButtonState.Released)
             {
                 SceneManager.Instance.AddScene(new PauseScene());
                
@@ -284,7 +293,7 @@ namespace Endless.Screens
             {
                 showInteractPrompt = true;
 
-                if (Keyboard.GetState().IsKeyDown(Keys.F) && !waveManager.WaveActive)
+                if (Keyboard.GetState().IsKeyDown(Keys.F) && !waveManager.WaveActive || currentPadState.Buttons.Y == ButtonState.Pressed && oldPadState.Buttons.Y == ButtonState.Released && !waveManager.WaveActive)
                 {
                     waveManager.StartWave(waveManager.CurrentWave + 1);
                 }
@@ -310,19 +319,26 @@ namespace Endless.Screens
             }
 
 
+            // hanldes video stuff
             if (isPlaying && vPlayer.State == MediaState.Stopped)
             {
-                //vPlayer.Play(video); // restart when finished
+                vPlayer.Play(video); // restart when finished
             }
 
-            if (currentKeyboardState.IsKeyDown(Keys.E) && !previousKeyboardState.IsKeyDown(Keys.E))
+
+            //handles using items
+            if (currentKeyboardState.IsKeyDown(Keys.E) && !previousKeyboardState.IsKeyDown(Keys.E) || currentPadState.Buttons.LeftShoulder == ButtonState.Pressed && oldPadState.Buttons.LeftShoulder == ButtonState.Released)
             {
-                playerInventory.UseItem(Traveler);
-                
+                playerInventory.UseItem(Traveler, floatingTextManager);
+
             }
 
             // Save state for next frame
             previousKeyboardState = currentKeyboardState;
+            oldPadState = currentPadState;
+
+            floatingTextManager.Update(gameTime);
+
 
 
 
@@ -375,6 +391,11 @@ namespace Endless.Screens
             //var rec2 = new Rectangle((int)Traveler.Bounds.X,(int)Traveler.Bounds.Y,(int)Traveler.Bounds.Width,(int)Traveler.Bounds.Height);
             //sb.Draw(ball, rec2, Color.White);
 
+            if (playerInventory.Item is TeleportingControlItem teleportItem)
+            {
+                teleportItem.DrawMarker(gameTime, sb);
+            }
+
 
             sb.End();
 
@@ -400,7 +421,10 @@ namespace Endless.Screens
             }
 
             waveManager.Draw(gameTime, sb);
+            sb.Draw(ItemFrame, new Vector2(250,10), Color.White);
             playerInventory.Draw(gameTime,sb);
+            floatingTextManager.Draw(sb);
+
 
             sb.End();
 

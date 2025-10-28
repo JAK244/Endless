@@ -30,6 +30,7 @@ namespace Endless.Screens
         private List<string> menuItems;
         private int selectedIndex;
         private KeyboardState oldState;
+        private GamePadState oldPadState;
         private bool ignoreInput = true;
 
 
@@ -79,7 +80,7 @@ namespace Endless.Screens
             backGroundMusic = Content.Load<Song>("Synthwave Loop");
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Play(backGroundMusic);
-            menuItems = new List<string> { "New Game", "Controls", "Exit" };
+            menuItems = new List<string> { "Start Game", "Controls", "Exit" };
 
             base.LoadContent(Content);
         }
@@ -99,35 +100,51 @@ namespace Endless.Screens
         public override void Update(GameTime gameTime)
         {
             var keyboard = Keyboard.GetState();
+            var gamepad = GamePad.GetState(0);
 
             if (ignoreInput)
             {
                 oldState = keyboard;
+                oldPadState = gamepad;
                 ignoreInput = false;
                 return; // skip update for 1 frame
             }
 
-            if (IsKeyPressed(Keys.Up, keyboard))
+            if (IsKeyPressed(Keys.Up, keyboard) ||
+                (gamepad.DPad.Up == ButtonState.Pressed && oldPadState.DPad.Up == ButtonState.Released) ||
+                (gamepad.ThumbSticks.Left.Y > 0.5f && oldPadState.ThumbSticks.Left.Y <= 0.5f))
+            {
                 selectedIndex = (selectedIndex - 1 + menuItems.Count) % menuItems.Count;
+            }
 
-            if (IsKeyPressed(Keys.Down, keyboard))
+            // Move down
+            if (IsKeyPressed(Keys.Down, keyboard) ||
+                (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
+                (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
+            {
                 selectedIndex = (selectedIndex + 1) % menuItems.Count;
+            }
 
-            if (IsKeyPressed(Keys.Enter, keyboard))
+            // Select (Enter or A)
+            if (IsKeyPressed(Keys.Enter, keyboard) ||
+                (gamepad.Buttons.A == ButtonState.Pressed && oldPadState.Buttons.A == ButtonState.Released))
             {
                 if (selectedIndex == 0)
                 {
-                    // start game
                     SceneManager.Instance.AddScene(new MainGameScene());
                 }
-                else if (selectedIndex == 3)
+                else if (selectedIndex == 1)
                 {
-                    // exit
-                    System.Environment.Exit(0);
+                    SceneManager.Instance.AddScene(new ControllsScene());
+                }
+                else if (selectedIndex == 2)
+                {
+                    Environment.Exit(0);
                 }
             }
 
             oldState = keyboard;
+            oldPadState = gamepad;
 
 
 

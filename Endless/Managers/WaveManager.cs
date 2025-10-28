@@ -22,6 +22,7 @@ namespace Endless.Managers
         private float messageAlpha = 0f;
         private double messageTimer = 0.0;
         private bool showingMessage = false;
+        private int totalEnemiesRemaining;
 
         private double spawnTimer;
         private int enemiesToSpawn;
@@ -94,6 +95,7 @@ namespace Endless.Managers
             CurrentWave = waveNumber;
             WaveActive = true;
             enemiesToSpawn = 10 + (waveNumber - 1) * 5; // increments each round by 5
+            totalEnemiesRemaining = enemiesToSpawn;
             spawnTimer = 0;
 
             OnWaveStart?.Invoke(CurrentWave);
@@ -114,7 +116,7 @@ namespace Endless.Managers
                 else if (messageTimer < 2)
                     messageAlpha = 1f; // hold
                 else if (messageTimer < 3)
-                    messageAlpha = 1f - (float)((messageTimer - 2) / 1.0); 
+                    messageAlpha = 1f - (float)((messageTimer - 2) / 1.0);
                 else
                     showingMessage = false;
             }
@@ -136,6 +138,31 @@ namespace Endless.Managers
                 WaveActive = false;
                 OnWaveEnd?.Invoke(CurrentWave);
             }
+
+            if (WaveActive)
+            {
+                int aliveCount = bugs.Count(b => b.IsAlive);
+                if (aliveCount > 0)
+                {
+                    // Example: start speeding up when fewer than 5 remain
+                    float ratioAlive = (float)aliveCount / totalEnemiesRemaining;
+                    float speedMultiplier = 1.0f;
+
+                    if (ratioAlive <= 0.75f) speedMultiplier = 1.5f; 
+                    if (ratioAlive <= 0.50f) speedMultiplier = 2f; 
+                    if (ratioAlive <= 0.25f) speedMultiplier = 3f; 
+                    if (ratioAlive <= 0.10f) speedMultiplier = 3.5f; 
+
+                    foreach (var bug in bugs.Where(b => b.IsAlive))
+                    {
+                        bug.Speed = 60f * speedMultiplier;
+                    }
+                }
+            }
+
+
+            
+
         }
 
         /// <summary>

@@ -12,25 +12,29 @@ namespace Endless.Sprites
     public class PlayerInventory
     {
         public ItemBase Item { get; private set; }
-        public Texture2D teture {  get; private set; }
+        public Texture2D teture { get; private set; }
 
         public PlayerInventory(ItemBase startingItem)
         {
             Item = startingItem;
         }
 
-        public void UseItem(TravelerSprite player)
+        // Accept optional manager and forward it to the item's Use
+        public void UseItem(TravelerSprite player, TextMessageManager textManager = null)
         {
-            Item?.Use(player);
+            Item?.Use(player, textManager);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            Item.Draw(gameTime, spriteBatch);
+            if (Item?.Icon == null)
+                return;
 
-            // Optional: draw name or key hint
-            //var font = SceneManager.Instance.Content.Load<SpriteFont>("Doto-Black");
-            //spriteBatch.DrawString(font, Item.Name, iconPosition + new Vector2(60, 10), Color.White);
+            // Ui Position
+            Vector2 iconPosition = new Vector2(200, 10);
+
+            // Draw using the Item's Draw method (which uses gameTime)
+            Item.Draw(gameTime, spriteBatch);
         }
     }
 }
