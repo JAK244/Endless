@@ -16,6 +16,24 @@ Content/RockTileMap-Sheet.png - Created by Jack Jara using Asprite, released und
 
 Content/GunShotSound.Wav - Created by Jack Jara using Bfxr, realeased under public domain
 
+Content/Bullet.png - Created by Jack Jara using Asprite, released under public domain
+
+Content/ControllsPage.png - Created by Jack Jara using Asprite, released under public domain
+
+Content/CurrentItemFrame.png - Created by Jack Jara using Asprite, released under public domain
+
+Content/DuckTravler.png - Created by Jack Jara using Asprite, released under public domain
+
+Content/MEMEThoughts2.mp4 - Created by Jack Jara using Movavi video Editor 26, released under public domain
+
+Content/TelaItem.png - Created by Jack Jara using Asprite, released under public domain
+
+Content/TPItemMarker.png - Created by Jack Jara using Asprite, released under public domain
+
+Content/VideoBorderFinal.png - Created by Jack Jara using Asprite, released under public domain
+
+Content/Arena Theme.mp3 - Created by Steven O'Brien, released on steven-obrien.net (https://www.steven-obrien.net/#popcorn-~-loading-theme) free use with proper credit given 
+
 Content/Synthwave loop.mp3 - Created by Steven O'Brien, released on steven-obrien.net (https://www.steven-obrien.net/#popcorn-~-loading-theme) free use with proper credit given 
 
 Content/If Anyone Dies(instrumental).mp3 - Created by Steven O'Brien, released on steven-obrien.net (https://www.steven-obrien.net/#popcorn-~-loading-theme) free use with proper credit given 

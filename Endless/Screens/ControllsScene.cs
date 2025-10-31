@@ -5,12 +5,13 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Endless.Screens
 {
+    /// <summary>
+    /// the Controlls Screen class
+    /// </summary>
     public class ControllsScene : GameScenes
     {
         private SpriteFont Doto;
@@ -20,7 +21,10 @@ namespace Endless.Screens
         private GamePadState oldPadState;
         private Texture2D ControlImage;
 
-
+        /// <summary>
+        /// Loads content using a contentManager
+        /// </summary>
+        /// <param name="content">the contentmanager</param>
         public override void LoadContent(ContentManager content)
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
@@ -28,6 +32,11 @@ namespace Endless.Screens
             ControlImage = content.Load<Texture2D>("ControllsPage");
         }
 
+
+        /// <summary>
+        /// updates the controll screen using gameTime
+        /// </summary>
+        /// <param name="game">the gameTime</param>
         public override void Update(GameTime game)
         {
             var keyboard = Keyboard.GetState();
@@ -52,6 +61,10 @@ namespace Endless.Screens
             oldPadState = gamepad;
         }
 
+        /// <summary>
+        /// Draws the Controlls Screen using GameTime
+        /// </summary>
+        /// <param name="game">the GameTime</param>
         public override void Draw(GameTime game)
         {
             var sb = SceneManager.Instance.SpriteBatch;

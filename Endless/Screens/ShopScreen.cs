@@ -4,17 +4,17 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SharpDX.Direct2D1;
-using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
+
 
 namespace Endless.Screens
 {
+    /// <summary>
+    /// the ShopScreen Class
+    /// </summary>
     public class ShopScreen : GameScenes
     {
         private SpriteFont Doto;
@@ -28,11 +28,20 @@ namespace Endless.Screens
 
         private TravelerSprite player;
 
+        /// <summary>
+        /// the constructor fo the shopScreen
+        /// </summary>
+        /// <param name="player">the player</param>
         public ShopScreen(TravelerSprite player)
         {
             this.player = player;
         }
 
+
+        /// <summary>
+        /// Loads content using a contentManager
+        /// </summary>
+        /// <param name="content">the contentManager</param>
         public override void LoadContent(ContentManager content)
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
@@ -45,7 +54,7 @@ namespace Endless.Screens
                     Name = "Hot sauce",
                     Icon = content.Load<Texture2D>("TelaItem"),
                     Description = "Fire up your chicken and incresse your speed",
-                    ApplyEffect = (player) => player.SpeedMultiplier += 0.2f
+                    ApplyEffect = (player) => player.SpeedMultiplier += 0.20f
                 },
 
                 new ShopItems
@@ -53,7 +62,7 @@ namespace Endless.Screens
                     Name = "Heart Container",
                     Icon = content.Load<Texture2D>("TelaItem"),
                     Description = "Gain an extra heart",
-                    ApplyEffect = (player) => player.MaxHelth++
+                    ApplyEffect = (player) => player.healthWentUp = true
                 },
 
                 new ShopItems
@@ -70,6 +79,9 @@ namespace Endless.Screens
 
         }
 
+        /// <summary>
+        /// Gets 3 Random Items from the Shop
+        /// </summary>
         private void GenerateRandomItems()
         {
             currentItems = new List<ShopItems>();
@@ -83,6 +95,10 @@ namespace Endless.Screens
             }
         }
 
+        /// <summary>
+        /// Updates the Items using gameTime
+        /// </summary>
+        /// <param name="gameTime">the GameTime</param>
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
@@ -97,7 +113,16 @@ namespace Endless.Screens
             if (state.IsKeyDown(Keys.Enter) && oldState.IsKeyUp(Keys.Enter))
             {
                 var selected = currentItems[selectIndex];
-                selected.ApplyEffect(player); // Apply effect permanently
+                if (selected.ApplyEffect != null)
+                {
+                    selected.ApplyEffect(player);
+                    System.Diagnostics.Debug.WriteLine(
+                        $"Applied {selected.Name}! Speed={player.SpeedMultiplier}, Health={player.MaxHelth}");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Item {selected.Name} has no ApplyEffect!");
+                } // Apply effect permanently
                 SceneManager.Instance.RemoveScene(); // or return to gameplay
             }
 
@@ -105,6 +130,10 @@ namespace Endless.Screens
 
         }
 
+        /// <summary>
+        /// Draws the shopScreen
+        /// </summary>
+        /// <param name="gameTime">the GameTime</param>
         public override void Draw(GameTime gameTime)
         {
             var sb = SceneManager.Instance.SpriteBatch;
@@ -118,10 +147,9 @@ namespace Endless.Screens
                 new Vector2(Doto.MeasureString("SHOP - Choose Your Upgrade").X / 2, 0), 0.6f,
                 SpriteEffects.None, 0f);
 
-            // Layout constants
             int screenWidth = 1200;
             int itemCount = currentItems.Count;
-            int cardWidth = screenWidth / 3; // roughly 400 each
+            int cardWidth = screenWidth / 3; 
             int cardCenterOffset = cardWidth / 2;
 
             for (int i = 0; i < currentItems.Count; i++)
@@ -161,7 +189,14 @@ namespace Endless.Screens
             sb.End();
         }
 
-
+        /// <summary>
+        /// Wraps the Text that goes off screen
+        /// </summary>
+        /// <param name="font">the font</param>
+        /// <param name="text">the text</param>
+        /// <param name="maxLineWidth"> the max width</param>
+        /// <param name="scale">the scale</param>
+        /// <returns>the wrapped string</returns>
         private string WrapText(SpriteFont font, string text, float maxLineWidth, float scale)
         {
             string[] words = text.Split(' ');

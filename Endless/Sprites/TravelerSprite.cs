@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -33,9 +28,25 @@ namespace Endless.Sprites
 
         private bool IsMoving = false;
 
-        public float SpeedMultiplier = 1f;
+        /// <summary>
+        /// Checks if there health incressed
+        /// </summary>
+        public bool healthWentUp = false;
+
+        /// <summary>
+        /// the multiplier to speed
+        /// </summary>
+        public float SpeedMultiplier { get; set; } = 1f;
+
+        /// <summary>
+        /// the multiplier to damage
+        /// </summary>
         public float DamageMultiplier = 1f;
-        public int MaxHelth = 3;
+
+        /// <summary>
+        /// the check of health
+        /// </summary>
+        public int MaxHelth { get; set; } = 3;
 
         /// <summary>
         /// the sprites position
@@ -103,32 +114,32 @@ namespace Endless.Sprites
             // Movement input
             if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
             {
-                move.X -= 3;
+                move.X -= 3 * SpeedMultiplier;
                 flipped = true;
                 IsMoving = true;
             }
 
             if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
             {
-                move.X += 3;
+                move.X += 3 * SpeedMultiplier;
                 flipped = false;
                 IsMoving = true;
             }
 
             if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
             {
-                move.Y -= 3;
+                move.Y -= 3 * SpeedMultiplier;
                 IsMoving = true;
             }
 
             if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
             {
-                move.Y += 3;
+                move.Y += 3 * SpeedMultiplier;
                 IsMoving = true;
             }
 
             // Gamepad movement
-            move += gamePadState.ThumbSticks.Left * new Vector2(3, -3);
+            move += gamePadState.ThumbSticks.Left * new Vector2(3 * SpeedMultiplier, -3 * SpeedMultiplier);
             if (gamePadState.ThumbSticks.Left.Length() > 0.2f)
             {
                 IsMoving = true;

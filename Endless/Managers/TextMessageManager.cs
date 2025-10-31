@@ -4,8 +4,14 @@ using System.Collections.Generic;
 
 namespace Endless.Managers
 {
+    /// <summary>
+    /// Manages Text messages
+    /// </summary>
     public class TextMessageManager
     {
+        /// <summary>
+        /// handles message stuff
+        /// </summary>
         private class Message
         {
             public string Text;
@@ -17,11 +23,21 @@ namespace Endless.Managers
         private readonly List<Message> messages = new();
         private readonly SpriteFont font;
 
+        /// <summary>
+        /// the TextMessageMangaer Constructor
+        /// </summary>
+        /// <param name="font">the message font</param>
         public TextMessageManager(SpriteFont font)
         {
             this.font = font;
         }
 
+        /// <summary>
+        /// add a message 
+        /// </summary>
+        /// <param name="text">the text</param>
+        /// <param name="Position">the text position</param>
+        /// <param name="color">the text color</param>
         public void Add(string text, Vector2 Position, Color color)
         {
             messages.Add(new Message
@@ -33,6 +49,10 @@ namespace Endless.Managers
             });
         }
 
+        /// <summary>
+        /// updates the textmessage using gameTime
+        /// </summary>
+        /// <param name="gameTime">the gameTime</param>
         public void Update(GameTime gameTime)
         {
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -47,6 +67,10 @@ namespace Endless.Managers
             }
         }
 
+        /// <summary>
+        /// Draws the message using SpriteBatch
+        /// </summary>
+        /// <param name="spriteBatch">the spriteBatchs</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (var msg in messages)

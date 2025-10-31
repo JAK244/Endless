@@ -31,11 +31,20 @@ namespace Endless
         private const int TileCount = 5;
         private int[,] tiles;
 
-        public int mapWidth = 50;  // in tiles
-        public int mapHeight = 50; // in tiles
+        /// <summary>
+        /// the map width in tiles
+        /// </summary>
+        public int mapWidth = 50; 
 
-        public int Scale = 2; // how much you’re scaling when drawing
+        /// <summary>
+        /// the map width in tiles
+        /// </summary>
+        public int mapHeight = 50; 
 
+        /// <summary>
+        /// the scale of the drawing
+        /// </summary>
+        public int Scale = 2; 
         
 
 
@@ -111,11 +120,19 @@ namespace Endless
             }
         }
 
+        /// <summary>
+        /// Serializes the current state of the tiles into a two-dimensional array.
+        /// </summary>
+        /// <returns>A two-dimensional array of integers representing the current tiles.</returns>
         public int[,] SerializeTiles()
         {
-            return tiles; // returns the current tiles array
+            return tiles;
         }
 
+        /// <summary>
+        /// Deserializeses the current state of the tiles into a two-dimensional array.
+        /// </summary>
+        /// <param name="savedTiles">A two-dimensional array of integers representing the current tiles</param>
         public void DeserializeTiles(int[,] savedTiles)
         {
             tiles = savedTiles;

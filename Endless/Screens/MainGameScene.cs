@@ -70,12 +70,21 @@ namespace Endless.Screens
         /// </summary>
         public Matrix _translation;
 
+        /// <summary>
+        /// activates screen shake
+        /// </summary>
+        /// <param name="duration">the length</param>
+        /// <param name="magnitude">the shake</param>
         public void TriggerShake(float duration, float magnitude = 5f)
         {
             shakeDuration = duration;
             shakeMagnitude = magnitude;
         }
 
+        /// <summary>
+        /// handles the waves start ui and other
+        /// </summary>
+        /// <param name="wave">the wave</param>
         private void HandleWaveStart(int wave)
         {
             waveManager.ShowWaveMessage($"Wave {wave} Start!");
@@ -83,6 +92,10 @@ namespace Endless.Screens
             MediaPlayer.Play(backGroundMusic_InC);
         }
 
+        /// <summary>
+        /// handles the waves end ui and other
+        /// </summary>
+        /// <param name="wave">the wave</param>
         private void HandleWaveEnd(int wave)
         {
             waveManager.ShowWaveMessage($"Wave {wave} Complete!");
@@ -134,12 +147,11 @@ namespace Endless.Screens
             }
 
             healthLeft = Traveler.MaxHelth;
-
-
-
-
         }
 
+        /// <summary>
+        /// calculates Translation
+        /// </summary>
         private void CalculateTranslation()
         {
             var halfScreenW = SceneManager.Instance.Dimensions.X / 2;
@@ -178,7 +190,6 @@ namespace Endless.Screens
             ItemFrame = Content.Load<Texture2D>("CurrentItemFrame");
             Doto = Content.Load<SpriteFont>("Doto-Black");
             floatingTextManager = new TextMessageManager(Doto);
-
 
 
             video = Content.Load<Video>("MEMEThoughts2");
@@ -344,7 +355,15 @@ namespace Endless.Screens
 
             floatingTextManager.Update(gameTime);
 
-
+            if (Traveler.healthWentUp == true)
+            {
+                Traveler.MaxHelth++;
+                var newHeart = new HelthSprite();
+                newHeart.LoadContent(SceneManager.Instance.Content); // ✅ Load its texture
+                healths.Add(newHeart);
+                healthLeft = Traveler.MaxHelth;
+                Traveler.healthWentUp = false;
+            }
 
 
         }
@@ -426,7 +445,7 @@ namespace Endless.Screens
             }
 
             waveManager.Draw(gameTime, sb);
-            sb.Draw(ItemFrame, new Vector2(250,10), Color.White);
+            sb.Draw(ItemFrame, new Vector2(10,80), Color.White);
             Vector2 PointsTextPos = new Vector2(1030, 180);
             sb.DrawString(Doto, "Points:" + Points, PointsTextPos, Color.White,0f,Vector2.Zero,0.3f,SpriteEffects.None,0f);
             playerInventory.Draw(gameTime,sb);

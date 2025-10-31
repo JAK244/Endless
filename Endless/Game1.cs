@@ -15,6 +15,9 @@ namespace Endless
     {
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        /// <summary>
+        /// the games content manager
+        /// </summary>
         public ContentManager content;
         
 

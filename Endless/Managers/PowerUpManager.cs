@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework;
 
 namespace Endless.Managers
 {
+    /// <summary>
+    /// PowerUpManager class
+    /// </summary>
     public class PowerUpManager
     {
         private List<PowerUpBase> activePowerUps = new List<PowerUpBase>();
@@ -18,14 +21,27 @@ namespace Endless.Managers
             //add types later
         };
 
+        /// <summary>
+        /// checks active powerUps
+        /// </summary>
         public IReadOnlyList<PowerUpBase> ActivePowerUps => activePowerUps.AsReadOnly();
 
+        /// <summary>
+        /// adds a powerUP
+        /// </summary>
+        /// <param name="powerUp">the powerUp</param>
+        /// <param name="player">the player</param>
         public void AddPowerUp(PowerUpBase powerUp, TravelerSprite player)
         {
             //powerUp.ApplyEffect(player);
             activePowerUps.Add(powerUp);
         }
 
+        /// <summary>
+        /// updats the powerups using gametime 
+        /// </summary>
+        /// <param name="gameTime">the gameTime</param>
+        /// <param name="player">the player</param>
         public void Update(GameTime gameTime, TravelerSprite player)
         {
             foreach (var p in activePowerUps)
@@ -42,8 +58,7 @@ namespace Endless.Managers
             for (int i = activePowerUps.Count - 1; i >= 0; i--)
             {
                 var p = activePowerUps[i];
-                // You can add a flag like p.IsExpired if you want
-                // For now this is just a placeholder
+                
             }
         }
     }

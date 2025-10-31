@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Endless.Managers;
 using Endless.Sprites;
 using Microsoft.Xna.Framework;
@@ -13,6 +10,9 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Endless.Screens
 {
+    /// <summary>
+    /// the PauseScreen Class
+    /// </summary>
     public class PauseScene : GameScenes
     {
         private SpriteFont Doto;
@@ -21,13 +21,20 @@ namespace Endless.Screens
         private KeyboardState oldState;
         private GamePadState oldPadState;
 
-
+        /// <summary>
+        /// Loads the content using a contentManager
+        /// </summary>
+        /// <param name="content">the contentManager</param>
         public override void LoadContent(ContentManager content)
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
             menuItems = new List<string> { "Resume", "Exit Game" };
         }
 
+        /// <summary>
+        /// Updates the screen using gameTime
+        /// </summary>
+        /// <param name="game">the gameTime</param>
         public override void Update(GameTime game)
         {
             var keyboard = Keyboard.GetState();
@@ -68,6 +75,10 @@ namespace Endless.Screens
             oldPadState = gamepad;
         }
 
+        /// <summary>
+        /// Draws the pause Screen
+        /// </summary>
+        /// <param name="game">the gameTime</param>
         public override void Draw(GameTime game)
         {
             var sb = SceneManager.Instance.SpriteBatch;

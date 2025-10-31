@@ -57,10 +57,21 @@ namespace Endless.Sprites
 
         private int ammoCount = 6;
         private double reloadTimer = 0;
+
+        /// <summary>
+        /// checks if realoading
+        /// </summary>
         public bool isReloading = false;
+
+        /// <summary>
+        /// the durration of the reload
+        /// </summary>
         public double reloadDuration = 2.0;
 
-
+        /// <summary>
+        /// the arm sprite constructor
+        /// </summary>
+        /// <param name="player">the given player sprite</param>
         public ArmSprite(TravelerSprite player)
         {
             this.player = player;

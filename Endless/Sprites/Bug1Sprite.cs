@@ -26,8 +26,14 @@ namespace Endless.Sprites
         /// </summary>
         private double directionTimer;
 
+        /// <summary>
+        /// the speed of the bugs
+        /// </summary>
         public float Speed = 60f;
 
+        /// <summary>
+        /// points of these bugs
+        /// </summary>
         public int PointsWorth = 10;
 
         /// <summary>

@@ -11,6 +11,9 @@ public class GameScenes
     /// </summary>
     protected ContentManager content;
 
+    /// <summary>
+    /// checks if the scene is paused
+    /// </summary>
     public bool IsPaused;
 
     /// <summary>

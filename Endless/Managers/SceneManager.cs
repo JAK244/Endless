@@ -15,9 +15,16 @@ namespace Endless.Managers
         private static SceneManager instance;
         private ContentManager content;
         private Stack<GameScenes> sceneStack = new Stack<GameScenes>();
+        /// <summary>
+        /// the curren game Screen
+        /// </summary>
         public GameScenes currentScreen;
         private Vector2 dimensions;
         private GraphicsDevice graphicsDevice;
+
+        /// <summary>
+        /// the graphics Device
+        /// </summary>
         public GraphicsDevice GraphicsDevice => graphicsDevice;
 
         /// <summary>
@@ -72,6 +79,10 @@ namespace Endless.Managers
             currentScreen.LoadContent(content);
         }
 
+
+        /// <summary>
+        /// removes a scene
+        /// </summary>
         public void RemoveScene()
         {
             if (sceneStack.Count == 0) return;
@@ -92,6 +103,10 @@ namespace Endless.Managers
             }
         }
 
+        /// <summary>
+        /// changes a scene to a new one
+        /// </summary>
+        /// <param name="newScene">a new gamescene</param>
         public void ChangeScene(GameScenes newScene)
         {
             // Unload all existing scenes
