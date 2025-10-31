@@ -55,6 +55,11 @@ namespace Endless.Sprites
 
         private Vector2 minPos, maxPos;
 
+        private int ammoCount = 6;
+        private double reloadTimer = 0;
+        public bool isReloading = false;
+        public double reloadDuration = 2.0;
+
 
         public ArmSprite(TravelerSprite player)
         {
@@ -140,8 +145,30 @@ namespace Endless.Sprites
             if (rightStick.Length() > 0.2f)
                 targetDirection = rightStick;
 
+            // Handle reload countdown
+            if (isReloading)
+            {
+                reloadTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (reloadTimer <= 0)
+                {
+                    isReloading = false;
+                    ammoCount = 6; // refill bullets
+                }
+            }
+
             if (gamePadState.Triggers.Right > 0.5f && previousRightTrigger <= 0.5f)
             {
+                if (isReloading)
+                    return; // can’t shoot while reloading
+
+                if (ammoCount <= 0)
+                {
+                    isReloading = true;
+                    reloadTimer = reloadDuration;
+                    return; // stop shooting until reloaded
+                }
+
                 Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
                 if (direction != Vector2.Zero)
                     direction.Normalize();
@@ -155,6 +182,8 @@ namespace Endless.Sprites
                 bullet.texture = bulletTexture;
                 Bullets.Add(bullet);
                 gunShotSound.Play();
+
+                ammoCount--;
             }
 
      
@@ -166,6 +195,16 @@ namespace Endless.Sprites
 
             if (currentMouse.LeftButton == ButtonState.Pressed && previousMouse.LeftButton == ButtonState.Released)
             {
+                if (isReloading)
+                    return; // can’t shoot while reloading
+
+                if (ammoCount <= 0)
+                {
+                    isReloading = true;
+                    reloadTimer = reloadDuration;
+                    return; // stop shooting until reloaded
+                }
+
                 Vector2 direction = mouseWorld - position;
                 if (direction != Vector2.Zero)
                     direction.Normalize();
@@ -179,6 +218,8 @@ namespace Endless.Sprites
                 bullet.texture = bulletTexture;
                 Bullets.Add(bullet);
                 gunShotSound.Play();
+
+                ammoCount--;
 
             }
 
@@ -213,6 +254,8 @@ namespace Endless.Sprites
 
                 bullet.Draw(gameTime, spriteBatch);
             }
+
+            
 
         }
     }

@@ -6,12 +6,10 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using SharpDX.XInput;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Endless.Screens
 {
@@ -20,10 +18,10 @@ namespace Endless.Screens
     /// </summary>
     public class MainGameScene : GameScenes
     {
-        
+        // random ish
         private SpriteFont Doto;
         private TravelerSprite Traveler;
-        private HelthSprite[] healths;
+        private List<HelthSprite> healths;
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
         private List<Bug1Sprite> bugs;
@@ -45,13 +43,17 @@ namespace Endless.Screens
         private Texture2D ItemFrame;
         private TextMessageManager floatingTextManager;
         private GamePadState oldPadState;
+        private int Points = 0;
 
 
+
+        // inventory stuff
         private PlayerInventory playerInventory;
         private KeyboardState previousKeyboardState;
 
 
 
+        // video stuff
         private Video video;
         private VideoPlayer vPlayer;
         private Texture2D videoTexture;
@@ -84,6 +86,7 @@ namespace Endless.Screens
         private void HandleWaveEnd(int wave)
         {
             waveManager.ShowWaveMessage($"Wave {wave} Complete!");
+            SceneManager.Instance.AddScene(new ShopScreen(Traveler));
             MediaPlayer.Stop();
             MediaPlayer.Play(backGroundMusic_nonC);
         }
@@ -123,15 +126,16 @@ namespace Endless.Screens
             waveManager.OnWaveStart += HandleWaveStart;
             waveManager.OnWaveEnd += HandleWaveEnd;
 
-            healths = new HelthSprite[]
-            {
-                new HelthSprite(),
-                new HelthSprite(),
-                new HelthSprite(),
-            };
-            healthLeft = healths.Length;
+            healths = new List<HelthSprite>();
 
-            
+            for (int i = 0; i < Traveler.MaxHelth; i++)
+            {
+                healths.Add(new HelthSprite());
+            }
+
+            healthLeft = Traveler.MaxHelth;
+
+
 
 
         }
@@ -258,7 +262,7 @@ namespace Endless.Screens
 
                 if (damageCooldown <= 0 && bug.Bounds.CollidesWith(Traveler.Bounds))
                 {
-                    for (int i = 0; i < healths.Length; i++)
+                    for (int i = 0; i < healths.Count; i++)
                     {
                         if (!healths[i].Damaged)
                         {
@@ -280,6 +284,7 @@ namespace Endless.Screens
                 {
                     if (bullet.Bounds.CollidesWith(bug.Bounds))
                     {
+                        Points += bug.PointsWorth;
                         bullet.IsRemoved = true;
                         bug.IsAlive = false; 
                     }
@@ -405,7 +410,7 @@ namespace Endless.Screens
 
             int spacing = 70; // pixels between hearts
             int startX = 10; 
-            int totalHearts = healths.Length;
+            int totalHearts = healths.Count;
 
             for (int i = 0; i < totalHearts; i++)
             {
@@ -422,13 +427,21 @@ namespace Endless.Screens
 
             waveManager.Draw(gameTime, sb);
             sb.Draw(ItemFrame, new Vector2(250,10), Color.White);
+            Vector2 PointsTextPos = new Vector2(1030, 180);
+            sb.DrawString(Doto, "Points:" + Points, PointsTextPos, Color.White,0f,Vector2.Zero,0.3f,SpriteEffects.None,0f);
             playerInventory.Draw(gameTime,sb);
             floatingTextManager.Draw(sb);
+
+            if (arm.isReloading)
+            {
+                sb.DrawString(Doto, $"Reloading... ", new Vector2(10, 690), Color.Yellow, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0f); ;
+            }
 
 
             sb.End();
 
-
+            
+            // handles Video
             if (isPlaying && vPlayer.State == MediaState.Playing)
             {
                 videoTexture = vPlayer.GetTexture();

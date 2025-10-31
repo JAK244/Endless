@@ -28,6 +28,8 @@ namespace Endless.Sprites
 
         public float Speed = 60f;
 
+        public int PointsWorth = 10;
+
         /// <summary>
         /// the position of the sprite
         /// </summary>

@@ -26,7 +26,7 @@ namespace Endless.Sprites
             teleportMarker = marker;
         }
 
-        // Implement new signature (textManager optional)
+    
         public override void Use(TravelerSprite player, TextMessageManager textManager = null)
         {
             if (savedPosition == null)
@@ -41,7 +41,7 @@ namespace Endless.Sprites
             else
             {
                 player.position = savedPosition.Value;
-                visibleMarker = false; // hide marker
+                visibleMarker = false;
                 savedPosition = null;
 
                 Debug.WriteLine("Position reversed!");
@@ -51,7 +51,7 @@ namespace Endless.Sprites
 
         public override void Draw(GameTime gameTime, SpriteBatch sb)
         {
-            // (your existing animation code)
+            
             animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
             if (animationTimer > 0.2)
@@ -84,8 +84,8 @@ namespace Endless.Sprites
                 source2,
                 Color.White * 0.8f,
                 0f,
-                Vector2.Zero, // center origin
-                1f, // subtle pulse animation
+                Vector2.Zero, 
+                1f, 
                 SpriteEffects.None,
                 0f
             );

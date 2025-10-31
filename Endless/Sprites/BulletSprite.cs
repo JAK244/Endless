@@ -70,7 +70,7 @@ namespace Endless.Sprites
         {
             Position = position;
             Direction = direction;
-            Direction.Normalize(); // make sure it's unit length
+            Direction.Normalize(); 
             bounds = new BoundingCircle(position - new Vector2(-64, -110), -16);
         }
 

@@ -33,6 +33,10 @@ namespace Endless.Sprites
 
         private bool IsMoving = false;
 
+        public float SpeedMultiplier = 1f;
+        public float DamageMultiplier = 1f;
+        public int MaxHelth = 3;
+
         /// <summary>
         /// the sprites position
         /// </summary>
