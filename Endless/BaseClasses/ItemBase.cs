@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Endless.Managers;
+using Endless.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Endless.Sprites
+namespace Endless.BaseClasses
 {
     /// <summary>
     /// the base class for all items

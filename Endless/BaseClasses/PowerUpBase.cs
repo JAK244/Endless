@@ -1,7 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Endless.Sprites;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Endless.Sprites
+namespace Endless.BaseClasses
 {
     /// <summary>
     /// an enum containg the rarity of items

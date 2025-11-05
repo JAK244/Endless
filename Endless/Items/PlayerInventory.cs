@@ -1,9 +1,11 @@
-﻿using Endless.Managers;
+﻿using Endless.BaseClasses;
+using Endless.Managers;
+using Endless.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 
-namespace Endless.Sprites
+namespace Endless.Items
 {
     /// <summary>
     /// a class that handles players inventory

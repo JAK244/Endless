@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Windows.Forms.Design;
+using Endless.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Endless.Sprites
+namespace Endless.BaseClasses
 {
     /// <summary>
     /// the shopItmes base class

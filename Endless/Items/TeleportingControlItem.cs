@@ -1,10 +1,12 @@
-﻿using Endless.Managers;
+﻿using Endless.BaseClasses;
+using Endless.Managers;
+using Endless.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
 
 
-namespace Endless.Sprites
+namespace Endless.Items
 {
     /// <summary>
     /// the class for the teleporting item

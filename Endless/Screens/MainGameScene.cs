@@ -1,4 +1,5 @@
-﻿using Endless.Managers;
+﻿using Endless.Items;
+using Endless.Managers;
 using Endless.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
