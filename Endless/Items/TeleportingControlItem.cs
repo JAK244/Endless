@@ -78,7 +78,7 @@ namespace Endless.Items
             }
 
             var source = new Rectangle(animationFrame * 32, 0, 32, 32);
-            sb.Draw(Icon, new Vector2(8, 80), source, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            sb.Draw(Icon, new Vector2(98, 80), source, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
 
         }
 

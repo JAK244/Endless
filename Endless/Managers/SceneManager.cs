@@ -121,6 +121,17 @@ namespace Endless.Managers
             AddScene(newScene, pauseCurrent: false);
         }
 
+        public T GetScene<T>() where T : GameScenes
+        {
+            foreach (var scene in sceneStack)
+            {
+                if (scene is T typed)
+                    return typed;
+            }
+            return null;
+        }
+
+
         /// <summary>
         /// initalizes the current scene
         /// </summary>

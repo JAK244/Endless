@@ -53,7 +53,7 @@ namespace Endless.Screens
                 new ShopItems
                 {
                     Name = "Hot sauce",
-                    Icon = content.Load<Texture2D>("TelaItem"),
+                    Icon = content.Load<Texture2D>("HotSouce"),
                     Description = "Fire up your chicken and incresse your speed",
                     ApplyEffect = (player) => player.SpeedMultiplier += 0.20f
                 },
@@ -61,7 +61,7 @@ namespace Endless.Screens
                 new ShopItems
                 {
                     Name = "Heart Container",
-                    Icon = content.Load<Texture2D>("TelaItem"),
+                    Icon = content.Load<Texture2D>("HealthHeart"), // note all sprite must be 64x64
                     Description = "Gain an extra heart",
                     ApplyEffect = (player) => player.healthWentUp = true
                 },
@@ -114,17 +114,15 @@ namespace Endless.Screens
             if (state.IsKeyDown(Keys.Enter) && oldState.IsKeyUp(Keys.Enter))
             {
                 var selected = currentItems[selectIndex];
-                if (selected.ApplyEffect != null)
-                {
-                    selected.ApplyEffect(player);
-                    System.Diagnostics.Debug.WriteLine(
-                        $"Applied {selected.Name}! Speed={player.SpeedMultiplier}, Health={player.MaxHelth}");
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"Item {selected.Name} has no ApplyEffect!");
-                } // Apply effect permanently
-                SceneManager.Instance.RemoveScene(); // or return to gameplay
+
+                // apply effect
+                selected.ApplyEffect?.Invoke(player);
+
+                // 🔥 tell main game to add buff icon
+                var mg = (MainGameScene)SceneManager.Instance.GetScene<MainGameScene>();
+                mg?.AddBuff(selected.Icon);
+
+                SceneManager.Instance.RemoveScene();
             }
 
             oldState = state;

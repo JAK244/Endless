@@ -1,4 +1,5 @@
-﻿using Endless.Items;
+﻿using Endless.BaseClasses;
+using Endless.Items;
 using Endless.Managers;
 using Endless.Sprites;
 using Microsoft.Xna.Framework;
@@ -45,6 +46,14 @@ namespace Endless.Screens
         private TextMessageManager floatingTextManager;
         private GamePadState oldPadState;
         private int Points = 0;
+        private int totalFrames = 6;
+
+        private List<ActiveBuff> activeBuffs = new List<ActiveBuff>();
+
+
+        // 3d heart stuff
+        private Matrix uiView;
+        private Matrix uiProjection;
 
 
 
@@ -104,6 +113,23 @@ namespace Endless.Screens
             MediaPlayer.Stop();
             MediaPlayer.Play(backGroundMusic_nonC);
         }
+
+        public void AddBuff(Texture2D icon)
+        {
+            // check if buff already exists
+            var existing = activeBuffs.FirstOrDefault(b => b.Icon == icon);
+
+            if (existing != null)
+            {
+                existing.Count++; 
+            }
+            else
+            {
+                if (activeBuffs.Count < totalFrames)
+                    activeBuffs.Add(new ActiveBuff(icon));
+            }
+        }
+
 
 
         /// <summary>
@@ -191,6 +217,19 @@ namespace Endless.Screens
             ItemFrame = Content.Load<Texture2D>("CurrentItemFrame");
             Doto = Content.Load<SpriteFont>("Doto-Black");
             floatingTextManager = new TextMessageManager(Doto);
+
+            uiView = Matrix.CreateLookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up);
+            uiProjection = Matrix.CreateOrthographicOffCenter
+            (
+                0,
+                SceneManager.Instance.Dimensions.X,
+                SceneManager.Instance.Dimensions.Y,
+                0,
+                0.1f,
+                100f
+            );
+
+
 
 
             video = Content.Load<Video>("MEMEThoughts2");
@@ -360,12 +399,13 @@ namespace Endless.Screens
             {
                 Traveler.MaxHelth++;
                 var newHeart = new HelthSprite();
-                newHeart.LoadContent(SceneManager.Instance.Content); // ✅ Load its texture
+                newHeart.LoadContent(SceneManager.Instance.Content); 
                 healths.Add(newHeart);
                 healthLeft = Traveler.MaxHelth;
                 Traveler.healthWentUp = false;
             }
 
+            
 
         }
 
@@ -429,6 +469,8 @@ namespace Endless.Screens
             sb.Begin(samplerState: SamplerState.PointClamp);
 
             int spacing = 70; // pixels between hearts
+            int spacing2 = 10;
+            int spacing3= 10;
             int startX = 10; 
             int totalHearts = healths.Count;
 
@@ -439,16 +481,53 @@ namespace Endless.Screens
                 if (!healths[heartIndex].Damaged)
                 {
                     Vector2 heartPos = new Vector2(startX + (i * spacing), 10);
-
                     healths[heartIndex].position = heartPos;
-                    healths[heartIndex].Draw(gameTime, sb);
+                    healths[heartIndex].Update(gameTime);
+
+                    healths[heartIndex].Draw3D(
+                        SceneManager.Instance.GraphicsDevice,
+                        uiView,
+                        uiProjection
+                    );
                 }
             }
 
+            // makes the buffs column
+            for(int i = 0;i < totalFrames;i++)
+            {
+                sb.Draw(ItemFrame, new Vector2(10, 100 + spacing2), Color.White);
+                spacing2 += 60;
+            }
+
+            for (int i = 0; i < activeBuffs.Count; i++)
+            {
+                Vector2 pos = new Vector2(10, 100 + spacing3);
+
+                // draw icon 
+                sb.Draw(activeBuffs[i].Icon,
+                    pos + new Vector2(8, 8),
+                    null,
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    0.75f,
+                    SpriteEffects.None,
+                    0f);
+
+                // draw stack count (ex: "2x")
+                sb.DrawString(Doto, $"{activeBuffs[i].Count}x",
+                    pos + new Vector2(40, 40),
+                    Color.Black, 0f, Vector2.Zero, 0.35f, SpriteEffects.None, 0f);
+
+                spacing3 += 60;
+            }
+
+            // draws stuff
             waveManager.Draw(gameTime, sb);
-            sb.Draw(ItemFrame, new Vector2(10,80), Color.White);
+            sb.Draw(ItemFrame, new Vector2(100,80), Color.White);
             Vector2 PointsTextPos = new Vector2(1030, 180);
-            sb.DrawString(Doto, "Points:" + Points, PointsTextPos, Color.White,0f,Vector2.Zero,0.3f,SpriteEffects.None,0f);
+            sb.DrawString(Doto, "buffs",new Vector2(10,70), Color.Black, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+            sb.DrawString(Doto, "Points:" + Points, PointsTextPos, Color.Red,0f,Vector2.Zero,0.3f,SpriteEffects.None,0f);
             playerInventory.Draw(gameTime,sb);
             floatingTextManager.Draw(sb);
 
@@ -475,6 +554,8 @@ namespace Endless.Screens
                 
 
             }
+
+        
 
             base.Draw(gameTime);
         }
