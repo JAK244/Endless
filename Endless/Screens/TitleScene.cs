@@ -107,7 +107,7 @@ namespace Endless.Screens
                 return; // skip update for 1 frame
             }
 
-            if (IsKeyPressed(Keys.Up, keyboard) ||
+            if (IsKeyPressed(Keys.Up, keyboard) || IsKeyPressed(Keys.W, keyboard) || 
                 (gamepad.DPad.Up == ButtonState.Pressed && oldPadState.DPad.Up == ButtonState.Released) ||
                 (gamepad.ThumbSticks.Left.Y > 0.5f && oldPadState.ThumbSticks.Left.Y <= 0.5f))
             {
@@ -115,7 +115,7 @@ namespace Endless.Screens
             }
 
             // Move down
-            if (IsKeyPressed(Keys.Down, keyboard) ||
+            if (IsKeyPressed(Keys.Down, keyboard) || IsKeyPressed(Keys.S, keyboard) ||
                 (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
                 (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
             {
@@ -123,7 +123,7 @@ namespace Endless.Screens
             }
 
             // Select (Enter or A)
-            if (IsKeyPressed(Keys.Enter, keyboard) ||
+            if (IsKeyPressed(Keys.Enter, keyboard) || IsKeyPressed(Keys.Space, keyboard) ||
                 (gamepad.Buttons.A == ButtonState.Pressed && oldPadState.Buttons.A == ButtonState.Released))
             {
                 if (selectedIndex == 0)

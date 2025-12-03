@@ -20,43 +20,35 @@ namespace Endless.Sprites
     /// </summary>
     public class ArmSprite
     {
-        private KeyboardState keyboardState;
-
-        private GamePadState gamePadState;
-
-        private MouseState mouseState;
-        private MouseState currentMouse;
-        private MouseState previousMouse;
-
-        private float previousRightTrigger;
-
-        private Texture2D bulletTexture;
 
         /// <summary>
         /// the list of bullets
         /// </summary>
         public List<BulletSprite> Bullets = new List<BulletSprite>();
 
-        private Texture2D texture;
-
-        private Texture2D ball;
-
-        private SoundEffect gunShotSound;
-
         /// <summary>
         /// the arms position
         /// </summary>
         public Vector2 position;
+
+        private KeyboardState keyboardState;
+        private GamePadState gamePadState;
+        private MouseState mouseState;
+        private MouseState currentMouse;
+        private MouseState previousMouse;
+        private float previousRightTrigger;
+        private Texture2D bulletTexture;
+        private Texture2D texture;
+        private Texture2D ball;
+        private SoundEffect gunShotSound;
         private TravelerSprite player;
-
         private float rotation;
-
         private bool flipped;
-
         private Vector2 minPos, maxPos;
-
         private int ammoCount = 6;
         private double reloadTimer = 0;
+        private double fireCooldown = 1.0; // how often to fire
+        private double fireTimer = 0;
 
         /// <summary>
         /// checks if realoading
@@ -105,6 +97,39 @@ namespace Endless.Sprites
             maxPos = new Vector2(mapSize.X * tileSize.X * 2, 
                                  mapSize.Y * tileSize.Y * 2);
         }
+
+
+        private void TryShoot()
+        {
+            if (isReloading)
+                return;
+
+            if (ammoCount <= 0)
+            {
+                isReloading = true;
+                reloadTimer = reloadDuration;
+                return;
+            }
+
+            // Create direction
+            Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
+            if (direction != Vector2.Zero)
+                direction.Normalize();
+
+            // Calculate barrel offset
+            float barrelLength = (texture.Width * 0.5f * 2f) + 4f;
+            Vector2 barrelOffset = direction * barrelLength;
+
+            Vector2 bulletSpawnPos = (position + barrelOffset) + new Vector2(87, 14);
+
+            var bullet = new BulletSprite(bulletSpawnPos, direction);
+            bullet.texture = bulletTexture;
+            Bullets.Add(bullet);
+
+            gunShotSound.Play();
+            ammoCount--;
+        }
+
 
         /// <summary>
         /// updates the arms movements
@@ -168,72 +193,20 @@ namespace Endless.Sprites
                 }
             }
 
-            if (gamePadState.Triggers.Right > 0.5f && previousRightTrigger <= 0.5f)
+            // handles firing gun
+            fireTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (fireTimer <= 0)
             {
-                if (isReloading)
-                    return; // can’t shoot while reloading
-
-                if (ammoCount <= 0)
-                {
-                    isReloading = true;
-                    reloadTimer = reloadDuration;
-                    return; // stop shooting until reloaded
-                }
-
-                Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
-                if (direction != Vector2.Zero)
-                    direction.Normalize();
-
-                float barrelLength = (texture.Width * 0.5f * 2f) + 4f;
-
-                Vector2 barrelOffset = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation)) * barrelLength;
-                Vector2 bulletSpawnPos = (position + barrelOffset) + new Vector2(87, 14);
-
-                var bullet = new BulletSprite(bulletSpawnPos, direction);
-                bullet.texture = bulletTexture;
-                Bullets.Add(bullet);
-                gunShotSound.Play();
-
-                ammoCount--;
+                TryShoot();
+                fireTimer = fireCooldown; // reset timer
             }
 
-     
-            previousRightTrigger = gamePadState.Triggers.Right;
-
+            // helps track mouse
             rotation = (float)Math.Atan2(targetDirection.Y, targetDirection.X);
-
             flipped = targetDirection.X < 0;
 
-            if (currentMouse.LeftButton == ButtonState.Pressed && previousMouse.LeftButton == ButtonState.Released)
-            {
-                if (isReloading)
-                    return; // can’t shoot while reloading
-
-                if (ammoCount <= 0)
-                {
-                    isReloading = true;
-                    reloadTimer = reloadDuration;
-                    return; // stop shooting until reloaded
-                }
-
-                Vector2 direction = mouseWorld - position;
-                if (direction != Vector2.Zero)
-                    direction.Normalize();
-
-                float barrelLength = (texture.Width * 0.5f * 2f) + 4f;
-                
-                Vector2 barrelOffset = new Vector2((float)Math.Cos(rotation),(float)Math.Sin(rotation)) * barrelLength;
-                Vector2 bulletSpawnPos = (position + barrelOffset) + new Vector2(87, 14);
-
-                var bullet = new BulletSprite(bulletSpawnPos, direction);
-                bullet.texture = bulletTexture;
-                Bullets.Add(bullet);
-                gunShotSound.Play();
-
-                ammoCount--;
-
-            }
-
+            // updates bullet list
             foreach (var bullet in Bullets.ToList())
             {
                 bullet.Update(gameTime);

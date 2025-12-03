@@ -517,7 +517,7 @@ namespace Endless.Screens
                 // draw stack count (ex: "2x")
                 sb.DrawString(Doto, $"{activeBuffs[i].Count}x",
                     pos + new Vector2(40, 40),
-                    Color.Black, 0f, Vector2.Zero, 0.35f, SpriteEffects.None, 0f);
+                    Color.Yellow, 0f, Vector2.Zero, 0.35f, SpriteEffects.None, 0f);
 
                 spacing3 += 60;
             }

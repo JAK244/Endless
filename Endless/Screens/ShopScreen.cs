@@ -105,13 +105,13 @@ namespace Endless.Screens
             base.Update(gameTime);
             KeyboardState state = Keyboard.GetState();
 
-            if (state.IsKeyDown(Keys.Left) && oldState.IsKeyUp(Keys.Left))
+            if (state.IsKeyDown(Keys.Left) && oldState.IsKeyUp(Keys.Left) || state.IsKeyDown(Keys.A) && oldState.IsKeyUp(Keys.A))
                 selectIndex = Math.Max(0, selectIndex - 1);
-            if (state.IsKeyDown(Keys.Right) && oldState.IsKeyUp(Keys.Right))
+            if (state.IsKeyDown(Keys.Right) && oldState.IsKeyUp(Keys.Right) || state.IsKeyDown(Keys.D) && oldState.IsKeyUp(Keys.D))
                 selectIndex = Math.Min(currentItems.Count - 1, selectIndex + 1);
 
             // Buy item
-            if (state.IsKeyDown(Keys.Enter) && oldState.IsKeyUp(Keys.Enter))
+            if (state.IsKeyDown(Keys.Enter) && oldState.IsKeyUp(Keys.Enter) || state.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space))
             {
                 var selected = currentItems[selectIndex];
 
