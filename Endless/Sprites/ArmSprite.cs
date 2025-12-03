@@ -45,9 +45,7 @@ namespace Endless.Sprites
         private float rotation;
         private bool flipped;
         private Vector2 minPos, maxPos;
-        private int ammoCount = 6;
-        private double reloadTimer = 0;
-        private double fireCooldown = 1.0; // how often to fire
+        private double fireCooldown = 2.0; // how often to fire
         private double fireTimer = 0;
 
         /// <summary>
@@ -59,6 +57,8 @@ namespace Endless.Sprites
         /// the durration of the reload
         /// </summary>
         public double reloadDuration = 2.0;
+
+        public bool fireRateLower = false;
 
         /// <summary>
         /// the arm sprite constructor
@@ -101,15 +101,7 @@ namespace Endless.Sprites
 
         private void TryShoot()
         {
-            if (isReloading)
-                return;
-
-            if (ammoCount <= 0)
-            {
-                isReloading = true;
-                reloadTimer = reloadDuration;
-                return;
-            }
+            
 
             // Create direction
             Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
@@ -127,7 +119,7 @@ namespace Endless.Sprites
             Bullets.Add(bullet);
 
             gunShotSound.Play();
-            ammoCount--;
+        
         }
 
 
@@ -181,25 +173,22 @@ namespace Endless.Sprites
             if (rightStick.Length() > 0.2f)
                 targetDirection = rightStick;
 
-            // Handle reload countdown
-            if (isReloading)
-            {
-                reloadTimer -= gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (reloadTimer <= 0)
-                {
-                    isReloading = false;
-                    ammoCount = 6; // refill bullets
-                }
-            }
-
             // handles firing gun
             fireTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
             if (fireTimer <= 0)
             {
                 TryShoot();
-                fireTimer = fireCooldown; // reset timer
+                if(fireRateLower == false)
+                {
+                    fireTimer = fireCooldown; // reset timer
+                }
+                else
+                {
+                    fireCooldown = fireCooldown * 0.5f;
+                    fireTimer = fireCooldown;
+                    fireRateLower = false;
+                }
             }
 
             // helps track mouse

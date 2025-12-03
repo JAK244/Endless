@@ -26,16 +26,19 @@ namespace Endless.Screens
         private GamePadState oldPadState;
         private Texture2D backGround;
         private Random random = new Random();
+        
 
         private TravelerSprite player;
+        private ArmSprite weapon;
 
         /// <summary>
         /// the constructor fo the shopScreen
         /// </summary>
         /// <param name="player">the player</param>
-        public ShopScreen(TravelerSprite player)
+        public ShopScreen(TravelerSprite player, ArmSprite weapon)
         {
             this.player = player;
+            this.weapon = weapon;
         }
 
 
@@ -46,7 +49,7 @@ namespace Endless.Screens
         public override void LoadContent(ContentManager content)
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
-            //backGround = content.Load<SpriteFont>( finish this later );
+            backGround = content.Load<Texture2D>("ShopBackground");
 
             allItems = new List<ShopItems>()
             {
@@ -55,7 +58,7 @@ namespace Endless.Screens
                     Name = "Hot sauce",
                     Icon = content.Load<Texture2D>("HotSouce"),
                     Description = "Fire up your chicken and incresse your speed",
-                    ApplyEffect = (player) => player.SpeedMultiplier += 0.20f
+                    ApplyEffect = (player,weapon) => player.SpeedMultiplier += 0.20f
                 },
 
                 new ShopItems
@@ -63,7 +66,7 @@ namespace Endless.Screens
                     Name = "Heart Container",
                     Icon = content.Load<Texture2D>("HealthHeart"), // note all sprite must be 64x64
                     Description = "Gain an extra heart",
-                    ApplyEffect = (player) => player.healthWentUp = true
+                    ApplyEffect = (player,weapon) => player.healthWentUp = true
                 },
 
                 new ShopItems
@@ -73,6 +76,15 @@ namespace Endless.Screens
                     Description = "Save your location once then teleport back"
 
                 },
+
+                new ShopItems
+                {
+                    Name = "Energy Drink",
+                    Icon = content.Load<Texture2D>("Energy drink"),
+                    Description = "increses your fireing rate by 0.5",
+                    ApplyEffect = (player,weapon) => weapon.fireRateLower = true
+                },
+                
             };
 
             GenerateRandomItems();
@@ -116,7 +128,7 @@ namespace Endless.Screens
                 var selected = currentItems[selectIndex];
 
                 // apply effect
-                selected.ApplyEffect?.Invoke(player);
+                selected.ApplyEffect?.Invoke(player,weapon);
 
                 // 🔥 tell main game to add buff icon
                 var mg = (MainGameScene)SceneManager.Instance.GetScene<MainGameScene>();
@@ -137,6 +149,7 @@ namespace Endless.Screens
         {
             var sb = SceneManager.Instance.SpriteBatch;
             sb.Begin();
+
 
             if (backGround != null)
                 sb.Draw(backGround, Vector2.Zero, Color.White);
@@ -161,22 +174,26 @@ namespace Endless.Screens
                 Color color = (i == selectIndex) ? Color.Yellow : Color.White;
 
                 // Draw Name centered
-                string wrapped1 = WrapText(Doto, item.Name, cardWidth - 60, 0.3f);
-                Vector2 nameSize = Doto.MeasureString(item.Name) * 0.5f;
-                sb.DrawString(Doto, wrapped1,
-                    new Vector2(centerX - nameSize.X / 2, startY),
-                    color, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 0f);
+                string verticalName = VerticalText(item.Name);
+                float scale = 0.5f;
+                Vector2 nameSize = Doto.MeasureString(verticalName) * scale;
+
+                sb.DrawString(
+                    Doto, verticalName,
+                    new Vector2(centerX - (nameSize.X / 2), startY),
+                    color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0f
+                );
 
                 // Icon centered
                 if (item.Icon != null)
                 {
-                    Vector2 iconPos = new Vector2(centerX - (item.Icon.Width / 2), startY + 50);
+                    Vector2 iconPos = new Vector2(centerX - (item.Icon.Width / 2), startY + 140);
                     sb.Draw(item.Icon, iconPos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
                 }
 
                 // Description wrapped and centered
                 string wrapped = WrapText(Doto, item.Description, cardWidth - 60, 0.3f);
-                sb.DrawString(Doto, wrapped,new Vector2(centerX - (cardWidth / 2) + 30, startY + 150),
+                sb.DrawString(Doto, wrapped,new Vector2(centerX - (cardWidth / 2) + 30, startY + 240),
                     Color.LightGray, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
             }
 
@@ -219,6 +236,13 @@ namespace Endless.Screens
             }
             return wrapped.ToString();
         }
+
+        private string VerticalText(string text)
+        {
+            
+            return string.Join("\n", text.Split(' '));
+        }
+
 
     }
 

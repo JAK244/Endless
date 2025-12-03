@@ -29,7 +29,7 @@ namespace Endless.BaseClasses
         /// <summary>
         /// the Affct of the items
         /// </summary>
-        public Action<TravelerSprite> ApplyEffect { get; set; }  // Applies upgrade to the player
+        public Action<TravelerSprite, ArmSprite> ApplyEffect { get; set; }  // Applies upgrade to the player
     }
 }
 

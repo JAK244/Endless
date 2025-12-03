@@ -110,6 +110,18 @@
 /processorParam:TextureFormat=Color
 /build:DuckTravler.png
 
+#begin Energy drink.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Energy drink.png
+
 #begin ForestBG.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -205,6 +217,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:RockTileMap-Sheet.png
+
+#begin ShopBackground.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:ShopBackground.png
 
 #begin Star.png
 /importer:TextureImporter

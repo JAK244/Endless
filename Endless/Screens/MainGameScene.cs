@@ -109,7 +109,7 @@ namespace Endless.Screens
         private void HandleWaveEnd(int wave)
         {
             waveManager.ShowWaveMessage($"Wave {wave} Complete!");
-            SceneManager.Instance.AddScene(new ShopScreen(Traveler));
+            SceneManager.Instance.AddScene(new ShopScreen(Traveler,arm));
             MediaPlayer.Stop();
             MediaPlayer.Play(backGroundMusic_nonC);
         }
