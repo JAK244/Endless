@@ -24,6 +24,8 @@ namespace Endless.Managers
 
         private double spawnTimer;
         private int enemiesToSpawn;
+        private List<EnemyFire> enemyFires;
+
 
         /// <summary>
         /// checks if there is an active wave
@@ -37,6 +39,7 @@ namespace Endless.Managers
 
         private List<PortalSprite> portals;
         private List<Bug1Sprite> bugs;
+        private List<Bug2> bug2s;
 
         private ContentManager content;
 
@@ -56,10 +59,12 @@ namespace Endless.Managers
         /// <param name="portals">the portals</param>
         /// <param name="bugs">the bugs</param>
         /// <param name="content">the contnet manager</param>
-        public WaveManager(List<PortalSprite> portals, List<Bug1Sprite> bugs, ContentManager content)
+        public WaveManager(List<PortalSprite> portals, List<EnemyFire> enemyFires, List<Bug1Sprite> bugs, List<Bug2> bug2s, ContentManager content)
         {
             this.portals = portals;
+            this.enemyFires = enemyFires;
             this.bugs = bugs;
+            this.bug2s = bug2s;
             this.content = content;
         }
 
@@ -92,7 +97,7 @@ namespace Endless.Managers
         {
             CurrentWave = waveNumber;
             WaveActive = true;
-            enemiesToSpawn = 10 + (waveNumber - 1) * 5; // increments each round by 5
+            enemiesToSpawn = 1;//10 + (waveNumber - 1) * 5; // increments each round by 5
             totalEnemiesRemaining = enemiesToSpawn;
             spawnTimer = 0;
 
@@ -187,13 +192,14 @@ namespace Endless.Managers
             var portal = portals[ran.Next(portals.Count)];
             Vector2 spawnPos = portal.Position + new Vector2(ran.Next(-20, 20), ran.Next(-20, 20));
 
-            var newBug = new Bug1Sprite(spawnPos)
+            //var newBug = new Bug1Sprite(spawnPos)
+            var newBug = new Bug2(spawnPos, enemyFires, content)
             {
                 IsAlive = true,
                 BugFlipped = ran.Next(2) == 0
             };
             newBug.LoadContent(content);
-            bugs.Add(newBug);
+            bug2s.Add(newBug);
         }
     }
 

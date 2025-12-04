@@ -27,9 +27,11 @@ namespace Endless.Screens
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
         private List<Bug1Sprite> bugs;
+        private List<Bug2> bug2s;
         private ArmSprite arm;
         private int healthLeft;
         private List<BulletSprite> bullets = new List<BulletSprite>();
+        private List<EnemyFire> enemyBullets = new List<EnemyFire>();
         private Song backGroundMusic_nonC;
         private Song backGroundMusic_InC;
         private double damageCooldown = 0;
@@ -99,7 +101,7 @@ namespace Endless.Screens
         {
             waveManager.ShowWaveMessage($"Wave {wave} Start!");
             MediaPlayer.Stop();
-            MediaPlayer.Play(backGroundMusic_InC);
+            //MediaPlayer.Play(backGroundMusic_InC);                                                            music
         }
 
         /// <summary>
@@ -111,7 +113,7 @@ namespace Endless.Screens
             waveManager.ShowWaveMessage($"Wave {wave} Complete!");
             SceneManager.Instance.AddScene(new ShopScreen(Traveler,arm));
             MediaPlayer.Stop();
-            MediaPlayer.Play(backGroundMusic_nonC);
+            //MediaPlayer.Play(backGroundMusic_nonC);                                                            music
         }
 
         public void AddBuff(Texture2D icon)
@@ -160,8 +162,9 @@ namespace Endless.Screens
 
 
             bugs = new List<Bug1Sprite>{};
+            bug2s = new List<Bug2>{};
 
-            waveManager = new WaveManager(portals.ToList(), bugs, SceneManager.Instance.Content);
+            waveManager = new WaveManager(portals.ToList(), enemyBullets,bugs, bug2s, SceneManager.Instance.Content);
             waveManager.LoadContent(SceneManager.Instance.Content);
             waveManager.OnWaveStart += HandleWaveStart;
             waveManager.OnWaveEnd += HandleWaveEnd;
@@ -209,7 +212,8 @@ namespace Endless.Screens
             Traveler.SetBounds(new Point(50, 49), new Point(16, 16));
             arm.SetBounds(new Point(50, 49), new Point(16, 16));
             foreach (var portal in portals) portal.LoadContent(Content);
-            foreach (var bug in bugs) bug.LoadContent(Content);   
+            foreach (var bug in bugs) bug.LoadContent(Content); 
+            foreach (var bug2 in bug2s) bug2.LoadContent(Content);
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             VideoBorder = Content.Load<Texture2D>("VideoBorderFinal");
@@ -248,7 +252,7 @@ namespace Endless.Screens
             backGroundMusic_nonC = Content.Load<Song>("if Anyone Dies (instrumental)");
             backGroundMusic_InC = content.Load<Song>("Arena Theme");
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(backGroundMusic_nonC);
+            //MediaPlayer.Play(backGroundMusic_nonC);                                                                       musuc
 
             
         }
@@ -328,19 +332,35 @@ namespace Endless.Screens
                 }
             }
 
+            foreach (var bug2 in bug2s)
+            {
+                bug2.Update(gameTime, Traveler.position);
+            }
+
             // bullets interacting with bugs
+            // update enemy bullets
+            foreach (var enmBullet in enemyBullets.ToList()) // ToList() allows safe removal
+            {
+                enmBullet.Update(gameTime);
+                if (enmBullet.IsRemoved)
+                    enemyBullets.Remove(enmBullet);
+            }
+
             foreach (var bullet in arm.Bullets.ToList())
             {
-                foreach (var bug in bugs.ToList())
+                foreach (var bug2 in bug2s.ToList())
                 {
-                    if (bullet.Bounds.CollidesWith(bug.Bounds))
+                    if (bullet.Bounds.CollidesWith(bug2.Bounds))
                     {
-                        Points += bug.PointsWorth;
+                        Points += bug2.PointsWorth;
                         bullet.IsRemoved = true;
-                        bug.IsAlive = false; 
+                        bug2.IsAlive = false;
                     }
                 }
             }
+
+            //enemy bullet interacting with player
+            
 
             // traveler interacting with powerball
             waveManager.Update(gameTime);
@@ -446,8 +466,22 @@ namespace Endless.Screens
                 //sb.Draw(ball, rec, Color.White);
             }
 
+            foreach (var bug2 in bug2s)
+            {
+                var rec = new Rectangle((int)(bug2.AttackRange.Center.X - bug2.AttackRange.Radius), (int)(bug2.AttackRange.Center.Y - bug2.AttackRange.Radius), (int)bug2.AttackRange.Radius * 2, (int)bug2.AttackRange.Radius * 2);
+                sb.Draw(ball, rec, Color.White);
+                bug2.Draw(gameTime, sb);
+            }
+
+
+
             foreach (var bullet in bullets)
                 bullet.Draw(gameTime, sb);
+
+            foreach (var enmBullet in enemyBullets)
+            {
+                enmBullet.Draw(gameTime, sb);
+            }
 
 
 

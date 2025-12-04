@@ -8,16 +8,9 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Endless.Collisions;
-
-
 namespace Endless.Sprites
 {
-   
-
-    /// <summary>
-    /// the bug sprite class
-    /// </summary>
-    public class Bug1Sprite
+    public class Bug2
     {
         private Texture2D texture;
 
@@ -34,7 +27,7 @@ namespace Endless.Sprites
         /// <summary>
         /// points of these bugs
         /// </summary>
-        public int PointsWorth = 10;
+        public int PointsWorth = 100;
 
         /// <summary>
         /// the position of the sprite
@@ -60,28 +53,82 @@ namespace Endless.Sprites
         /// </summary>
         public Color color { get; set; } = Color.White;
 
-        private BoundingCircle bounds;
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 - 16, 350 - 16), 32, 64);
+        private BoundingCircle attackRange;
+
+        private float attackCooldown = 0.5f; // time between bursts
+        private float attackTimer = 0f;
+
+        public bool IsAttacking = false;
+
+        // we need a reference to a bullet list so Bug2 can spawn bullets
+        private List<EnemyFire> enemyBullets;
+        private ContentManager content;
 
         /// <summary>
         /// the bugs bounds
         /// </summary>
-        public BoundingCircle Bounds
+        public BoundingCircle AttackRange
         {
             get
             {
-                  return bounds;
+                return attackRange;
             }
+        }
+
+
+        /// <summary>
+        /// the sprites bounds
+        /// </summary>
+        public BoundingRectangle Bounds
+        {
+            get { return bounds; }
+        }
+
+        private void Shoot(Vector2 playerPosition)
+        {
+            // direction from bug → player
+            Vector2 firePosition = Position + new Vector2(290,80);
+
+            Vector2 dir = playerPosition - firePosition;
+            dir.Normalize();
+
+            //fire 3 bullets spread slightly
+            Vector2 left = new Vector2(dir.X, dir.Y - 0.2f);
+            Vector2 center = dir;
+            Vector2 right = new Vector2(dir.X, dir.Y + 0.2f);
+
+            // normalize each
+            left.Normalize();
+            center.Normalize();
+            right.Normalize();
+
+
+
+            EnemyFire b1 = new EnemyFire(firePosition, left);
+            EnemyFire b2 = new EnemyFire(firePosition, center);
+            EnemyFire b3 = new EnemyFire(firePosition, right);
+
+            b1.LoadContent(content);
+            b2.LoadContent(content);
+            b3.LoadContent(content);
+
+            enemyBullets.Add(b1);
+            enemyBullets.Add(b2);
+            enemyBullets.Add(b3);
         }
 
         /// <summary>
         /// the bug sprite constructor
         /// </summary>
         /// <param name="position">the given position</param>
-        public Bug1Sprite(Vector2 position)
+        public Bug2(Vector2 position, List<EnemyFire> bullets, ContentManager content)
         {
-           Position = position;
-           bounds = new BoundingCircle(position - new Vector2(-64, -110), -16); // moves the bounds
+            Position = position;
+            this.enemyBullets = bullets;
+            this.content = content;
 
+            attackRange = new BoundingCircle(position, 350);
         }
 
         /// <summary>
@@ -90,7 +137,7 @@ namespace Endless.Sprites
         /// <param name="content">the contentManager to load with</param>
         public void LoadContent(ContentManager content)
         {
-            texture = content.Load<Texture2D>("bug");
+            texture = content.Load<Texture2D>("Bug2");
         }
 
         /// <summary>
@@ -99,28 +146,52 @@ namespace Endless.Sprites
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime, Vector2 playerPosition)
         {
-            if (!IsAlive)
+            if (!IsAlive) return;
+
+            attackTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // update attack range position
+            attackRange.Center = Position + new Vector2(64, 64);
+
+            // check if player is inside attack range
+            bool playerInRange = attackRange.CollidesWith(new BoundingCircle(playerPosition, 10));
+
+            if (playerInRange)
             {
-                bounds.Center = new Vector2(10000, 1000000); // removes the bounds in a goofy way
-                return;
+                IsAttacking = true;
+
+                // stop movement
+                Vector2 zero = Vector2.Zero;
+
+                // shoot if cooldown finished
+                if (attackTimer >= attackCooldown)
+                {
+                    Shoot(playerPosition);
+                    attackTimer = 0f;
+                }
+
+                return; // don't run move logic
+            }
+            else
+            {
+                IsAttacking = false;
             }
 
-      
-            Vector2 bugCenter = Position + new Vector2(60,100);
 
-          
+            // ------- movement (only when NOT attacking) -------
+
+            Vector2 bugCenter = Position + new Vector2(60, 100);
             Vector2 toPlayer = playerPosition - bugCenter;
 
             if (toPlayer != Vector2.Zero)
                 toPlayer.Normalize();
 
-            
             Position += toPlayer * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             BugFlipped = toPlayer.X > 0;
 
-           
-            bounds.Center = bugCenter;
+            bounds.X = bugCenter.X - 16;
+            bounds.Y = bugCenter.Y - 50;
         }
 
 
@@ -140,21 +211,21 @@ namespace Endless.Sprites
                 if (animationTimer > 0.2)
                 {
                     animationFrame++;
-                    if (animationFrame > 3) animationFrame = 0;
+                    if (animationFrame > 5) animationFrame = 0;
                     animationTimer -= 0.2;
                 }
             }
             else
             {
-                if (animationFrame < 7) 
+                if (animationFrame < 9)
                 {
                     if (animationTimer > 0.2)
                     {
                         animationFrame++;
-                        animationTimer = 0; 
+                        animationTimer = 0;
                     }
                 }
-                
+
             }
 
             var source = new Rectangle(animationFrame * 64, 0, 64, 64);
@@ -162,5 +233,6 @@ namespace Endless.Sprites
 
 
         }
+    
     }
 }
