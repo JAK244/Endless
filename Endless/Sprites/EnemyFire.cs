@@ -10,9 +10,9 @@ namespace Endless.Sprites
     public class EnemyFire
     {
         private float timer;
-        private float lifeSpan = 2f;
-        private float speed = 200f;
-        private Vector2 direction;
+        private float lifeSpan = 4f;
+        private float speed = 150f;
+        public Vector2 Direction;
 
 
         /// <summary>
@@ -53,7 +53,8 @@ namespace Endless.Sprites
         public EnemyFire(Vector2 position, Vector2 direction)
         {
             Position = position;
-            this.direction = Vector2.Normalize(direction);
+            Direction = direction;
+            Direction.Normalize();
             bounds = new BoundingCircle(position, 16);
         }
 
@@ -73,7 +74,7 @@ namespace Endless.Sprites
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)
         {
-            
+            Vector2 bulletCenter = Position + new Vector2(-225, 0);
             timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (timer >= lifeSpan)
@@ -81,10 +82,10 @@ namespace Endless.Sprites
                 IsRemoved = true;
             }
 
-            Position += direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Position += Direction * speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
 
-            bounds.Center = Position;
+            bounds.Center = bulletCenter;
 
 
         }

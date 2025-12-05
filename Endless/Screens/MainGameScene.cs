@@ -332,20 +332,59 @@ namespace Endless.Screens
                 }
             }
 
+            // bug2 movement and itself interacting with player
             foreach (var bug2 in bug2s)
             {
                 bug2.Update(gameTime, Traveler.position);
+
+                if (damageCooldown <= 0 && bug2.Bounds.CollidesWith(Traveler.Bounds))
+                {
+                    for (int i = 0; i < healths.Count; i++)
+                    {
+                        if (!healths[i].Damaged)
+                        {
+                            Traveler.color = Color.Red;
+                            healths[i].Damaged = true;
+                            healthLeft--;
+                            damageCooldown = 1.0;
+                            TriggerShake(0.3f, 8f);
+                            break;
+                        }
+                    }
+                }
             }
 
-            // bullets interacting with bugs
             // update enemy bullets
-            foreach (var enmBullet in enemyBullets.ToList()) // ToList() allows safe removal
+            foreach (var enmBullet in enemyBullets.ToList())
             {
                 enmBullet.Update(gameTime);
+
+                // Check collision with player
+                if (!enmBullet.IsRemoved && damageCooldown <= 0 && enmBullet.Bounds.CollidesWith(Traveler.Bounds))
+                {
+                    // Apply damage
+                    for (int i = 0; i < healths.Count; i++)
+                    {
+                        if (!healths[i].Damaged)
+                        {
+                            Traveler.color = Color.Red;
+                            healths[i].Damaged = true;
+
+                            healthLeft--;
+                            damageCooldown = 1.0;
+                            TriggerShake(0.3f, 8f);
+                            break;
+                        }
+                    }
+
+                    enmBullet.IsRemoved = true;
+                }
+
                 if (enmBullet.IsRemoved)
                     enemyBullets.Remove(enmBullet);
             }
 
+            // player bullets interacting with bugs
             foreach (var bullet in arm.Bullets.ToList())
             {
                 foreach (var bug2 in bug2s.ToList())
@@ -359,8 +398,21 @@ namespace Endless.Screens
                 }
             }
 
-            //enemy bullet interacting with player
-            
+            foreach (var bullet in arm.Bullets.ToList())
+            {
+                foreach (var bug in bugs.ToList())
+                {
+                    if (bullet.Bounds.CollidesWith(bug.Bounds))
+                    {
+                        Points += bug.PointsWorth;
+                        bullet.IsRemoved = true;
+                        bug.IsAlive = false;
+                    }
+                }
+            }
+
+
+
 
             // traveler interacting with powerball
             waveManager.Update(gameTime);
@@ -384,7 +436,7 @@ namespace Endless.Screens
             {
                 shakeDuration -= (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                // Random offset within magnitude range
+                //magnitude 
                 shakeOffset = new Vector2(
                     (float)(random.NextDouble() * 2 - 1) * shakeMagnitude,
                     (float)(random.NextDouble() * 2 - 1) * shakeMagnitude
@@ -468,8 +520,8 @@ namespace Endless.Screens
 
             foreach (var bug2 in bug2s)
             {
-                var rec = new Rectangle((int)(bug2.AttackRange.Center.X - bug2.AttackRange.Radius), (int)(bug2.AttackRange.Center.Y - bug2.AttackRange.Radius), (int)bug2.AttackRange.Radius * 2, (int)bug2.AttackRange.Radius * 2);
-                sb.Draw(ball, rec, Color.White);
+                //var rec = new Rectangle((int)(bug2.AttackRange.Center.X - bug2.AttackRange.Radius), (int)(bug2.AttackRange.Center.Y - bug2.AttackRange.Radius), (int)bug2.AttackRange.Radius * 2, (int)bug2.AttackRange.Radius * 2);
+                //sb.Draw(ball, rec, Color.White);
                 bug2.Draw(gameTime, sb);
             }
 
@@ -480,6 +532,8 @@ namespace Endless.Screens
 
             foreach (var enmBullet in enemyBullets)
             {
+                //var rec = new Rectangle((int)(enmBullet.Bounds.Center.X - enmBullet.Bounds.Radius), (int)(enmBullet.Bounds.Center.Y - enmBullet.Bounds.Radius), (int)enmBullet.Bounds.Radius * 2, (int)enmBullet.Bounds.Radius * 2);
+                //sb.Draw(ball, rec, Color.White);
                 enmBullet.Draw(gameTime, sb);
             }
 

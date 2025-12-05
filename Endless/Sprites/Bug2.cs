@@ -87,35 +87,25 @@ namespace Endless.Sprites
 
         private void Shoot(Vector2 playerPosition)
         {
-            // direction from bug → player
-            Vector2 firePosition = Position + new Vector2(290,80);
+            // center spawn — still using your 290,80 hack for now
+            Vector2 firePosition = Position + new Vector2(290, 80);
 
-            Vector2 dir = playerPosition - firePosition;
-            dir.Normalize();
+            int bulletCount = 12; // number of bullets in the circle
+            float angleStep = MathHelper.TwoPi / bulletCount;
 
-            //fire 3 bullets spread slightly
-            Vector2 left = new Vector2(dir.X, dir.Y - 0.2f);
-            Vector2 center = dir;
-            Vector2 right = new Vector2(dir.X, dir.Y + 0.2f);
+            for (int i = 0; i < bulletCount; i++)
+            {
+                float angle = angleStep * i;
 
-            // normalize each
-            left.Normalize();
-            center.Normalize();
-            right.Normalize();
+                Vector2 direction = new Vector2(
+                    (float)Math.Cos(angle),
+                    (float)Math.Sin(angle)
+                );
 
-
-
-            EnemyFire b1 = new EnemyFire(firePosition, left);
-            EnemyFire b2 = new EnemyFire(firePosition, center);
-            EnemyFire b3 = new EnemyFire(firePosition, right);
-
-            b1.LoadContent(content);
-            b2.LoadContent(content);
-            b3.LoadContent(content);
-
-            enemyBullets.Add(b1);
-            enemyBullets.Add(b2);
-            enemyBullets.Add(b3);
+                EnemyFire bullet = new EnemyFire(firePosition, direction);
+                bullet.LoadContent(content);
+                enemyBullets.Add(bullet);
+            }
         }
 
         /// <summary>
@@ -146,7 +136,12 @@ namespace Endless.Sprites
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime, Vector2 playerPosition)
         {
-            if (!IsAlive) return;
+            if (!IsAlive)
+            {
+                bounds.X = 100000;
+                bounds.Y = 100000;
+                return;
+            }
 
             attackTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 

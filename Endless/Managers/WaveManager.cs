@@ -38,8 +38,8 @@ namespace Endless.Managers
         public int CurrentWave {  get; private set; }
 
         private List<PortalSprite> portals;
-        private List<Bug1Sprite> bugs;
-        private List<Bug2> bug2s;
+        private List<Bug1Sprite> bug1;
+        private List<Bug2> bug2;
 
         private ContentManager content;
 
@@ -59,12 +59,12 @@ namespace Endless.Managers
         /// <param name="portals">the portals</param>
         /// <param name="bugs">the bugs</param>
         /// <param name="content">the contnet manager</param>
-        public WaveManager(List<PortalSprite> portals, List<EnemyFire> enemyFires, List<Bug1Sprite> bugs, List<Bug2> bug2s, ContentManager content)
+        public WaveManager(List<PortalSprite> portals, List<EnemyFire> enemyFires, List<Bug1Sprite> bug1, List<Bug2> bug2, ContentManager content)
         {
             this.portals = portals;
             this.enemyFires = enemyFires;
-            this.bugs = bugs;
-            this.bug2s = bug2s;
+            this.bug1 = bug1;
+            this.bug2 = bug2;
             this.content = content;
         }
 
@@ -136,7 +136,7 @@ namespace Endless.Managers
                 spawnTimer = 0;
             }
 
-            if (enemiesToSpawn == 0 && bugs.All(b => !b.IsAlive))
+            if (enemiesToSpawn == 0 && bug1.All(b => !b.IsAlive))
             {
                 WaveActive = false;
                 OnWaveEnd?.Invoke(CurrentWave);
@@ -144,7 +144,7 @@ namespace Endless.Managers
 
             if (WaveActive)
             {
-                int aliveCount = bugs.Count(b => b.IsAlive);
+                int aliveCount = bug1.Count(b => b.IsAlive);
                 if (aliveCount > 0)
                 {
                     // Example: start speeding up when fewer than 5 remain
@@ -156,7 +156,7 @@ namespace Endless.Managers
                     if (ratioAlive <= 0.25f) speedMultiplier = 3f; 
                     if (ratioAlive <= 0.10f) speedMultiplier = 3.5f; 
 
-                    foreach (var bug in bugs.Where(b => b.IsAlive))
+                    foreach (var bug in bug1.Where(b => b.IsAlive))
                     {
                         bug.Speed = 60f * speedMultiplier;
                     }
@@ -199,7 +199,7 @@ namespace Endless.Managers
                 BugFlipped = ran.Next(2) == 0
             };
             newBug.LoadContent(content);
-            bug2s.Add(newBug);
+            bug2.Add(newBug);
         }
     }
 
