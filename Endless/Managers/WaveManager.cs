@@ -27,6 +27,11 @@ namespace Endless.Managers
         private List<EnemyFire> enemyFires;
         private List<Ooze> oozes = new List<Ooze>();
 
+        private int bug1ToSpawn;
+        private int bug2ToSpawn;
+        private int bug3ToSpawn;
+
+
 
 
         /// <summary>
@@ -101,9 +106,59 @@ namespace Endless.Managers
         {
             CurrentWave = waveNumber;
             WaveActive = true;
-            enemiesToSpawn = 1;//10 + (waveNumber - 1) * 5; // increments each round by 5
-            totalEnemiesRemaining = enemiesToSpawn;
             spawnTimer = 0;
+
+            // Reset counters
+            bug1ToSpawn = 0;
+            bug2ToSpawn = 0;
+            bug3ToSpawn = 0;
+
+            // Set enemies based on wave
+            switch (waveNumber)
+            {
+                case 1:
+                    bug1ToSpawn = 10;
+                    break;
+                case 2:
+                    bug1ToSpawn = 15;
+                    break;
+                case 3:
+                    bug1ToSpawn = 15;
+                    bug3ToSpawn = 2;
+                    break;
+                case 4:
+                    bug1ToSpawn = 20;
+                    bug3ToSpawn = 4;
+                    break;
+                case 5:
+                    bug1ToSpawn = 20;
+                    bug3ToSpawn = 2;
+                    bug2ToSpawn = 1;
+                    break;
+                case 6:
+                    bug1ToSpawn = 25;
+                    bug3ToSpawn = 3;
+                    bug2ToSpawn = 1;
+                    break;
+                case 7:
+                    bug1ToSpawn = 25;
+                    bug3ToSpawn = 6;
+                    bug2ToSpawn = 2;
+                    break;
+                case 8:
+                    bug1ToSpawn = 30;
+                    bug3ToSpawn = 6;
+                    bug2ToSpawn = 3;
+                    break;
+                case 9:
+                    bug1ToSpawn = 40;
+                    bug3ToSpawn = 8;
+                    bug2ToSpawn = 5;
+                    break;
+            }
+
+            // Total enemies for speed scaling
+            totalEnemiesRemaining = bug1ToSpawn + bug2ToSpawn + bug3ToSpawn;
 
             OnWaveStart?.Invoke(CurrentWave);
         }
@@ -133,14 +188,13 @@ namespace Endless.Managers
 
             spawnTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (spawnTimer >= 1.0 && enemiesToSpawn > 0)
+            if (spawnTimer >= 1.0 && (bug1ToSpawn > 0 || bug2ToSpawn > 0 || bug3ToSpawn > 0))
             {
                 SpawnBug();
-                enemiesToSpawn--;
                 spawnTimer = 0;
             }
 
-            if (enemiesToSpawn == 0 && bug1.All(b => !b.IsAlive))
+            if (bug1ToSpawn == 0 && bug2ToSpawn == 0 && bug3ToSpawn == 0 && bug1.All(b => !b.IsAlive) && bug2.All(b => !b.IsAlive) && bug3.All(b => !b.IsAlive))
             {
                 WaveActive = false;
                 OnWaveEnd?.Invoke(CurrentWave);
@@ -148,22 +202,23 @@ namespace Endless.Managers
 
             if (WaveActive)
             {
-                int aliveCount = bug1.Count(b => b.IsAlive);
+                int aliveCount = bug1.Count(b => b.IsAlive) + bug2.Count(b => b.IsAlive) + bug3.Count(b => b.IsAlive);
                 if (aliveCount > 0)
                 {
-                    // Example: start speeding up when fewer than 5 remain
                     float ratioAlive = (float)aliveCount / totalEnemiesRemaining;
                     float speedMultiplier = 1.0f;
 
-                    if (ratioAlive <= 0.75f) speedMultiplier = 1.5f; 
-                    if (ratioAlive <= 0.50f) speedMultiplier = 2f; 
-                    if (ratioAlive <= 0.25f) speedMultiplier = 3f; 
-                    if (ratioAlive <= 0.10f) speedMultiplier = 3.5f; 
+                    if (ratioAlive <= 0.75f) speedMultiplier = 1.5f;
+                    if (ratioAlive <= 0.50f) speedMultiplier = 2f;
+                    if (ratioAlive <= 0.25f) speedMultiplier = 3f;
+                    if (ratioAlive <= 0.10f) speedMultiplier = 3.5f;
 
                     foreach (var bug in bug1.Where(b => b.IsAlive))
-                    {
                         bug.Speed = 60f * speedMultiplier;
-                    }
+                    foreach (var bug in bug2.Where(b => b.IsAlive))
+                        bug.Speed = 60f * speedMultiplier;
+                    foreach (var bug in bug3.Where(b => b.IsAlive))
+                        bug.Speed = 60f * speedMultiplier;
                 }
             }
 
@@ -196,15 +251,39 @@ namespace Endless.Managers
             var portal = portals[ran.Next(portals.Count)];
             Vector2 spawnPos = portal.Position + new Vector2(ran.Next(-20, 20), ran.Next(-20, 20));
 
-            //var newBug = new Bug1Sprite(spawnPos)
-            //var newBug = new Bug2(spawnPos, enemyFires, content)
-            var newBug = new Bug3(spawnPos)
+            if (bug1ToSpawn > 0)
             {
-                IsAlive = true,
-                BugFlipped = ran.Next(2) == 0
-            };
-            newBug.LoadContent(content);
-            bug3.Add(newBug);
+                var newBug = new Bug1Sprite(spawnPos)
+                {
+                    IsAlive = true,
+                    BugFlipped = ran.Next(2) == 0
+                };
+                newBug.LoadContent(content);
+                bug1.Add(newBug);
+                bug1ToSpawn--;
+            }
+            else if (bug2ToSpawn > 0)
+            {
+                var newBug = new Bug2(spawnPos, enemyFires, content)
+                {
+                    IsAlive = true,
+                    BugFlipped = ran.Next(2) == 0
+                };
+                newBug.LoadContent(content);
+                bug2.Add(newBug);
+                bug2ToSpawn--;
+            }
+            else if (bug3ToSpawn > 0)
+            {
+                var newBug = new Bug3(spawnPos)
+                {
+                    IsAlive = true,
+                    BugFlipped = ran.Next(2) == 0
+                };
+                newBug.LoadContent(content);
+                bug3.Add(newBug);
+                bug3ToSpawn--;
+            }
         }
     }
 
