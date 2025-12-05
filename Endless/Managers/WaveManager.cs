@@ -25,6 +25,8 @@ namespace Endless.Managers
         private double spawnTimer;
         private int enemiesToSpawn;
         private List<EnemyFire> enemyFires;
+        private List<Ooze> oozes = new List<Ooze>();
+
 
 
         /// <summary>
@@ -40,6 +42,7 @@ namespace Endless.Managers
         private List<PortalSprite> portals;
         private List<Bug1Sprite> bug1;
         private List<Bug2> bug2;
+        private List<Bug3> bug3;
 
         private ContentManager content;
 
@@ -59,12 +62,13 @@ namespace Endless.Managers
         /// <param name="portals">the portals</param>
         /// <param name="bugs">the bugs</param>
         /// <param name="content">the contnet manager</param>
-        public WaveManager(List<PortalSprite> portals, List<EnemyFire> enemyFires, List<Bug1Sprite> bug1, List<Bug2> bug2, ContentManager content)
+        public WaveManager(List<PortalSprite> portals, List<EnemyFire> enemyFires, List<Bug1Sprite> bug1, List<Bug2> bug2, List<Bug3> bug3, ContentManager content)
         {
             this.portals = portals;
             this.enemyFires = enemyFires;
             this.bug1 = bug1;
             this.bug2 = bug2;
+            this.bug3 = bug3;
             this.content = content;
         }
 
@@ -193,13 +197,14 @@ namespace Endless.Managers
             Vector2 spawnPos = portal.Position + new Vector2(ran.Next(-20, 20), ran.Next(-20, 20));
 
             //var newBug = new Bug1Sprite(spawnPos)
-            var newBug = new Bug2(spawnPos, enemyFires, content)
+            //var newBug = new Bug2(spawnPos, enemyFires, content)
+            var newBug = new Bug3(spawnPos)
             {
                 IsAlive = true,
                 BugFlipped = ran.Next(2) == 0
             };
             newBug.LoadContent(content);
-            bug2.Add(newBug);
+            bug3.Add(newBug);
         }
     }
 

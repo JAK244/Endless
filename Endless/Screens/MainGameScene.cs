@@ -26,8 +26,10 @@ namespace Endless.Screens
         private List<HelthSprite> healths;
         private PortalSprite[] portals;
         private PowerBallSprite powerBall;
-        private List<Bug1Sprite> bugs;
-        private List<Bug2> bug2s;
+        private List<Bug1Sprite> bugs1;
+        private List<Bug2> bugs2;
+        private List<Bug3> bugs3;
+        private List<Ooze> oozes = new List<Ooze>();
         private ArmSprite arm;
         private int healthLeft;
         private List<BulletSprite> bullets = new List<BulletSprite>();
@@ -161,10 +163,11 @@ namespace Endless.Screens
             powerBall = new PowerBallSprite() { Position = new Vector2(725, 725) }; //1450, 1450 max screen size
 
 
-            bugs = new List<Bug1Sprite>{};
-            bug2s = new List<Bug2>{};
+            bugs1 = new List<Bug1Sprite>{};
+            bugs2 = new List<Bug2>{};
+            bugs3 = new List<Bug3> {};
 
-            waveManager = new WaveManager(portals.ToList(), enemyBullets,bugs, bug2s, SceneManager.Instance.Content);
+            waveManager = new WaveManager(portals.ToList(), enemyBullets,bugs1, bugs2, bugs3, SceneManager.Instance.Content);
             waveManager.LoadContent(SceneManager.Instance.Content);
             waveManager.OnWaveStart += HandleWaveStart;
             waveManager.OnWaveEnd += HandleWaveEnd;
@@ -212,8 +215,9 @@ namespace Endless.Screens
             Traveler.SetBounds(new Point(50, 49), new Point(16, 16));
             arm.SetBounds(new Point(50, 49), new Point(16, 16));
             foreach (var portal in portals) portal.LoadContent(Content);
-            foreach (var bug in bugs) bug.LoadContent(Content); 
-            foreach (var bug2 in bug2s) bug2.LoadContent(Content);
+            foreach (var bug in bugs1) bug.LoadContent(Content); 
+            foreach (var bug2 in bugs2) bug2.LoadContent(Content);
+            foreach (var bug3 in bugs3) bug3.LoadContent(Content);
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             VideoBorder = Content.Load<Texture2D>("VideoBorderFinal");
@@ -311,7 +315,7 @@ namespace Endless.Screens
             damageCooldown -= gameTime.ElapsedGameTime.TotalSeconds;
 
             //bugs interacting with player
-            foreach (var bug in bugs)
+            foreach (var bug in bugs1)
             {
                 bug.Update(gameTime, Traveler.position);
 
@@ -333,7 +337,7 @@ namespace Endless.Screens
             }
 
             // bug2 movement and itself interacting with player
-            foreach (var bug2 in bug2s)
+            foreach (var bug2 in bugs2)
             {
                 bug2.Update(gameTime, Traveler.position);
 
@@ -353,6 +357,63 @@ namespace Endless.Screens
                     }
                 }
             }
+
+            // bug3 movement and itself interacting with player
+            foreach (var bug3 in bugs3)
+            {
+                bug3.Update(gameTime, Traveler.position);
+
+                if (damageCooldown <= 0 && bug3.Bounds.CollidesWith(Traveler.Bounds))
+                {
+                    for (int i = 0; i < healths.Count; i++)
+                    {
+                        if (!healths[i].Damaged)
+                        {
+                            Traveler.color = Color.Red;
+                            healths[i].Damaged = true;
+                            healthLeft--;
+                            damageCooldown = 1.0;
+                            TriggerShake(0.3f, 8f);
+                            break;
+                        }
+                    }
+                }
+
+                // Try dropping ooze
+                var newOoze = bug3.TryDropOoze(gameTime);
+                if (newOoze != null)
+                {
+                    newOoze.LoadContent(SceneManager.Instance.Content);
+                    oozes.Add(newOoze);
+                }
+            }
+
+            // checks ooze colides with player
+            foreach (var ooze in oozes.ToList())
+            {
+                ooze.Update(gameTime);
+
+                // Damage player if standing in ooze
+                if (!ooze.IsRemoved && damageCooldown <= 0 && ooze.Bounds.CollidesWith(Traveler.Bounds))
+                {
+                    for (int i = 0; i < healths.Count; i++)
+                    {
+                        if (!healths[i].Damaged)
+                        {
+                            Traveler.color = Color.Red;
+                            healths[i].Damaged = true;
+                            healthLeft--;
+                            damageCooldown = 1.0;
+                            TriggerShake(0.3f, 8f);
+                            break;
+                        }
+                    }
+                }
+
+                if (ooze.IsRemoved)
+                    oozes.Remove(ooze);
+            }
+
 
             // update enemy bullets
             foreach (var enmBullet in enemyBullets.ToList())
@@ -387,7 +448,20 @@ namespace Endless.Screens
             // player bullets interacting with bugs
             foreach (var bullet in arm.Bullets.ToList())
             {
-                foreach (var bug2 in bug2s.ToList())
+                foreach (var bug in bugs1.ToList())
+                {
+                    if (bullet.Bounds.CollidesWith(bug.Bounds))
+                    {
+                        Points += bug.PointsWorth;
+                        bullet.IsRemoved = true;
+                        bug.IsAlive = false;
+                    }
+                }
+            }
+
+            foreach (var bullet in arm.Bullets.ToList())
+            {
+                foreach (var bug2 in bugs2.ToList())
                 {
                     if (bullet.Bounds.CollidesWith(bug2.Bounds))
                     {
@@ -400,16 +474,17 @@ namespace Endless.Screens
 
             foreach (var bullet in arm.Bullets.ToList())
             {
-                foreach (var bug in bugs.ToList())
+                foreach (var bug3 in bugs3.ToList())
                 {
-                    if (bullet.Bounds.CollidesWith(bug.Bounds))
+                    if (bullet.Bounds.CollidesWith(bug3.Bounds))
                     {
-                        Points += bug.PointsWorth;
+                        Points += bug3.PointsWorth;
                         bullet.IsRemoved = true;
-                        bug.IsAlive = false;
+                        bug3.IsAlive = false;
                     }
                 }
             }
+
 
 
 
@@ -511,18 +586,25 @@ namespace Endless.Screens
                 portal.Draw(gameTime, sb);
             
             
-            foreach (var bug in bugs)
+            foreach (var bug in bugs1)
             {
                 bug.Draw(gameTime, sb);
                 //var rec = new Rectangle((int)(bug.Bounds.Center.X - bug.Bounds.Radius), (int)(bug.Bounds.Center.Y - bug.Bounds.Radius), (int)bug.Bounds.Radius * 2, (int)bug.Bounds.Radius * 2);
                 //sb.Draw(ball, rec, Color.White);
             }
 
-            foreach (var bug2 in bug2s)
+            foreach (var bug2 in bugs2)
             {
                 //var rec = new Rectangle((int)(bug2.AttackRange.Center.X - bug2.AttackRange.Radius), (int)(bug2.AttackRange.Center.Y - bug2.AttackRange.Radius), (int)bug2.AttackRange.Radius * 2, (int)bug2.AttackRange.Radius * 2);
                 //sb.Draw(ball, rec, Color.White);
                 bug2.Draw(gameTime, sb);
+            }
+
+            foreach (var bug3 in bugs3)
+            {
+                //var rec = new Rectangle((int)(bug3.Bounds.Center.X - bug3.Bounds.Radius), (int)(bug3.Bounds.Center.Y - bug3.Bounds.Radius), (int)bug3.Bounds.Radius * 2, (int)bug3.Bounds.Radius * 2);
+                //sb.Draw(ball, rec, Color.White);
+                bug3.Draw(gameTime, sb);
             }
 
 
@@ -537,6 +619,12 @@ namespace Endless.Screens
                 enmBullet.Draw(gameTime, sb);
             }
 
+            foreach (var ooze in oozes)
+            {
+                var rec = new Rectangle((int)(ooze.Bounds.Center.X - ooze.Bounds.Radius), (int)(ooze.Bounds.Center.Y - ooze.Bounds.Radius), (int)ooze.Bounds.Radius * 2, (int)ooze.Bounds.Radius * 2);
+                sb.Draw(ball, rec, Color.White);
+                ooze.Draw(gameTime, sb);
+            }
 
 
             arm.Draw(gameTime, sb);
