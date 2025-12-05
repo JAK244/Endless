@@ -202,23 +202,22 @@ namespace Endless.Managers
 
             if (WaveActive)
             {
-                int aliveCount = bug1.Count(b => b.IsAlive) + bug2.Count(b => b.IsAlive) + bug3.Count(b => b.IsAlive);
+                int aliveCount = bug1.Count(b => b.IsAlive);
                 if (aliveCount > 0)
                 {
+                    // Example: start speeding up when fewer than 5 remain
                     float ratioAlive = (float)aliveCount / totalEnemiesRemaining;
                     float speedMultiplier = 1.0f;
 
-                    if (ratioAlive <= 0.75f) speedMultiplier = 1.5f;
-                    if (ratioAlive <= 0.50f) speedMultiplier = 2f;
-                    if (ratioAlive <= 0.25f) speedMultiplier = 3f;
-                    if (ratioAlive <= 0.10f) speedMultiplier = 3.5f;
+                    if (ratioAlive <= 0.75f) speedMultiplier = 1.5f; 
+                    if (ratioAlive <= 0.50f) speedMultiplier = 2f; 
+                    if (ratioAlive <= 0.25f) speedMultiplier = 3f; 
+                    if (ratioAlive <= 0.10f) speedMultiplier = 3.5f; 
 
                     foreach (var bug in bug1.Where(b => b.IsAlive))
+                    {
                         bug.Speed = 60f * speedMultiplier;
-                    foreach (var bug in bug2.Where(b => b.IsAlive))
-                        bug.Speed = 60f * speedMultiplier;
-                    foreach (var bug in bug3.Where(b => b.IsAlive))
-                        bug.Speed = 60f * speedMultiplier;
+                    }
                 }
             }
 
@@ -251,7 +250,20 @@ namespace Endless.Managers
             var portal = portals[ran.Next(portals.Count)];
             Vector2 spawnPos = portal.Position + new Vector2(ran.Next(-20, 20), ran.Next(-20, 20));
 
-            if (bug1ToSpawn > 0)
+            // Make a list of available types
+            List<int> choices = new List<int>();
+
+            if (bug1ToSpawn > 0) choices.Add(1);
+            if (bug2ToSpawn > 0) choices.Add(2);
+            if (bug3ToSpawn > 0) choices.Add(3);
+
+            if (choices.Count == 0)
+                return; // nothing left
+
+            // Pick random type
+            int pick = choices[ran.Next(choices.Count)];
+
+            if (pick == 1)
             {
                 var newBug = new Bug1Sprite(spawnPos)
                 {
@@ -262,7 +274,7 @@ namespace Endless.Managers
                 bug1.Add(newBug);
                 bug1ToSpawn--;
             }
-            else if (bug2ToSpawn > 0)
+            else if (pick == 2)
             {
                 var newBug = new Bug2(spawnPos, enemyFires, content)
                 {
@@ -273,7 +285,7 @@ namespace Endless.Managers
                 bug2.Add(newBug);
                 bug2ToSpawn--;
             }
-            else if (bug3ToSpawn > 0)
+            else if (pick == 3)
             {
                 var newBug = new Bug3(spawnPos)
                 {

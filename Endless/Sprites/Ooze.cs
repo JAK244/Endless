@@ -10,7 +10,7 @@ namespace Endless.Sprites
     public class Ooze
     {
         private float timer;
-        private float lifeSpan = 4f;
+        private float lifeSpan = 10f;
 
 
         /// <summary>

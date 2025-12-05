@@ -19,7 +19,7 @@ namespace Endless.Sprites
         /// <summary>
         /// the speed of the bugs
         /// </summary>
-        public float Speed = 60f;
+        public float Speed = 150f;
 
         /// <summary>
         /// points of these bugs

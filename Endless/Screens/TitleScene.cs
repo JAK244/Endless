@@ -76,7 +76,7 @@ namespace Endless.Screens
             powerBall.LoadContent(Content);
             backGroundMusic = Content.Load<Song>("Synthwave Loop");
             MediaPlayer.IsRepeating = true;
-            //MediaPlayer.Play(backGroundMusic);                                                                     music
+            MediaPlayer.Play(backGroundMusic);                                                                     
             menuItems = new List<string> { "Start Game", "Controls", "Exit" };
 
             base.LoadContent(Content);

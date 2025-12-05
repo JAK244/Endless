@@ -103,7 +103,7 @@ namespace Endless.Screens
         {
             waveManager.ShowWaveMessage($"Wave {wave} Start!");
             MediaPlayer.Stop();
-            //MediaPlayer.Play(backGroundMusic_InC);                                                            music
+            MediaPlayer.Play(backGroundMusic_InC);                                                           
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace Endless.Screens
             waveManager.ShowWaveMessage($"Wave {wave} Complete!");
             SceneManager.Instance.AddScene(new ShopScreen(Traveler,arm));
             MediaPlayer.Stop();
-            //MediaPlayer.Play(backGroundMusic_nonC);                                                            music
+            MediaPlayer.Play(backGroundMusic_nonC);                                                        
         }
 
         public void AddBuff(Texture2D icon)
@@ -256,7 +256,7 @@ namespace Endless.Screens
             backGroundMusic_nonC = Content.Load<Song>("if Anyone Dies (instrumental)");
             backGroundMusic_InC = content.Load<Song>("Arena Theme");
             MediaPlayer.IsRepeating = true;
-            //MediaPlayer.Play(backGroundMusic_nonC);                                                                       musuc
+            MediaPlayer.Play(backGroundMusic_nonC);                                                                   
 
             
         }
@@ -621,8 +621,7 @@ namespace Endless.Screens
 
             foreach (var ooze in oozes)
             {
-                var rec = new Rectangle((int)(ooze.Bounds.Center.X - ooze.Bounds.Radius), (int)(ooze.Bounds.Center.Y - ooze.Bounds.Radius), (int)ooze.Bounds.Radius * 2, (int)ooze.Bounds.Radius * 2);
-                sb.Draw(ball, rec, Color.White);
+                
                 ooze.Draw(gameTime, sb);
             }
 
