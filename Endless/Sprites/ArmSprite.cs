@@ -118,7 +118,7 @@ namespace Endless.Sprites
             bullet.texture = bulletTexture;
             Bullets.Add(bullet);
 
-            gunShotSound.Play();
+            //gunShotSound.Play();              music
         
         }
 

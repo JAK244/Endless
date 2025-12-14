@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 
@@ -31,7 +32,6 @@ namespace Endless.Screens
         private List<Bug3> bugs3;
         private List<Ooze> oozes = new List<Ooze>();
         private ArmSprite arm;
-        private int healthLeft;
         private List<BulletSprite> bullets = new List<BulletSprite>();
         private List<EnemyFire> enemyBullets = new List<EnemyFire>();
         private Song backGroundMusic_nonC;
@@ -51,6 +51,9 @@ namespace Endless.Screens
         private GamePadState oldPadState;
         private int Points = 0;
         private int totalFrames = 6;
+        private bool isDead = false;
+        private int CurrentHealth => healths.Count(h => !h.Damaged);
+
 
         private List<ActiveBuff> activeBuffs = new List<ActiveBuff>();
 
@@ -68,11 +71,13 @@ namespace Endless.Screens
 
 
         // video stuff
+        /*
         private Video video;
         private VideoPlayer vPlayer;
         private Texture2D videoTexture;
         private bool isPlaying = false;
         private Texture2D VideoBorder;
+        */
       
        
 
@@ -103,7 +108,7 @@ namespace Endless.Screens
         {
             waveManager.ShowWaveMessage($"Wave {wave} Start!");
             MediaPlayer.Stop();
-            MediaPlayer.Play(backGroundMusic_InC);                                                           
+            //MediaPlayer.Play(backGroundMusic_InC);          music                                                 
         }
 
         /// <summary>
@@ -115,7 +120,7 @@ namespace Endless.Screens
             waveManager.ShowWaveMessage($"Wave {wave} Complete!");
             SceneManager.Instance.AddScene(new ShopScreen(Traveler,arm));
             MediaPlayer.Stop();
-            MediaPlayer.Play(backGroundMusic_nonC);                                                        
+            //MediaPlayer.Play(backGroundMusic_nonC);        music                                                
         }
 
         public void AddBuff(Texture2D icon)
@@ -179,7 +184,7 @@ namespace Endless.Screens
                 healths.Add(new HelthSprite());
             }
 
-            healthLeft = Traveler.MaxHelth;
+            
         }
 
         /// <summary>
@@ -220,7 +225,7 @@ namespace Endless.Screens
             foreach (var bug3 in bugs3) bug3.LoadContent(Content);
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
-            VideoBorder = Content.Load<Texture2D>("VideoBorderFinal");
+            //VideoBorder = Content.Load<Texture2D>("VideoBorderFinal");
             playerInventory = new PlayerInventory(new TeleportingControlItem(Content.Load<Texture2D>("TelaItem"), Content.Load<Texture2D>("TPItemMarker")));
             ItemFrame = Content.Load<Texture2D>("CurrentItemFrame");
             Doto = Content.Load<SpriteFont>("Doto-Black");
@@ -239,13 +244,13 @@ namespace Endless.Screens
 
 
 
-
+            /*
             video = Content.Load<Video>("MEMEThoughts2");
             vPlayer = new VideoPlayer();
            
             vPlayer.Play(video);
             isPlaying = true;
-            
+            */
             
 
 
@@ -256,7 +261,7 @@ namespace Endless.Screens
             backGroundMusic_nonC = Content.Load<Song>("if Anyone Dies (instrumental)");
             backGroundMusic_InC = content.Load<Song>("Arena Theme");
             MediaPlayer.IsRepeating = true;
-            MediaPlayer.Play(backGroundMusic_nonC);                                                                   
+            //MediaPlayer.Play(backGroundMusic_nonC);       music                                                                   
 
             
         }
@@ -268,23 +273,6 @@ namespace Endless.Screens
         {
             base.UnloadContent();
 
-            try
-            {
-                if (vPlayer != null)
-                {
-                    if (vPlayer.State != MediaState.Stopped)
-                        vPlayer.Stop();
-
-                    vPlayer.Dispose();
-                    
-                }
-
-                
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Video cleanup failed: {ex.Message}");
-            }
         }
 
         /// <summary>
@@ -298,11 +286,21 @@ namespace Endless.Screens
             KeyboardState currentKeyboardState = Keyboard.GetState();
             GamePadState currentPadState = GamePad.GetState(0);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.U) || currentPadState.Buttons.Start == ButtonState.Pressed && oldPadState.Buttons.B == ButtonState.Released)
+            if (Keyboard.GetState().IsKeyDown(Keys.P) || currentPadState.Buttons.Start == ButtonState.Pressed && oldPadState.Buttons.B == ButtonState.Released)
             {
                 SceneManager.Instance.AddScene(new PauseScene());
                
             }
+
+
+            if (!isDead && CurrentHealth <= 0)
+            {
+                isDead = true;
+                SceneManager.Instance.ChangeScene(new DeathScreen());
+
+            }
+
+
 
             Traveler.color = Color.White;
 
@@ -321,18 +319,14 @@ namespace Endless.Screens
 
                 if (damageCooldown <= 0 && bug.Bounds.CollidesWith(Traveler.Bounds))
                 {
-                    for (int i = 0; i < healths.Count; i++)
+                    if (damageCooldown <= 0)
                     {
-                        if (!healths[i].Damaged)
-                        {
-                            Traveler.color = Color.Red;
-                            healths[i].Damaged = true;
-                            healthLeft--;
-                            damageCooldown = 1.0;
-                            TriggerShake(0.3f, 8f);
-                            break;
-                        }
+                        Traveler.color = Color.Red;
+                        TakeDamage();
+                        damageCooldown = 1.0;
+                        TriggerShake(0.3f, 8f);
                     }
+
                 }
             }
 
@@ -343,18 +337,14 @@ namespace Endless.Screens
 
                 if (damageCooldown <= 0 && bug2.Bounds.CollidesWith(Traveler.Bounds))
                 {
-                    for (int i = 0; i < healths.Count; i++)
+                    if (damageCooldown <= 0)
                     {
-                        if (!healths[i].Damaged)
-                        {
-                            Traveler.color = Color.Red;
-                            healths[i].Damaged = true;
-                            healthLeft--;
-                            damageCooldown = 1.0;
-                            TriggerShake(0.3f, 8f);
-                            break;
-                        }
+                        Traveler.color = Color.Red;
+                        TakeDamage();
+                        damageCooldown = 1.0;
+                        TriggerShake(0.3f, 8f);
                     }
+
                 }
             }
 
@@ -365,18 +355,14 @@ namespace Endless.Screens
 
                 if (damageCooldown <= 0 && bug3.Bounds.CollidesWith(Traveler.Bounds))
                 {
-                    for (int i = 0; i < healths.Count; i++)
+                    if (damageCooldown <= 0)
                     {
-                        if (!healths[i].Damaged)
-                        {
-                            Traveler.color = Color.Red;
-                            healths[i].Damaged = true;
-                            healthLeft--;
-                            damageCooldown = 1.0;
-                            TriggerShake(0.3f, 8f);
-                            break;
-                        }
+                        Traveler.color = Color.Red;
+                        TakeDamage();
+                        damageCooldown = 1.0;
+                        TriggerShake(0.3f, 8f);
                     }
+
                 }
 
                 // Try dropping ooze
@@ -396,18 +382,14 @@ namespace Endless.Screens
                 // Damage player if standing in ooze
                 if (!ooze.IsRemoved && damageCooldown <= 0 && ooze.Bounds.CollidesWith(Traveler.Bounds))
                 {
-                    for (int i = 0; i < healths.Count; i++)
+                    if (damageCooldown <= 0)
                     {
-                        if (!healths[i].Damaged)
-                        {
-                            Traveler.color = Color.Red;
-                            healths[i].Damaged = true;
-                            healthLeft--;
-                            damageCooldown = 1.0;
-                            TriggerShake(0.3f, 8f);
-                            break;
-                        }
+                        Traveler.color = Color.Red;
+                        TakeDamage();
+                        damageCooldown = 1.0;
+                        TriggerShake(0.3f, 8f);
                     }
+
                 }
 
                 if (ooze.IsRemoved)
@@ -424,19 +406,14 @@ namespace Endless.Screens
                 if (!enmBullet.IsRemoved && damageCooldown <= 0 && enmBullet.Bounds.CollidesWith(Traveler.Bounds))
                 {
                     // Apply damage
-                    for (int i = 0; i < healths.Count; i++)
+                    if (damageCooldown <= 0)
                     {
-                        if (!healths[i].Damaged)
-                        {
-                            Traveler.color = Color.Red;
-                            healths[i].Damaged = true;
-
-                            healthLeft--;
-                            damageCooldown = 1.0;
-                            TriggerShake(0.3f, 8f);
-                            break;
-                        }
+                        Traveler.color = Color.Red;
+                        TakeDamage();
+                        damageCooldown = 1.0;
+                        TriggerShake(0.3f, 8f);
                     }
+
 
                     enmBullet.IsRemoved = true;
                 }
@@ -523,11 +500,12 @@ namespace Endless.Screens
 
 
             // hanldes video stuff
+            /*
             if (isPlaying && vPlayer.State == MediaState.Stopped)
             {
                 vPlayer.Play(video); // restart when finished
             }
-
+            */
 
             //handles using items
             if (currentKeyboardState.IsKeyDown(Keys.E) && !previousKeyboardState.IsKeyDown(Keys.E) || currentPadState.Buttons.LeftShoulder == ButtonState.Pressed && oldPadState.Buttons.LeftShoulder == ButtonState.Released)
@@ -542,19 +520,40 @@ namespace Endless.Screens
 
             floatingTextManager.Update(gameTime);
 
-            if (Traveler.healthWentUp == true)
+            if (Traveler.healthWentUp)
             {
-                Traveler.MaxHelth++;
-                var newHeart = new HelthSprite();
-                newHeart.LoadContent(SceneManager.Instance.Content); 
-                healths.Add(newHeart);
-                healthLeft = Traveler.MaxHelth;
+                AddHeart();
                 Traveler.healthWentUp = false;
             }
 
-            
+
+
 
         }
+
+        public void AddHeart()
+        {
+            Traveler.MaxHelth++;
+
+            var heart = new HelthSprite();
+            heart.LoadContent(SceneManager.Instance.Content);
+            heart.Damaged = false;
+
+            healths.Add(heart);
+        }
+
+        public void TakeDamage()
+        {
+            for (int i = healths.Count - 1; i >= 0; i--)
+            {
+                if (!healths[i].Damaged)
+                {
+                    healths[i].Damaged = true;
+                    break;
+                }
+            }
+        }
+
 
 
         /// <summary>
@@ -643,32 +642,32 @@ namespace Endless.Screens
             // handles the UI
             sb.Begin(samplerState: SamplerState.PointClamp);
 
-            int spacing = 70; // pixels between hearts
             int spacing2 = 10;
             int spacing3= 10;
-            int startX = 10; 
-            int totalHearts = healths.Count;
+            int spacing = 70;
+            int startX = 10;
+            int drawIndex = 0; // <-- THIS IS THE KEY
 
-            for (int i = 0; i < totalHearts; i++)
+            for (int i = healths.Count - 1; i >= 0; i--)
             {
-                int heartIndex = totalHearts - 1 - i;
-
-                if (!healths[heartIndex].Damaged)
+                if (!healths[i].Damaged)
                 {
-                    Vector2 heartPos = new Vector2(startX + (i * spacing), 10);
-                    healths[heartIndex].position = heartPos;
-                    healths[heartIndex].Update(gameTime);
+                    Vector2 heartPos = new Vector2(startX + (drawIndex * spacing), 10);
+                    healths[i].position = heartPos;
+                    healths[i].Update(gameTime);
 
-                    healths[heartIndex].Draw3D(
+                    healths[i].Draw3D(
                         SceneManager.Instance.GraphicsDevice,
                         uiView,
                         uiProjection
                     );
+
+                    drawIndex++; // ONLY increment when we draw a heart
                 }
             }
 
             // makes the buffs column
-            for(int i = 0;i < totalFrames;i++)
+            for (int i = 0;i < totalFrames;i++)
             {
                 sb.Draw(ItemFrame, new Vector2(10, 100 + spacing2), Color.White);
                 spacing2 += 60;
@@ -700,7 +699,7 @@ namespace Endless.Screens
             // draws stuff
             waveManager.Draw(gameTime, sb);
             sb.Draw(ItemFrame, new Vector2(100,80), Color.White);
-            Vector2 PointsTextPos = new Vector2(1030, 180);
+            Vector2 PointsTextPos = new Vector2(1030, 10);
             sb.DrawString(Doto, "buffs",new Vector2(10,70), Color.Black, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
             sb.DrawString(Doto, "Points:" + Points, PointsTextPos, Color.Red,0f,Vector2.Zero,0.3f,SpriteEffects.None,0f);
             playerInventory.Draw(gameTime,sb);
@@ -716,6 +715,7 @@ namespace Endless.Screens
 
             
             // handles Video
+            /*
             if (isPlaying && vPlayer.State == MediaState.Playing)
             {
                 videoTexture = vPlayer.GetTexture();
@@ -729,7 +729,7 @@ namespace Endless.Screens
                 
 
             }
-
+            */
         
 
             base.Draw(gameTime);

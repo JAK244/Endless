@@ -5,24 +5,18 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using SharpDX.Direct2D1;
+using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace Endless.Screens
 {
-    /// <summary>
-    /// the title screen class
-    /// </summary>
-    public class TitleScene : GameScenes
+    public class DeathScreen : GameScenes
     {
         private Texture2D background;
-        private TravelerSprite traveler;
-        private PortalSprite[] portals;
-        private PowerBallSprite powerBall;
-        private StarSprite[] stars;
-        private Song backGroundMusic;
-
+        private Texture2D deadDuck;
         private SpriteFont Doto;
         private List<string> menuItems;
         private int selectedIndex;
@@ -30,29 +24,15 @@ namespace Endless.Screens
         private GamePadState oldPadState;
         private bool ignoreInput = true;
 
-
-
+        private double animationTimer;
+        private short animationFrame;
 
         /// <summary>
         /// sets the inital state of the game
         /// </summary>
         public override void Initialize()
         {
-            traveler = new TravelerSprite() { position = new Vector2(500, 624) };
-            portals = new PortalSprite[]
-            {
-                new PortalSprite(){Position = new Vector2(1100,525)},// x, y
-                new PortalSprite(){Position = new Vector2(-25 ,525), PortalFlipped = true},
-            };
-
-           
-            powerBall = new PowerBallSprite() { Position = new Vector2(525, 561) };
-
-            stars = new StarSprite[]
-            {
-                new StarSprite(){Position = new Vector2(260,80)},
-                new StarSprite(){Position = new Vector2(800,80) },
-            };
+            
         }
 
         /// <summary>
@@ -61,17 +41,16 @@ namespace Endless.Screens
         /// <param name="Content">the content manager</param>
         public override void LoadContent(ContentManager Content)
         {
-           
+
             Doto = Content.Load<SpriteFont>("Doto-Black");
-            traveler.LoadContent(Content);
-            background = Content.Load<Texture2D>("TitleScreen");
-            foreach (var portal in portals) portal.LoadContent(Content);
-            foreach (var star in stars) star.LoadContent(Content);
-            powerBall.LoadContent(Content);
-            backGroundMusic = Content.Load<Song>("Synthwave Loop");
-            MediaPlayer.IsRepeating = true;
+        
+            background = Content.Load<Texture2D>("DEATHScreen");
+            deadDuck = Content.Load<Texture2D>("DeadDuck");
+           
+            //backGroundMusic = Content.Load<Song>("Synthwave Loop");
+            //MediaPlayer.IsRepeating = true;
             //MediaPlayer.Play(backGroundMusic);              music                                                       
-            menuItems = new List<string> { "Start Game", "Controls", "Exit" };
+            menuItems = new List<string> { "Retry", "MainMenu"};
 
             base.LoadContent(Content);
         }
@@ -101,7 +80,7 @@ namespace Endless.Screens
                 return; // skip update for 1 frame
             }
 
-            if (IsKeyPressed(Keys.Up, keyboard) || IsKeyPressed(Keys.W, keyboard) || 
+            if (IsKeyPressed(Keys.Left, keyboard) || IsKeyPressed(Keys.A, keyboard) ||
                 (gamepad.DPad.Up == ButtonState.Pressed && oldPadState.DPad.Up == ButtonState.Released) ||
                 (gamepad.ThumbSticks.Left.Y > 0.5f && oldPadState.ThumbSticks.Left.Y <= 0.5f))
             {
@@ -109,7 +88,7 @@ namespace Endless.Screens
             }
 
             // Move down
-            if (IsKeyPressed(Keys.Down, keyboard) || IsKeyPressed(Keys.S, keyboard) ||
+            if (IsKeyPressed(Keys.Right, keyboard) || IsKeyPressed(Keys.D, keyboard) ||
                 (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
                 (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
             {
@@ -122,11 +101,12 @@ namespace Endless.Screens
             {
                 if (selectedIndex == 0)
                 {
-                    SceneManager.Instance.AddScene(new MainGameScene());
+                    SceneManager.Instance.ChangeScene(new MainGameScene());
+
                 }
                 else if (selectedIndex == 1)
                 {
-                    SceneManager.Instance.AddScene(new ControllsScene());
+                    SceneManager.Instance.AddScene(new TitleScene());
                 }
                 else if (selectedIndex == 2)
                 {
@@ -136,7 +116,15 @@ namespace Endless.Screens
 
             oldState = keyboard;
             oldPadState = gamepad;
-           
+        }
+
+
+        /// <summary>
+        /// returns true if the given key was just pressed this frame (edge detection)
+        /// </summary>
+        private bool IsKeyPressed(Keys key, KeyboardState current)
+        {
+            return current.IsKeyDown(key) && oldState.IsKeyUp(key);
         }
 
         /// <summary>
@@ -151,20 +139,27 @@ namespace Endless.Screens
             if (background != null)
                 sb.Draw(background, Vector2.Zero, Color.White);
 
-            traveler.Draw(gameTime, sb);
-            foreach (var portal in portals)
-                portal.Draw(gameTime, sb);
-            foreach (var star in stars)
-                star.Draw(gameTime, sb);
-            powerBall.Draw(gameTime, sb);
 
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            sb.DrawString(Doto, $"Void", new Vector2(500, 0), Color.Black);
-            sb.DrawString(Doto, $"Traveler", new Vector2(400, 70), Color.Black);
-            //sb.DrawString(Doto, $"Press Enter to start", new Vector2(250, 300), Color.Gold,0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0);
-
-            Vector2 pos = new Vector2(400, 180);
             
+            if (animationTimer > 0.2)
+            {
+                animationFrame++;
+                if (animationFrame > 4) animationFrame = 0;
+                animationTimer -= 0.2;
+            }
+
+            var source = new Rectangle(animationFrame * 64, 0, 64, 64);
+            sb.Draw(deadDuck, new Vector2(450,150), source, Color.White, 0f, Vector2.Zero, 5f, SpriteEffects.None, 0f);
+
+
+            sb.DrawString(Doto, $"LAMO", new Vector2(100, 0), Color.White);
+            sb.DrawString(Doto, $"COOKED", new Vector2(800, 0), Color.White);
+            
+
+            Vector2 pos = new Vector2(150, 580);
+
 
             for (int i = 0; i < menuItems.Count; i++)
             {
@@ -181,18 +176,13 @@ namespace Endless.Screens
                     sb.DrawString(Doto, text, pos, color);
                 }
 
-                pos.Y += 100f;
+                pos.X += 500f;
             }
 
             sb.End();
         }
 
-        /// <summary>
-        /// returns true if the given key was just pressed this frame (edge detection)
-        /// </summary>
-        private bool IsKeyPressed(Keys key, KeyboardState current)
-        {
-            return current.IsKeyDown(key) && oldState.IsKeyUp(key);
-        }
+
+
     }
 }

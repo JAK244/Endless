@@ -14,7 +14,7 @@ namespace Endless.Sprites
     public class BulletSprite
     {
         private float timer;
-        private float lifeSpan = 2f;
+        private float lifeSpan = .5f;
         private float speed = 300f;
 
         /// <summary>
