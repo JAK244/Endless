@@ -46,6 +46,10 @@ namespace Endless.Sprites
 
         private short animationFrame;
 
+        private double hitFlashTimer = 0;
+        private const double HitFlashDuration = 0.1; // 100ms
+
+
         /// <summary>
         /// checks if bug is Alive
         /// </summary>
@@ -80,6 +84,13 @@ namespace Endless.Sprites
 
         }
 
+        public void TakeHit()
+        {
+            color = Color.Red;
+            hitFlashTimer = HitFlashDuration;
+        }
+ 
+
         /// <summary>
         /// Loads the texture
         /// </summary>
@@ -95,13 +106,24 @@ namespace Endless.Sprites
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime, Vector2 playerPosition)
         {
+
+            if (hitFlashTimer > 0)
+            {
+                hitFlashTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                if (hitFlashTimer <= 0)
+                {
+                    color = Color.White;
+                }
+            }
+
+
             if (!IsAlive)
             {
                 bounds.Center = new Vector2(10000, 1000000); // removes the bounds in a goofy way
                 return;
             }
 
-      
+
             Vector2 bugCenter = Position + new Vector2(60,100);
 
           
@@ -154,7 +176,7 @@ namespace Endless.Sprites
             }
 
             var source = new Rectangle(animationFrame * 64, 0, 64, 64);
-            spriteBatch.Draw(texture, Position, source, Color.White, 0f, Vector2.Zero, 2f, spriteEffect, 0f);
+            spriteBatch.Draw(texture, Position, source, color, 0f, Vector2.Zero, 2f, spriteEffect, 0f);
 
 
         }

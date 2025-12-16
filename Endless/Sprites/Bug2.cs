@@ -15,11 +15,6 @@ namespace Endless.Sprites
         private Texture2D texture;
 
         /// <summary>
-        /// the direction timer
-        /// </summary>
-        private double directionTimer;
-
-        /// <summary>
         /// the speed of the bugs
         /// </summary>
         public float Speed = 60f;
@@ -43,10 +38,15 @@ namespace Endless.Sprites
 
         private short animationFrame;
 
+        private double hitFlashTimer = 0;
+        private const double HitFlashDuration = 0.1; // 100ms
+
         /// <summary>
         /// checks if bug is Alive
         /// </summary>
         public bool IsAlive = true;
+
+        public int Bug2health = 2; // 3 hits to kill
 
         /// <summary>
         /// the color of the sprite
@@ -83,6 +83,12 @@ namespace Endless.Sprites
         public BoundingRectangle Bounds
         {
             get { return bounds; }
+        }
+
+        public void TakeHit()
+        {
+            color = Color.Red;
+            hitFlashTimer = HitFlashDuration;
         }
 
         private void Shoot(Vector2 playerPosition)
@@ -136,6 +142,15 @@ namespace Endless.Sprites
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime, Vector2 playerPosition)
         {
+            if (hitFlashTimer > 0)
+            {
+                hitFlashTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                if (hitFlashTimer <= 0)
+                {
+                    color = Color.White;
+                }
+            }
+
             if (!IsAlive)
             {
                 bounds.X = 100000;
@@ -224,7 +239,7 @@ namespace Endless.Sprites
             }
 
             var source = new Rectangle(animationFrame * 64, 0, 64, 64);
-            spriteBatch.Draw(texture, Position, source, Color.White, 0f, Vector2.Zero, 2f, spriteEffect, 0f);
+            spriteBatch.Draw(texture, Position, source, color, 0f, Vector2.Zero, 2f, spriteEffect, 0f);
 
 
         }

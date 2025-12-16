@@ -30,6 +30,7 @@ namespace Endless.Screens
         private List<Bug1Sprite> bugs1;
         private List<Bug2> bugs2;
         private List<Bug3> bugs3;
+        private List<BossBug> bossBugs;
         private List<Ooze> oozes = new List<Ooze>();
         private ArmSprite arm;
         private List<BulletSprite> bullets = new List<BulletSprite>();
@@ -79,11 +80,7 @@ namespace Endless.Screens
         private Texture2D VideoBorder;
         */
       
-       
-
-
-      
-
+  
         /// <summary>
         /// the translation matrix
         /// </summary>
@@ -171,8 +168,9 @@ namespace Endless.Screens
             bugs1 = new List<Bug1Sprite>{};
             bugs2 = new List<Bug2>{};
             bugs3 = new List<Bug3> {};
+            bossBugs = new List<BossBug>{};
 
-            waveManager = new WaveManager(portals.ToList(), enemyBullets,bugs1, bugs2, bugs3, SceneManager.Instance.Content);
+            waveManager = new WaveManager(portals.ToList(), enemyBullets,bugs1, bugs2, bugs3, bossBugs, SceneManager.Instance.Content);
             waveManager.LoadContent(SceneManager.Instance.Content);
             waveManager.OnWaveStart += HandleWaveStart;
             waveManager.OnWaveEnd += HandleWaveEnd;
@@ -223,6 +221,7 @@ namespace Endless.Screens
             foreach (var bug in bugs1) bug.LoadContent(Content); 
             foreach (var bug2 in bugs2) bug2.LoadContent(Content);
             foreach (var bug3 in bugs3) bug3.LoadContent(Content);
+            foreach (var boss in bossBugs) boss.LoadContent(Content);
             foreach (var helth in healths) helth.LoadContent(Content);
             powerBall.LoadContent(Content);
             //VideoBorder = Content.Load<Texture2D>("VideoBorderFinal");
@@ -374,6 +373,33 @@ namespace Endless.Screens
                 }
             }
 
+            // Boss movement and body interaction
+            foreach (var boss in bossBugs)
+            {
+                boss.Update(gameTime, Traveler.position);
+
+                if (damageCooldown <= 0 && boss.Bounds.CollidesWith(Traveler.Bounds))
+                {
+                    if (damageCooldown <= 0)
+                    {
+                        Traveler.color = Color.Red;
+                        TakeDamage();
+                        damageCooldown = 1.0;
+                        TriggerShake(0.3f, 8f);
+                    }
+
+                }
+
+                // Try dropping ooze
+                var newOoze = boss.TryDropOoze(gameTime);
+                if (newOoze != null)
+                {
+                    newOoze.LoadContent(SceneManager.Instance.Content);
+                    oozes.Add(newOoze);
+                }
+            }
+
+
             // checks ooze colides with player
             foreach (var ooze in oozes.ToList())
             {
@@ -429,9 +455,11 @@ namespace Endless.Screens
                 {
                     if (bullet.Bounds.CollidesWith(bug.Bounds))
                     {
+                        bug.TakeHit();
                         Points += bug.PointsWorth;
                         bullet.IsRemoved = true;
                         bug.IsAlive = false;
+                       
                     }
                 }
             }
@@ -442,9 +470,15 @@ namespace Endless.Screens
                 {
                     if (bullet.Bounds.CollidesWith(bug2.Bounds))
                     {
+                        bug2.TakeHit();
                         Points += bug2.PointsWorth;
                         bullet.IsRemoved = true;
-                        bug2.IsAlive = false;
+
+                        if (bug2.Bug2health == 0)
+                        {
+                            bug2.IsAlive = false;
+                        }
+                        bug2.Bug2health--;
                     }
                 }
             }
@@ -455,14 +489,37 @@ namespace Endless.Screens
                 {
                     if (bullet.Bounds.CollidesWith(bug3.Bounds))
                     {
+                        bug3.TakeHit();
                         Points += bug3.PointsWorth;
                         bullet.IsRemoved = true;
-                        bug3.IsAlive = false;
+                        
+                        if(bug3.bug3helth == 0)
+                        {
+                            bug3.IsAlive = false;
+                        }
+                        bug3.bug3helth--;
                     }
                 }
             }
 
+            foreach (var bullet in arm.Bullets.ToList())
+            {
+                foreach (var boss in bossBugs.ToList())
+                {
+                    if (bullet.Bounds.CollidesWith(boss.Bounds))
+                    {
+                        boss.TakeHit();
+                        Points += boss.PointsWorth;
+                        bullet.IsRemoved = true;
 
+                        if (boss.Bug2health == 0)
+                        {
+                            boss.IsAlive = false;
+                        }
+                        boss.Bug2health--;
+                    }
+                }
+            }
 
 
 
@@ -476,6 +533,11 @@ namespace Endless.Screens
                 if (Keyboard.GetState().IsKeyDown(Keys.F) && !waveManager.WaveActive || currentPadState.Buttons.Y == ButtonState.Pressed && oldPadState.Buttons.Y == ButtonState.Released && !waveManager.WaveActive)
                 {
                     waveManager.StartWave(waveManager.CurrentWave + 1);
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.M) && !waveManager.WaveActive || currentPadState.Buttons.Y == ButtonState.Pressed && oldPadState.Buttons.Y == ButtonState.Released && !waveManager.WaveActive)
+                {
+                    waveManager.StartWave(waveManager.CurrentWave + 10);
                 }
             }
             else
@@ -606,6 +668,13 @@ namespace Endless.Screens
                 bug3.Draw(gameTime, sb);
             }
 
+            foreach (var boss in bossBugs)
+            {
+                boss.Draw(gameTime, sb);
+
+                //var rec = new Rectangle((int)(boss.Bounds.Center.X - boss.Bounds.Radius), (int)(boss.Bounds.Center.Y - boss.Bounds.Radius), (int)boss.Bounds.Radius * 2, (int)boss.Bounds.Radius * 2);
+                //sb.Draw(ball, rec, Color.White);
+            }
 
 
             foreach (var bullet in bullets)

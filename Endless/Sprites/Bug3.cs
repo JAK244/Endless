@@ -31,6 +31,8 @@ namespace Endless.Sprites
         /// </summary>
         public Vector2 Position;
 
+        public int bug3helth = 1; // two hits to kill
+
         /// <summary>
         /// checks if the sprite is flipped
         /// </summary>
@@ -39,6 +41,11 @@ namespace Endless.Sprites
         private double animationTimer;
 
         private short animationFrame;
+
+
+        private double hitFlashTimer = 0;
+        private const double HitFlashDuration = 0.1; // 100ms
+
 
         /// <summary>
         /// checks if bug is Alive
@@ -74,6 +81,12 @@ namespace Endless.Sprites
             dropInterval = 3.0 + (new Random().NextDouble());
         }
 
+        public void TakeHit()
+        {
+            color = Color.Red;
+            hitFlashTimer = HitFlashDuration;
+        }
+
         public Ooze TryDropOoze(GameTime gameTime)
         {
             if (!IsAlive) return null;
@@ -104,6 +117,16 @@ namespace Endless.Sprites
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime, Vector2 playerPosition)
         {
+            if (hitFlashTimer > 0)
+            {
+                hitFlashTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                if (hitFlashTimer <= 0)
+                {
+                    color = Color.White;
+                }
+            }
+
+
             if (!IsAlive)
             {
                 bounds.Center = new Vector2(10000, 1000000); // removes the bounds in a goofy way
@@ -165,7 +188,7 @@ namespace Endless.Sprites
             }
 
             var source = new Rectangle(animationFrame * 64, 0, 64, 64);
-            spriteBatch.Draw(texture, Position, source, Color.White, 0f, Vector2.Zero, 1f, spriteEffect, 0f);
+            spriteBatch.Draw(texture, Position, source, color, 0f, Vector2.Zero, 1f, spriteEffect, 0f);
 
 
         }

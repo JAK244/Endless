@@ -30,6 +30,7 @@ namespace Endless.Managers
         private int bug1ToSpawn;
         private int bug2ToSpawn;
         private int bug3ToSpawn;
+        private int BossSpawn;
 
 
 
@@ -48,6 +49,7 @@ namespace Endless.Managers
         private List<Bug1Sprite> bug1;
         private List<Bug2> bug2;
         private List<Bug3> bug3;
+        private List<BossBug> boss;
 
         private ContentManager content;
 
@@ -67,13 +69,14 @@ namespace Endless.Managers
         /// <param name="portals">the portals</param>
         /// <param name="bugs">the bugs</param>
         /// <param name="content">the contnet manager</param>
-        public WaveManager(List<PortalSprite> portals, List<EnemyFire> enemyFires, List<Bug1Sprite> bug1, List<Bug2> bug2, List<Bug3> bug3, ContentManager content)
+        public WaveManager(List<PortalSprite> portals, List<EnemyFire> enemyFires, List<Bug1Sprite> bug1, List<Bug2> bug2, List<Bug3> bug3, List<BossBug> boss, ContentManager content)
         {
             this.portals = portals;
             this.enemyFires = enemyFires;
             this.bug1 = bug1;
             this.bug2 = bug2;
             this.bug3 = bug3;
+            this.boss = boss;
             this.content = content;
         }
 
@@ -112,6 +115,7 @@ namespace Endless.Managers
             bug1ToSpawn = 0;
             bug2ToSpawn = 0;
             bug3ToSpawn = 0;
+            BossSpawn = 0;
 
             // Set enemies based on wave
             switch (waveNumber)
@@ -155,10 +159,13 @@ namespace Endless.Managers
                     bug3ToSpawn = 8;
                     bug2ToSpawn = 5;
                     break;
+                case 10:
+                    BossSpawn = 1;
+                    break;
             }
 
             // Total enemies for speed scaling
-            totalEnemiesRemaining = bug1ToSpawn + bug2ToSpawn + bug3ToSpawn;
+            totalEnemiesRemaining = bug1ToSpawn + bug2ToSpawn + bug3ToSpawn + BossSpawn;
 
             OnWaveStart?.Invoke(CurrentWave);
         }
@@ -188,13 +195,13 @@ namespace Endless.Managers
 
             spawnTimer += gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (spawnTimer >= 1.0 && (bug1ToSpawn > 0 || bug2ToSpawn > 0 || bug3ToSpawn > 0))
+            if (spawnTimer >= 1.0 && (bug1ToSpawn > 0 || bug2ToSpawn > 0 || bug3ToSpawn > 0 || BossSpawn > 0))
             {
                 SpawnBug();
                 spawnTimer = 0;
             }
 
-            if (bug1ToSpawn == 0 && bug2ToSpawn == 0 && bug3ToSpawn == 0 && bug1.All(b => !b.IsAlive) && bug2.All(b => !b.IsAlive) && bug3.All(b => !b.IsAlive))
+            if (bug1ToSpawn == 0 && bug2ToSpawn == 0 && bug3ToSpawn == 0 && BossSpawn == 0 && bug1.All(b => !b.IsAlive) && bug2.All(b => !b.IsAlive) && bug3.All(b => !b.IsAlive) && boss.All(b => !b.IsAlive))
             {
                 WaveActive = false;
                 OnWaveEnd?.Invoke(CurrentWave);
@@ -256,6 +263,7 @@ namespace Endless.Managers
             if (bug1ToSpawn > 0) choices.Add(1);
             if (bug2ToSpawn > 0) choices.Add(2);
             if (bug3ToSpawn > 0) choices.Add(3);
+            if (BossSpawn > 0) choices.Add(4);
 
             if (choices.Count == 0)
                 return; // nothing left
@@ -295,6 +303,17 @@ namespace Endless.Managers
                 newBug.LoadContent(content);
                 bug3.Add(newBug);
                 bug3ToSpawn--;
+            }
+            else if (pick == 4)
+            {
+                var newBug = new BossBug(spawnPos, enemyFires, content)
+                {
+                    IsAlive = true,
+                    BugFlipped = ran.Next(2) == 0
+                };
+                newBug.LoadContent(content);
+                boss.Add(newBug);
+                BossSpawn--;
             }
         }
     }
