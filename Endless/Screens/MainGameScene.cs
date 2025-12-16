@@ -528,17 +528,30 @@ namespace Endless.Screens
             {
                 foreach (var boss in bossBugs.ToList())
                 {
-                    if (bullet.Bounds.CollidesWith(boss.Bounds))
+                    if (bullet.Bounds.CollidesWith(boss.Bounds) && !boss.IsAttacking)
                     {
                         boss.TakeHit();
                         Points += boss.PointsWorth;
                         bullet.IsRemoved = true;
 
-                        if (boss.Bug2health == 0)
+                        if (boss.Bosshealth == 0) // dead
                         {
                             boss.IsAlive = false;
                         }
-                        boss.Bug2health--;
+
+                        if (boss.Bosshealth <= 6) // 5 hits left phase 2 start
+                        {
+                            boss.Phase1 = false;
+                            boss.Phase2 = true;
+                        }
+
+                        if (boss.Bosshealth <= 1)// 1 hit left phase 3 start
+                        {
+                            boss.Phase2 = false;
+                            boss.Phase3 = true;
+                        }
+
+                        boss.Bosshealth--;
                     }
                 }
             }
@@ -668,7 +681,16 @@ namespace Endless.Screens
             foreach (var portal in portals)
                 portal.Draw(gameTime, sb);
             
+            foreach (var ooze in oozes)
+            {
+                ooze.Draw(gameTime, sb);
+            }
             
+            foreach (var booze in bossOozes)
+            {
+                booze.Draw(gameTime, sb);
+            }
+
             foreach (var bug in bugs1)
             {
                 bug.Draw(gameTime, sb);
@@ -709,17 +731,7 @@ namespace Endless.Screens
                 enmBullet.Draw(gameTime, sb);
             }
 
-            foreach (var ooze in oozes)
-            {
-                ooze.Draw(gameTime, sb);
-            }
 
-            foreach (var booze in bossOozes)
-            {
-                var rec = new Rectangle((int)(booze.Bounds.Center.X - booze.Bounds.Radius), (int)(booze.Bounds.Center.Y - booze.Bounds.Radius), (int)booze.Bounds.Radius * 2, (int)booze.Bounds.Radius * 2);
-                sb.Draw(ball, rec, Color.White);
-                booze.Draw(gameTime, sb);
-            }
 
             arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);

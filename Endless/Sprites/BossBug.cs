@@ -4,187 +4,218 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Endless.Sprites
 {
+
     public class BossBug
     {
-            private Texture2D texture;
+        private enum Phase3State
+        {
+            Disappeared,
+            Targeting,
+            Charging,
+            Open
+        }
 
-            private double dropTimer = 0.0;
-            private double dropInterval;
-            public bool CanDropOoze => IsAlive;
-            public event Action<Vector2> OnDropOoze;
+        private Phase3State phase3State = Phase3State.Disappeared;
+        private float phase3Timer = 0f;
+        private int chargeCount = 0;
+        private Vector2 chargeDirection;
+        private float chargeSpeed = 900f;
+        private bool visible = true;
+        private bool directionLocked = false;
 
-            /// <summary>
-            /// the speed of the bugs
-            /// </summary>
-            public float Speed = 150f;
 
-            /// <summary>
-            /// points of these bugs
-            /// </summary>
-            public int PointsWorth = 10000;
+        private enum Phase2State
+        {
+            Attacking,
+            Open
+        }
 
-            /// <summary>
-            /// the position of the sprite
-            /// </summary>
-            public Vector2 Position;
+        private Phase2State phase2State = Phase2State.Attacking;
+        private float phase2Timer = 0f;
+        private float shootTimer = 0f;
+        private float shootInterval = 0.25f; // how fast bullets spawn
+        private float starRotation = 0f;     // rotates the pattern
+        public bool IsAttacking = false;
 
-            /// <summary>
-            /// checks if the sprite is flipped
-            /// </summary>
-            public bool BugFlipped;
 
-            private double animationTimer;
+        private Texture2D texture;
+        private Texture2D retical;
 
-            private short animationFrame;
 
-            private double hitFlashTimer = 0;
-            private const double HitFlashDuration = 0.1; // 100ms
+        private double dropTimer = 0.0;
+        private double dropInterval;
+        public bool CanDropOoze => IsAlive;
+        public event Action<Vector2> OnDropOoze;
 
-            /// <summary>
-            /// checks if bug is Alive
-            /// </summary>
-            public bool IsAlive = true;
+        private readonly Vector2 hitboxOffsetRight = new Vector2(160, 130);
+        private readonly Vector2 hitboxOffsetLeft = new Vector2(96, 130);
 
-            public int Bug2health = 10; // phase 1: 5 hits, phase 2: 5 hits two open intervles, phase 3: 1 hit 
+        /// <summary>
+        /// the speed of the bugs
+        /// </summary>
+        public float Speed = 150f;
 
-            /// <summary>
-            /// the color of the sprite
-            /// </summary>
-            public Color color { get; set; } = Color.White;
+        /// <summary>
+        /// points of these bugs
+        /// </summary>
+        public int PointsWorth = 10000;
 
-            private BoundingCircle bounds;
-            private BoundingCircle attackRange;
+        /// <summary>
+        /// the position of the sprite
+        /// </summary>
+        public Vector2 Position;
 
-            private float attackCooldown = 0.5f; // time between bursts
-            private float attackTimer = 0f;
+        private Vector2 screenCenter = new Vector2(785,725);
 
-            public bool IsAttacking = false;
+        /// <summary>
+        /// checks if the sprite is flipped
+        /// </summary>
+        public bool BugFlipped;
 
-            // we need a reference to a bullet list so Bug2 can spawn bullets
-            private List<EnemyFire> enemyBullets;
-            private ContentManager content;
+        private double animationTimer;
 
-            /// <summary>
-            /// the bugs bounds
-            /// </summary>
-            public BoundingCircle AttackRange
+        private short animationFrame;
+
+        private double hitFlashTimer = 0;
+        private const double HitFlashDuration = 0.1; // 100ms
+
+        /// <summary>
+        /// checks if bug is Alive
+        /// </summary>
+        public bool IsAlive = true;
+        private bool reachedCenter = false;
+
+
+        public int Bosshealth = 10; // phase 1: 5 hits, phase 2: 5 hits two open intervles, phase 3: 1 hit 
+            
+        public bool Phase1 = true;
+        public bool Phase2 = false;
+        public bool Phase3 = false;
+      
+        /// <summary>
+        /// the color of the sprite
+        /// </summary>
+        public Color color { get; set; } = Color.White;
+
+        private BoundingCircle bounds;
+        private BoundingCircle attackRange;
+
+
+        // we need a reference to a bullet list so Bug2 can spawn bullets
+        private List<EnemyFire> enemyBullets;
+        private ContentManager content;
+
+        
+
+        /// <summary>
+        /// the bugs bounds
+        /// </summary>
+        public BoundingCircle Bounds
+        {
+            get
             {
-                get
+                return bounds;
+            }
+        }
+
+        public void TakeHit()
+        {
+            color = Color.Red;
+            hitFlashTimer = HitFlashDuration;
+        }
+
+        public BossOoze TryDropOoze(GameTime gameTime)
+        {
+            if (!IsAlive || Phase1 != true) return null;
+            dropTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (dropTimer >= dropInterval)
+            {
+                dropTimer = 0;
+                dropInterval = 3.0 + (new Random().NextDouble()); // reset interval 3-4 sec
+                return new BossOoze(Position + new Vector2(450, 130)); // drop at current bug position
+            }
+
+            return null;
+        }
+
+
+        private void ShootStar()
+        {
+            Vector2 firePosition = Position + new Vector2(358, 125); // center of boss
+
+            int points = 5; // 5-point star
+            float angleStep = MathHelper.TwoPi / points;
+
+            for (int i = 0; i < points; i++)
+            {
+                float angle = starRotation + angleStep * i;
+
+                Vector2 direction = new Vector2(
+                    (float)Math.Cos(angle),
+                    (float)Math.Sin(angle)
+                );
+
+                EnemyFire bullet = new EnemyFire(firePosition, direction);
+                bullet.LoadContent(content);
+                enemyBullets.Add(bullet);
+            }
+
+            starRotation += 0.15f; // THIS makes it rotate
+        }
+
+
+        /// <summary>
+        /// the bug sprite constructor
+        /// </summary>
+        /// <param name="position">the given position</param>
+        public BossBug(Vector2 position, List<EnemyFire> bullets, ContentManager content)
+        {
+            Position = position;
+            this.enemyBullets = bullets;
+            this.content = content;
+            bounds = new BoundingCircle(position - new Vector2(-64, -110), -16);
+        }
+
+        /// <summary>
+        /// Loads the texture
+        /// </summary>
+        /// <param name="content">the contentManager to load with</param>
+        public void LoadContent(ContentManager content)
+        {
+            texture = content.Load<Texture2D>("BOSSBUG");
+            retical = content.Load<Texture2D>("retical");
+        }
+
+        /// <summary>
+        /// updates the sprite
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
+        public void Update(GameTime gameTime, Vector2 playerPosition)
+        {
+            if (hitFlashTimer > 0)
+            {
+                hitFlashTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                if (hitFlashTimer <= 0)
                 {
-                    return attackRange;
+                    color = Color.White;
                 }
             }
-
-            /// <summary>
-            /// the bugs bounds
-            /// </summary>
-            public BoundingCircle Bounds
+            Debug.WriteLine(Bosshealth);
+            if (!IsAlive)
             {
-                get
-                {
-                    return bounds;
-                }
+                bounds.Center = new Vector2(10000, 1000000); // removes the bounds in a goofy way
+                return;
             }
-
-            public void TakeHit()
-            {
-                color = Color.Red;
-                hitFlashTimer = HitFlashDuration;
-            }
-
-            public BossOoze TryDropOoze(GameTime gameTime)
-            {
-                if (!IsAlive) return null;
-                dropTimer += gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (dropTimer >= dropInterval)
-                {
-                    dropTimer = 0;
-                    dropInterval = 3.0 + (new Random().NextDouble()); // reset interval 3-4 sec
-                    return new BossOoze(Position + new Vector2(450, 130)); // drop at current bug position
-                }
-
-                return null;
-            }
-
-            /*
-            private void Shoot(Vector2 playerPosition)
-            {
-                // center spawn — still using your 290,80 hack for now
-                Vector2 firePosition = Position + new Vector2(290, 80);
-
-                int bulletCount = 12; // number of bullets in the circle
-                float angleStep = MathHelper.TwoPi / bulletCount;
-
-                for (int i = 0; i < bulletCount; i++)
-                {
-                    float angle = angleStep * i;
-
-                    Vector2 direction = new Vector2(
-                        (float)Math.Cos(angle),
-                        (float)Math.Sin(angle)
-                    );
-
-                    EnemyFire bullet = new EnemyFire(firePosition, direction);
-                    bullet.LoadContent(content);
-                    enemyBullets.Add(bullet);
-                }
-            }
-            */
-
-            /// <summary>
-            /// the bug sprite constructor
-            /// </summary>
-            /// <param name="position">the given position</param>
-            public BossBug(Vector2 position, List<EnemyFire> bullets, ContentManager content)
-            {
-                Position = position;
-                this.enemyBullets = bullets;
-                this.content = content;
-                bounds = new BoundingCircle(position - new Vector2(-64, -110), -16);
-                attackRange = new BoundingCircle(position, 350);
-            }
-
-            /// <summary>
-            /// Loads the texture
-            /// </summary>
-            /// <param name="content">the contentManager to load with</param>
-            public void LoadContent(ContentManager content)
-            {
-                texture = content.Load<Texture2D>("BOSSBUG");
-            }
-
-            /// <summary>
-            /// updates the sprite
-            /// </summary>
-            /// <param name="gameTime">the game time</param>
-            public void Update(GameTime gameTime, Vector2 playerPosition)
-            {
-                if (hitFlashTimer > 0)
-                {
-                    hitFlashTimer -= gameTime.ElapsedGameTime.TotalSeconds;
-                    if (hitFlashTimer <= 0)
-                    {
-                        color = Color.White;
-                    }
-                }
-
-                if (!IsAlive)
-                {
-                    bounds.Center = new Vector2(10000, 1000000); // removes the bounds in a goofy way
-                    return;
-                }
-
-                attackTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                // update attack range position
-                attackRange.Center = Position + new Vector2(64, 64);
+            Vector2 hitboxOffset = BugFlipped ? hitboxOffsetRight : hitboxOffsetLeft;
+            Vector2 bugCenter = Position + hitboxOffset;
               
-
-                Vector2 bugCenter = Position + new Vector2(160, 130);
+            if(Phase1 == true)
+            {
                 Vector2 toPlayer = playerPosition - bugCenter;
 
                 if (toPlayer != Vector2.Zero)
@@ -193,38 +224,182 @@ namespace Endless.Sprites
                 Position += toPlayer * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 BugFlipped = toPlayer.X > 0;
-
                 bounds.Center = bugCenter;
             }
-
-
-            /// <summary>
-            /// Draws the sprite
-            /// </summary>
-            /// <param name="gameTime">the game time</param>
-            /// <param name="spriteBatch">the sprite batch to render with</param>
-            public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+            else if (Phase2 == true)
             {
-                SpriteEffects spriteEffect = BugFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+                Vector2 bugCenter1 = Position + new Vector2(130, 120);
+                Vector2 toCenter = screenCenter - bugCenter1;
 
-                animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+                float distance = toCenter.Length();
 
-                if (IsAlive)
+                if (!reachedCenter)
                 {
-                    if (animationTimer > 0.2)
+                    if (distance > 5f)
                     {
-                        animationFrame++;
-                        if (animationFrame > 4) animationFrame = 0;
-                        animationTimer -= 0.2;
+                        toCenter.Normalize();
+                        Position += toCenter * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    }
+                    else
+                    {
+                        // Snap exactly to center once close enough
+                       
+                        reachedCenter = true;
+
+                        // Reset attack timers ONLY once
+                        phase2Timer = 0f;
+                        shootTimer = 0f;
+                        phase2State = Phase2State.Attacking;
+                    }
+
+                    bounds.Center = new Vector2(100000,100000);
+                    return; // ⬅ STOP HERE, no attacks yet
+                }
+
+                // -----------------------
+                // ATTACK / OPEN LOGIC
+                // -----------------------
+
+                bounds.Center = bugCenter1;
+
+                phase2Timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (phase2State == Phase2State.Attacking)
+                {
+                    IsAttacking = true;
+
+                    shootTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (shootTimer >= shootInterval)
+                    {
+                        ShootStar();
+                        shootTimer = 0f;
+                    }
+
+                    if (phase2Timer >= 5f)
+                    {
+                        phase2Timer = 0f;
+                        phase2State = Phase2State.Open;
                     }
                 }
-                
+                else
+                {
+                    IsAttacking = false;
 
-                var source = new Rectangle(animationFrame * 128, 0, 128, 128);
-                spriteBatch.Draw(texture, Position, source, color, 0f, Vector2.Zero, 2f, spriteEffect, 0f);
-
-
+                    if (phase2Timer >= 5f)
+                    {
+                        phase2Timer = 0f;
+                        phase2State = Phase2State.Attacking;
+                    }
+                }
             }
+            else if (Phase3)
+            {
+                phase3Timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                Vector2 bossCenter3 = Position + new Vector2(130, 120);
+
+                switch (phase3State)
+                {
+                    case Phase3State.Disappeared:
+                        visible = false;
+                        bounds.Center = new Vector2(100000, 100000);
+
+                        phase3Timer = 0f;
+                        phase3State = Phase3State.Targeting;
+                        directionLocked = false;
+                        break;
+                    case Phase3State.Targeting:
+                        if (!directionLocked)
+                        {
+                            // Spawn ABOVE the screen, aligned with player X
+                            Position = new Vector2(
+                                playerPosition.X - 130, // center boss on player
+                                -300                    // well above the screen
+                            );
+
+                            // FORCE straight downward charge
+                            chargeDirection = Vector2.UnitY;
+
+                            directionLocked = true;
+                        }
+
+                        if (phase3Timer >= 1.5f) // brief warning time
+                        {
+                            phase3Timer = 0f;
+                            phase3State = Phase3State.Charging;
+                        }
+                        break;
+                    case Phase3State.Charging:
+                        visible = true;
+
+                        Position += chargeDirection * chargeSpeed *
+                                    (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                        bounds.Center = Position + new Vector2(130, 190);
+
+                        // Stop when off the bottom of the screen
+                        if (Position.Y > 1800)
+                        {
+                            phase3Timer = 0f;
+                            chargeCount++;
+
+                           
+                            phase3State = Phase3State.Disappeared;
+                            
+                        }
+                        break;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Draws the sprite
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
+        /// <param name="spriteBatch">the sprite batch to render with</param>
+        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            if (!visible)
+                return;
+
+            SpriteEffects spriteEffect = BugFlipped ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (Phase1 == true)
+            {
+                if (animationTimer > 0.2)
+                {
+                    animationFrame++;
+                    if (animationFrame > 4) animationFrame = 0;
+                    animationTimer -= 0.2;
+                }
+            }
+            else if (Phase2 == true)
+            {
+                if (animationTimer > 0.2)
+                {
+                    animationFrame++;
+                    if (animationFrame > 8) animationFrame = 5;
+                    animationTimer -= 0.2;
+                }
+            }
+            else if (Phase3 == true)
+            {
+                if (animationTimer > 0.2)
+                {
+                    animationFrame++;
+                    if (animationFrame > 9) animationFrame = 9;
+                    animationTimer -= 0.2;
+                }
+            }
+
+            var source = new Rectangle(animationFrame * 128, 0, 128, 128);
+            spriteBatch.Draw(texture, Position, source, color, 0f, Vector2.Zero, 2f, spriteEffect, 0f);
+            
+
+        }
 
     }
 }
