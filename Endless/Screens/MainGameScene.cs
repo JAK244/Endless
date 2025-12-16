@@ -32,6 +32,7 @@ namespace Endless.Screens
         private List<Bug3> bugs3;
         private List<BossBug> bossBugs;
         private List<Ooze> oozes = new List<Ooze>();
+        private List<BossOoze> bossOozes = new List<BossOoze>();
         private ArmSprite arm;
         private List<BulletSprite> bullets = new List<BulletSprite>();
         private List<EnemyFire> enemyBullets = new List<EnemyFire>();
@@ -395,7 +396,7 @@ namespace Endless.Screens
                 if (newOoze != null)
                 {
                     newOoze.LoadContent(SceneManager.Instance.Content);
-                    oozes.Add(newOoze);
+                    bossOozes.Add(newOoze);
                 }
             }
 
@@ -420,6 +421,27 @@ namespace Endless.Screens
 
                 if (ooze.IsRemoved)
                     oozes.Remove(ooze);
+            }
+
+            foreach (var booze in bossOozes.ToList())
+            {
+                booze.Update(gameTime);
+
+                // Damage player if standing in ooze
+                if (!booze.IsRemoved && damageCooldown <= 0 && booze.Bounds.CollidesWith(Traveler.Bounds))
+                {
+                    if (damageCooldown <= 0)
+                    {
+                        Traveler.color = Color.Red;
+                        TakeDamage();
+                        damageCooldown = 1.0;
+                        TriggerShake(0.3f, 8f);
+                    }
+
+                }
+
+                if (booze.IsRemoved)
+                    bossOozes.Remove(booze);
             }
 
 
@@ -689,10 +711,15 @@ namespace Endless.Screens
 
             foreach (var ooze in oozes)
             {
-                
                 ooze.Draw(gameTime, sb);
             }
 
+            foreach (var booze in bossOozes)
+            {
+                var rec = new Rectangle((int)(booze.Bounds.Center.X - booze.Bounds.Radius), (int)(booze.Bounds.Center.Y - booze.Bounds.Radius), (int)booze.Bounds.Radius * 2, (int)booze.Bounds.Radius * 2);
+                sb.Draw(ball, rec, Color.White);
+                booze.Draw(gameTime, sb);
+            }
 
             arm.Draw(gameTime, sb);
             Traveler.Draw(gameTime, sb);

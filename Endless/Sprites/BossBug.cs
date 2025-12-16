@@ -19,7 +19,7 @@ namespace Endless.Sprites
             /// <summary>
             /// the speed of the bugs
             /// </summary>
-            public float Speed = 60f;
+            public float Speed = 150f;
 
             /// <summary>
             /// points of these bugs
@@ -95,7 +95,7 @@ namespace Endless.Sprites
                 hitFlashTimer = HitFlashDuration;
             }
 
-            public Ooze TryDropOoze(GameTime gameTime)
+            public BossOoze TryDropOoze(GameTime gameTime)
             {
                 if (!IsAlive) return null;
                 dropTimer += gameTime.ElapsedGameTime.TotalSeconds;
@@ -104,7 +104,7 @@ namespace Endless.Sprites
                 {
                     dropTimer = 0;
                     dropInterval = 3.0 + (new Random().NextDouble()); // reset interval 3-4 sec
-                    return new Ooze(Position + new Vector2(350, 20)); // drop at current bug position
+                    return new BossOoze(Position + new Vector2(450, 130)); // drop at current bug position
                 }
 
                 return null;

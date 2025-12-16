@@ -25,7 +25,7 @@ namespace Endless.Managers
         private double spawnTimer;
         private int enemiesToSpawn;
         private List<EnemyFire> enemyFires;
-        private List<Ooze> oozes = new List<Ooze>();
+        //private List<Ooze> oozes = new List<Ooze>();
 
         private int bug1ToSpawn;
         private int bug2ToSpawn;
