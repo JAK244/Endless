@@ -55,8 +55,6 @@ namespace Endless.Screens
         private int totalFrames = 6;
         private bool isDead = false;
         private int CurrentHealth => healths.Count(h => !h.Damaged);
-
-
         private List<ActiveBuff> activeBuffs = new List<ActiveBuff>();
 
 
@@ -116,14 +114,23 @@ namespace Endless.Screens
         private void HandleWaveEnd(int wave)
         {
             waveManager.ShowWaveMessage($"Wave {wave} Complete!");
-            SceneManager.Instance.AddScene(new ShopScreen(Traveler,arm));
+
+            // stop after final wave
+            if (wave < 10)
+            {
+                SceneManager.Instance.AddScene(new ShopScreen(Traveler, arm));
+            }
+
             MediaPlayer.Stop();
             //MediaPlayer.Play(backGroundMusic_nonC);        music                                                
         }
 
+        /// <summary>
+        /// Adds buff to UI
+        /// </summary>
+        /// <param name="icon">buff icon</param>
         public void AddBuff(Texture2D icon)
         {
-            // check if buff already exists
             var existing = activeBuffs.FirstOrDefault(b => b.Icon == icon);
 
             if (existing != null)
@@ -297,9 +304,7 @@ namespace Endless.Screens
             {
                 isDead = true;
                 SceneManager.Instance.ChangeScene(new DeathScreen());
-
             }
-
 
 
             Traveler.color = Color.White;
@@ -537,6 +542,7 @@ namespace Endless.Screens
                         if (boss.Bosshealth == 0) // dead
                         {
                             boss.IsAlive = false;
+                            SceneManager.Instance.ChangeScene(new WinScreen());
                         }
 
                         if (boss.Bosshealth <= 6) // 5 hits left phase 2 start
@@ -628,6 +634,9 @@ namespace Endless.Screens
 
         }
 
+        /// <summary>
+        /// adds a heart to the player 
+        /// </summary>
         public void AddHeart()
         {
             Traveler.MaxHelth++;
@@ -639,6 +648,9 @@ namespace Endless.Screens
             healths.Add(heart);
         }
 
+        /// <summary>
+        /// handles player taking damage
+        /// </summary>
         public void TakeDamage()
         {
             for (int i = healths.Count - 1; i >= 0; i--)

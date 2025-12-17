@@ -79,7 +79,6 @@ namespace Endless.Screens
                 var text = menuItems[i];
                 var color = (i == selectedIndex) ? Color.Gold : Color.White;
 
-                // draw selection mark for clarity
                 if (i == selectedIndex)
                 {
                     sb.DrawString(Doto, "> " + text, pos, color);

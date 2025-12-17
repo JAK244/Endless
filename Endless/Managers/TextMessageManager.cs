@@ -44,7 +44,7 @@ namespace Endless.Managers
             {
                 Text = text,
                 position = Position,
-                lifeTime = 1.5f, // seconds before fading
+                lifeTime = 1.5f, // time on screen
                 Color = color
             });
         }

@@ -16,6 +16,8 @@ namespace Endless.Sprites
     public class PortalSprite
     {
         private Texture2D texture;
+        private double animationTimer;
+        private short animationFrame;
         
         /// <summary>
         /// the position of the sprite
@@ -32,9 +34,6 @@ namespace Endless.Sprites
         /// </summary>
         public bool PortialTB = false;
 
-        private double animationTimer;
-
-        private short animationFrame;
 
 
         /// <summary>

@@ -14,20 +14,17 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 namespace Endless.Screens
 {
     /// <summary>
-    /// the death Screen class
+    /// win screen class
     /// </summary>
-    public class DeathScreen : GameScenes
+    public class WinScreen : GameScenes
     {
         private Texture2D background;
-        private Texture2D deadDuck;
         private SpriteFont Doto;
         private List<string> menuItems;
         private int selectedIndex;
         private KeyboardState oldState;
         private GamePadState oldPadState;
         private bool ignoreInput = true;
-        private double animationTimer;
-        private short animationFrame;
 
 
         /// <summary>
@@ -38,24 +35,15 @@ namespace Endless.Screens
         {
 
             Doto = Content.Load<SpriteFont>("Doto-Black");
-        
-            background = Content.Load<Texture2D>("DEATHScreen");
-            deadDuck = Content.Load<Texture2D>("DeadDuck");
-           
+
+            background = Content.Load<Texture2D>("WinScreen");
+
             //backGroundMusic = Content.Load<Song>("Synthwave Loop");
             //MediaPlayer.IsRepeating = true;
             //MediaPlayer.Play(backGroundMusic);              music                                                       
-            menuItems = new List<string> { "Retry", "MainMenu"};
+            menuItems = new List<string> { "Play again", "EXIT" };
 
             base.LoadContent(Content);
-        }
-
-        /// <summary>
-        /// unloads loaded components
-        /// </summary>
-        public override void UnloadContent()
-        {
-            base.UnloadContent();
         }
 
         /// <summary>
@@ -99,18 +87,13 @@ namespace Endless.Screens
                 }
                 else if (selectedIndex == 1)
                 {
-                    SceneManager.Instance.AddScene(new TitleScene());
-                }
-                else if (selectedIndex == 2)
-                {
-                    Environment.Exit(0);
+                    System.Environment.Exit(0);
                 }
             }
 
             oldState = keyboard;
             oldPadState = gamepad;
         }
-
 
         /// <summary>
         /// returns true if the given key was just pressed this frame (edge detection)
@@ -133,31 +116,17 @@ namespace Endless.Screens
                 sb.Draw(background, Vector2.Zero, Color.White);
 
 
-            animationTimer += gameTime.ElapsedGameTime.TotalSeconds;
-
-            
-            if (animationTimer > 0.2)
-            {
-                animationFrame++;
-                if (animationFrame > 4) animationFrame = 0;
-                animationTimer -= 0.2;
-            }
-
-            var source = new Rectangle(animationFrame * 64, 0, 64, 64);
-            sb.Draw(deadDuck, new Vector2(450,150), source, Color.White, 0f, Vector2.Zero, 5f, SpriteEffects.None, 0f);
+            sb.DrawString(Doto, $"YOU", new Vector2(100, 0), Color.Black);
+            sb.DrawString(Doto, $"WIN!!!", new Vector2(900, 0), Color.Black);
 
 
-            sb.DrawString(Doto, $"LAMO", new Vector2(100, 0), Color.White);
-            sb.DrawString(Doto, $"COOKED", new Vector2(800, 0), Color.White);
-            
-
-            Vector2 pos = new Vector2(150, 580);
+            Vector2 pos = new Vector2(10, 320);
 
 
             for (int i = 0; i < menuItems.Count; i++)
             {
                 var text = menuItems[i];
-                var color = (i == selectedIndex) ? Color.Gold : Color.White;
+                var color = (i == selectedIndex) ? Color.Blue : Color.Black;
 
                 if (i == selectedIndex)
                 {
@@ -168,13 +137,11 @@ namespace Endless.Screens
                     sb.DrawString(Doto, text, pos, color);
                 }
 
-                pos.X += 500f;
+                pos.X += 900f; // offset
             }
 
             sb.End();
         }
-
-
 
     }
 }

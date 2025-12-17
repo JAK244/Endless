@@ -8,9 +8,14 @@ using System.Diagnostics;
 
 namespace Endless.Sprites
 {
-
+    /// <summary>
+    /// Boss Class
+    /// </summary>
     public class BossBug
     {
+        /// <summary>
+        /// enum for phase 3
+        /// </summary>
         private enum Phase3State
         {
             Disappeared,
@@ -18,7 +23,6 @@ namespace Endless.Sprites
             Charging,
             Open
         }
-
         private Phase3State phase3State = Phase3State.Disappeared;
         private float phase3Timer = 0f;
         private int chargeCount = 0;
@@ -27,32 +31,51 @@ namespace Endless.Sprites
         private bool visible = true;
         private bool directionLocked = false;
 
-
+        /// <summary>
+        /// enum for phase 2
+        /// </summary>
         private enum Phase2State
         {
             Attacking,
             Open
         }
-
         private Phase2State phase2State = Phase2State.Attacking;
         private float phase2Timer = 0f;
         private float shootTimer = 0f;
         private float shootInterval = 0.25f; // how fast bullets spawn
         private float starRotation = 0f;     // rotates the pattern
-        public bool IsAttacking = false;
 
 
         private Texture2D texture;
-        private Texture2D retical;
-
-
         private double dropTimer = 0.0;
         private double dropInterval;
-        public bool CanDropOoze => IsAlive;
-        public event Action<Vector2> OnDropOoze;
+        private readonly Vector2 hitboxOffsetRight = new Vector2(160, 130); // offset for bounds
+        private readonly Vector2 hitboxOffsetLeft = new Vector2(96, 130); // offset for bounds
+        private Vector2 screenCenter = new Vector2(785,725); // the center of the screen
+        private double animationTimer;
+        private short animationFrame;
+        private double hitFlashTimer = 0;
+        private const double HitFlashDuration = 0.1; // 100ms
+        private bool reachedCenter = false;
+        private BoundingCircle bounds;
+        private BoundingCircle attackRange;
+        private List<EnemyFire> enemyBullets;
+        private ContentManager content;
 
-        private readonly Vector2 hitboxOffsetRight = new Vector2(160, 130);
-        private readonly Vector2 hitboxOffsetLeft = new Vector2(96, 130);
+        /// <summary>
+        /// checks if attacking
+        /// </summary>
+        public bool IsAttacking = false;
+
+        /// <summary>
+        /// checks if alive to use ooze
+        /// </summary>
+        public bool CanDropOoze => IsAlive;
+
+        /// <summary>
+        /// handles droped ooze
+        /// </summary>
+        public event Action<Vector2> OnDropOoze;
 
         /// <summary>
         /// the speed of the bugs
@@ -69,47 +92,38 @@ namespace Endless.Sprites
         /// </summary>
         public Vector2 Position;
 
-        private Vector2 screenCenter = new Vector2(785,725);
 
         /// <summary>
         /// checks if the sprite is flipped
         /// </summary>
         public bool BugFlipped;
 
-        private double animationTimer;
-
-        private short animationFrame;
-
-        private double hitFlashTimer = 0;
-        private const double HitFlashDuration = 0.1; // 100ms
-
         /// <summary>
         /// checks if bug is Alive
         /// </summary>
         public bool IsAlive = true;
-        private bool reachedCenter = false;
 
+        public int Bosshealth = 10; // phase 1: 5 hits, phase 2: 5 hits two open intervles, phase 3: 1 hit full helth 10
 
-        public int Bosshealth = 10; // phase 1: 5 hits, phase 2: 5 hits two open intervles, phase 3: 1 hit 
-            
+        /// <summary>
+        /// checking if in phase 1
+        /// </summary>
         public bool Phase1 = true;
+
+        /// <summary>
+        /// checking if in phase 2
+        /// </summary>
         public bool Phase2 = false;
+
+        /// <summary>
+        /// checking if in phase 3
+        /// </summary>
         public bool Phase3 = false;
       
         /// <summary>
         /// the color of the sprite
         /// </summary>
         public Color color { get; set; } = Color.White;
-
-        private BoundingCircle bounds;
-        private BoundingCircle attackRange;
-
-
-        // we need a reference to a bullet list so Bug2 can spawn bullets
-        private List<EnemyFire> enemyBullets;
-        private ContentManager content;
-
-        
 
         /// <summary>
         /// the bugs bounds
@@ -122,12 +136,20 @@ namespace Endless.Sprites
             }
         }
 
+        /// <summary>
+        /// handles taking a hit
+        /// </summary>
         public void TakeHit()
         {
             color = Color.Red;
             hitFlashTimer = HitFlashDuration;
         }
 
+        /// <summary>
+        /// handles Droping ooze
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
+        /// <returns>the ooze</returns>
         public BossOoze TryDropOoze(GameTime gameTime)
         {
             if (!IsAlive || Phase1 != true) return null;
@@ -143,7 +165,9 @@ namespace Endless.Sprites
             return null;
         }
 
-
+        /// <summary>
+        /// handles the start pattern when shooting 
+        /// </summary>
         private void ShootStar()
         {
             Vector2 firePosition = Position + new Vector2(358, 125); // center of boss
@@ -165,7 +189,7 @@ namespace Endless.Sprites
                 enemyBullets.Add(bullet);
             }
 
-            starRotation += 0.15f; // THIS makes it rotate
+            starRotation += 0.15f; //rotation
         }
 
 
@@ -188,7 +212,6 @@ namespace Endless.Sprites
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("BOSSBUG");
-            retical = content.Load<Texture2D>("retical");
         }
 
         /// <summary>
@@ -241,25 +264,20 @@ namespace Endless.Sprites
                         Position += toCenter * Speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     }
                     else
-                    {
-                        // Snap exactly to center once close enough
-                       
+                    {                      
                         reachedCenter = true;
 
-                        // Reset attack timers ONLY once
+                        // Reset attack timers once
                         phase2Timer = 0f;
                         shootTimer = 0f;
                         phase2State = Phase2State.Attacking;
                     }
 
                     bounds.Center = new Vector2(100000,100000);
-                    return; // ⬅ STOP HERE, no attacks yet
+                    return; 
                 }
 
-                // -----------------------
-                // ATTACK / OPEN LOGIC
-                // -----------------------
-
+                // ATTACK LOGIC
                 bounds.Center = bugCenter1;
 
                 phase2Timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -313,11 +331,10 @@ namespace Endless.Sprites
                         {
                             // Spawn ABOVE the screen, aligned with player X
                             Position = new Vector2(
-                                playerPosition.X - 130, // center boss on player
-                                -300                    // well above the screen
+                                playerPosition.X - 130, 
+                                -300                   
                             );
 
-                            // FORCE straight downward charge
                             chargeDirection = Vector2.UnitY;
 
                             directionLocked = true;

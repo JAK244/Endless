@@ -20,7 +20,7 @@ namespace Endless.Sprites
         private Model heartModel;
 
         private Matrix world;
-        private float scale = 0.4f; // tweak as needed
+        private float scale = 0.4f; // tweak here
         private float rotation = 0f;
 
         /// <summary>

@@ -15,12 +15,13 @@ namespace Endless.Managers
         private static SceneManager instance;
         private ContentManager content;
         private Stack<GameScenes> sceneStack = new Stack<GameScenes>();
+        private Vector2 dimensions;
+        private GraphicsDevice graphicsDevice;
+
         /// <summary>
         /// the curren game Screen
         /// </summary>
         public GameScenes currentScreen;
-        private Vector2 dimensions;
-        private GraphicsDevice graphicsDevice;
 
         /// <summary>
         /// the graphics Device
@@ -61,6 +62,9 @@ namespace Endless.Managers
             set => dimensions = value;
         }
 
+        /// <summary>
+        /// the content Manager
+        /// </summary>
         public ContentManager Content => content;
 
         /// <summary>
@@ -70,7 +74,7 @@ namespace Endless.Managers
         public void AddScene(GameScenes scene, bool pauseCurrent = true)
         {
             if (currentScreen != null && pauseCurrent)
-                currentScreen.IsPaused = true; // optional, if you track pause state
+                currentScreen.IsPaused = true; 
 
             sceneStack.Push(scene);
             currentScreen = scene;
@@ -87,15 +91,14 @@ namespace Endless.Managers
         {
             if (sceneStack.Count == 0) return;
 
-            // Remove current scene
-            currentScreen.UnloadContent();
+            currentScreen.UnloadContent(); // Remove the current scene
             sceneStack.Pop();
 
             // Resume previous scene
             if (sceneStack.Count > 0)
             {
                 currentScreen = sceneStack.Peek();
-                currentScreen.IsPaused = false; // optional
+                currentScreen.IsPaused = false; 
             }
             else
             {
@@ -117,10 +120,15 @@ namespace Endless.Managers
                 scene.UnloadContent();
             }
 
-            // Add the new scene
+            // Adds the new scene
             AddScene(newScene, pauseCurrent: false);
         }
 
+        /// <summary>
+        /// gets the first scene from the stack
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns>the scene type</returns>
         public T GetScene<T>() where T : GameScenes
         {
             foreach (var scene in sceneStack)

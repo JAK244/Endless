@@ -17,9 +17,7 @@ namespace Endless.Sprites
     public class StarSprite
     {
         private Texture2D texture;
-
         private double animationTimer;
-
         private short animationFrame;
 
         /// <summary>

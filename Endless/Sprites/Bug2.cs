@@ -13,6 +13,16 @@ namespace Endless.Sprites
     public class Bug2
     {
         private Texture2D texture;
+        private double animationTimer;
+        private short animationFrame;
+        private double hitFlashTimer = 0;
+        private const double HitFlashDuration = 0.1; // 100ms
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 - 16, 350 - 16), 32, 64);
+        private BoundingCircle attackRange;
+        private float attackCooldown = 0.5f; // time between bursts
+        private float attackTimer = 0f;
+        private List<EnemyFire> enemyBullets;
+        private ContentManager content;
 
         /// <summary>
         /// the speed of the bugs
@@ -34,12 +44,6 @@ namespace Endless.Sprites
         /// </summary>
         public bool BugFlipped;
 
-        private double animationTimer;
-
-        private short animationFrame;
-
-        private double hitFlashTimer = 0;
-        private const double HitFlashDuration = 0.1; // 100ms
 
         /// <summary>
         /// checks if bug is Alive
@@ -53,17 +57,11 @@ namespace Endless.Sprites
         /// </summary>
         public Color color { get; set; } = Color.White;
 
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 - 16, 350 - 16), 32, 64);
-        private BoundingCircle attackRange;
-
-        private float attackCooldown = 0.5f; // time between bursts
-        private float attackTimer = 0f;
-
+        /// <summary>
+        /// checks if attacking
+        /// </summary>
         public bool IsAttacking = false;
 
-        // we need a reference to a bullet list so Bug2 can spawn bullets
-        private List<EnemyFire> enemyBullets;
-        private ContentManager content;
 
         /// <summary>
         /// the bugs bounds
@@ -85,15 +83,22 @@ namespace Endless.Sprites
             get { return bounds; }
         }
 
+        /// <summary>
+        /// handles taking a hit
+        /// </summary>
         public void TakeHit()
         {
             color = Color.Red;
             hitFlashTimer = HitFlashDuration;
         }
 
+        /// <summary>
+        /// handles its shooting function
+        /// </summary>
+        /// <param name="playerPosition">the players position</param>
         private void Shoot(Vector2 playerPosition)
         {
-            // center spawn — still using your 290,80 hack for now
+            // center spawn
             Vector2 firePosition = Position + new Vector2(290, 80);
 
             int bulletCount = 12; // number of bullets in the circle
@@ -180,7 +185,7 @@ namespace Endless.Sprites
                     attackTimer = 0f;
                 }
 
-                return; // don't run move logic
+                return; 
             }
             else
             {
@@ -188,7 +193,7 @@ namespace Endless.Sprites
             }
 
 
-            // ------- movement (only when NOT attacking) -------
+            //movement when NOT attacking
 
             Vector2 bugCenter = Position + new Vector2(60, 100);
             Vector2 toPlayer = playerPosition - bugCenter;

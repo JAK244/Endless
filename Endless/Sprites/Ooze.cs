@@ -7,10 +7,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Endless.Sprites
 {
+    /// <summary>
+    /// normal ooze class
+    /// </summary>
     public class Ooze
     {
         private float timer;
         private float lifeSpan = 10f;
+        private double animationTimer;
+        private short animationFrame;
+        private BoundingCircle bounds;
 
 
         /// <summary>
@@ -28,9 +34,6 @@ namespace Endless.Sprites
         /// </summary>
         public Vector2 Position;
 
-        private double animationTimer;
-        private short animationFrame;
-        private BoundingCircle bounds;
 
         /// <summary>
         /// the bullet bounds
@@ -44,7 +47,7 @@ namespace Endless.Sprites
         }
 
         /// <summary>
-        /// the bullet constructor
+        /// the ooze constructor
         /// </summary>
         /// <param name="position">the positon</param>
         /// <param name="direction">the direction</param>
@@ -64,7 +67,7 @@ namespace Endless.Sprites
         }
 
         /// <summary>
-        /// updates the bullet using game time
+        /// updates the ooze using game time
         /// </summary>
         /// <param name="gameTime">the game time</param>
         public void Update(GameTime gameTime)

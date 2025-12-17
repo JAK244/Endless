@@ -21,7 +21,6 @@ namespace Endless.Managers
         private double messageTimer = 0.0;
         private bool showingMessage = false;
         private int totalEnemiesRemaining;
-
         private double spawnTimer;
         private int enemiesToSpawn;
         private List<EnemyFire> enemyFires;
@@ -32,6 +31,12 @@ namespace Endless.Managers
         private int bug3ToSpawn;
         private int BossSpawn;
 
+        private List<PortalSprite> portals;
+        private List<Bug1Sprite> bug1;
+        private List<Bug2> bug2;
+        private List<Bug3> bug3;
+        private List<BossBug> boss;
+        private ContentManager content;
 
 
 
@@ -44,14 +49,6 @@ namespace Endless.Managers
         /// gets or sets the current wave
         /// </summary>
         public int CurrentWave {  get; private set; }
-
-        private List<PortalSprite> portals;
-        private List<Bug1Sprite> bug1;
-        private List<Bug2> bug2;
-        private List<Bug3> bug3;
-        private List<BossBug> boss;
-
-        private ContentManager content;
 
         /// <summary>
         /// starts the wave
@@ -67,7 +64,10 @@ namespace Endless.Managers
         /// the waveManager constructor
         /// </summary>
         /// <param name="portals">the portals</param>
-        /// <param name="bugs">the bugs</param>
+        /// <param name="bug1">the ground bug</param>
+        /// /// <param name="bug2">the big bug</param>
+        /// /// <param name="bug3">the fly bug</param>
+        /// /// <param name="boss">the boss</param>
         /// <param name="content">the contnet manager</param>
         public WaveManager(List<PortalSprite> portals, List<EnemyFire> enemyFires, List<Bug1Sprite> bug1, List<Bug2> bug2, List<Bug3> bug3, List<BossBug> boss, ContentManager content)
         {
@@ -117,7 +117,7 @@ namespace Endless.Managers
             bug3ToSpawn = 0;
             BossSpawn = 0;
 
-            // Set enemies based on wave
+            // amount of enemies based on wave
             switch (waveNumber)
             {
                 case 1:
@@ -183,7 +183,7 @@ namespace Endless.Managers
                 if (messageTimer < 1)
                     messageAlpha = (float)(messageTimer / 1.0);
                 else if (messageTimer < 2)
-                    messageAlpha = 1f; // hold
+                    messageAlpha = 1f; // hold message 
                 else if (messageTimer < 3)
                     messageAlpha = 1f - (float)((messageTimer - 2) / 1.0);
                 else
@@ -207,12 +207,13 @@ namespace Endless.Managers
                 OnWaveEnd?.Invoke(CurrentWave);
             }
 
+            // speeds up ground bugs depending on amount left
             if (WaveActive)
             {
                 int aliveCount = bug1.Count(b => b.IsAlive);
                 if (aliveCount > 0)
                 {
-                    // Example: start speeding up when fewer than 5 remain
+                    
                     float ratioAlive = (float)aliveCount / totalEnemiesRemaining;
                     float speedMultiplier = 1.0f;
 
@@ -227,9 +228,6 @@ namespace Endless.Managers
                     }
                 }
             }
-
-
-            
 
         }
 
@@ -257,7 +255,6 @@ namespace Endless.Managers
             var portal = portals[ran.Next(portals.Count)];
             Vector2 spawnPos = portal.Position + new Vector2(ran.Next(-20, 20), ran.Next(-20, 20));
 
-            // Make a list of available types
             List<int> choices = new List<int>();
 
             if (bug1ToSpawn > 0) choices.Add(1);
@@ -266,9 +263,9 @@ namespace Endless.Managers
             if (BossSpawn > 0) choices.Add(4);
 
             if (choices.Count == 0)
-                return; // nothing left
+                return; 
 
-            // Pick random type
+            // Pick random type of bug
             int pick = choices[ran.Next(choices.Count)];
 
             if (pick == 1)

@@ -22,7 +22,6 @@ namespace Endless.Screens
         private PowerBallSprite powerBall;
         private StarSprite[] stars;
         private Song backGroundMusic;
-
         private SpriteFont Doto;
         private List<string> menuItems;
         private int selectedIndex;
@@ -108,7 +107,6 @@ namespace Endless.Screens
                 selectedIndex = (selectedIndex - 1 + menuItems.Count) % menuItems.Count;
             }
 
-            // Move down
             if (IsKeyPressed(Keys.Down, keyboard) || IsKeyPressed(Keys.S, keyboard) ||
                 (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
                 (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
@@ -116,21 +114,20 @@ namespace Endless.Screens
                 selectedIndex = (selectedIndex + 1) % menuItems.Count;
             }
 
-            // Select (Enter or A)
             if (IsKeyPressed(Keys.Enter, keyboard) || IsKeyPressed(Keys.Space, keyboard) ||
                 (gamepad.Buttons.A == ButtonState.Pressed && oldPadState.Buttons.A == ButtonState.Released))
             {
                 if (selectedIndex == 0)
                 {
-                    SceneManager.Instance.AddScene(new MainGameScene());
+                    SceneManager.Instance.AddScene(new MainGameScene()); // starts game
                 }
                 else if (selectedIndex == 1)
                 {
-                    SceneManager.Instance.AddScene(new ControllsScene());
+                    SceneManager.Instance.AddScene(new ControllsScene()); // opens controlls screen
                 }
                 else if (selectedIndex == 2)
                 {
-                    Environment.Exit(0);
+                    Environment.Exit(0); // exit
                 }
             }
 
@@ -161,7 +158,6 @@ namespace Endless.Screens
 
             sb.DrawString(Doto, $"Void", new Vector2(500, 0), Color.Black);
             sb.DrawString(Doto, $"Traveler", new Vector2(400, 70), Color.Black);
-            //sb.DrawString(Doto, $"Press Enter to start", new Vector2(250, 300), Color.Gold,0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0);
 
             Vector2 pos = new Vector2(400, 180);
             
@@ -171,7 +167,6 @@ namespace Endless.Screens
                 var text = menuItems[i];
                 var color = (i == selectedIndex) ? Color.Gold : Color.White;
 
-                // draw selection mark for clarity
                 if (i == selectedIndex)
                 {
                     sb.DrawString(Doto, "> " + text, pos, color);

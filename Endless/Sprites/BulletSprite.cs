@@ -16,6 +16,9 @@ namespace Endless.Sprites
         private float timer;
         private float lifeSpan = .8f;
         private float speed = 300f;
+        private double animationTimer;
+        private short animationFrame;
+        private BoundingCircle bounds;
 
         /// <summary>
         /// checks if bullet is removed
@@ -37,9 +40,6 @@ namespace Endless.Sprites
         /// </summary>
         public Vector2 Direction;
 
-        private double animationTimer;
-        private short animationFrame;
-        private BoundingCircle bounds;
 
         
 

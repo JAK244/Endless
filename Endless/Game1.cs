@@ -57,12 +57,6 @@ namespace Endless
             spriteBatch = new SpriteBatch(GraphicsDevice);
             SceneManager.Instance.LoadContent(Content, GraphicsDevice);
             SceneManager.Instance.SpriteBatch = spriteBatch;
-
-            
-            // but nothing for bugs!
-
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -90,9 +84,8 @@ namespace Endless
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Gray);
-            
 
-            SceneManager.Instance.Draw(gameTime); // this calls TitleScene.Draw()
+            SceneManager.Instance.Draw(gameTime); 
 
             base.Draw(gameTime);
         }

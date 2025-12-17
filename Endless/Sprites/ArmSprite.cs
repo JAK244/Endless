@@ -20,17 +20,6 @@ namespace Endless.Sprites
     /// </summary>
     public class ArmSprite
     {
-
-        /// <summary>
-        /// the list of bullets
-        /// </summary>
-        public List<BulletSprite> Bullets = new List<BulletSprite>();
-
-        /// <summary>
-        /// the arms position
-        /// </summary>
-        public Vector2 position;
-
         private KeyboardState keyboardState;
         private GamePadState gamePadState;
         private MouseState mouseState;
@@ -49,6 +38,17 @@ namespace Endless.Sprites
         private double fireTimer = 0;
 
         /// <summary>
+        /// the list of bullets
+        /// </summary>
+        public List<BulletSprite> Bullets = new List<BulletSprite>();
+
+        /// <summary>
+        /// the arms position
+        /// </summary>
+        public Vector2 position;
+
+
+        /// <summary>
         /// checks if realoading
         /// </summary>
         public bool isReloading = false;
@@ -58,6 +58,9 @@ namespace Endless.Sprites
         /// </summary>
         public double reloadDuration = 2.0;
 
+        /// <summary>
+        /// checks fire rate
+        /// </summary>
         public bool fireRateLower = false;
 
         /// <summary>
@@ -98,17 +101,18 @@ namespace Endless.Sprites
                                  mapSize.Y * tileSize.Y * 2);
         }
 
-
+        /// <summary>
+        /// calculates position to shoot
+        /// </summary>
         private void TryShoot()
         {
             
-
-            // Create direction
+            // direction to shoot
             Vector2 direction = new Vector2((float)Math.Cos(rotation), (float)Math.Sin(rotation));
             if (direction != Vector2.Zero)
                 direction.Normalize();
 
-            // Calculate barrel offset
+            // barrel offset
             float barrelLength = (texture.Width * 0.5f * 2f) + 4f;
             Vector2 barrelOffset = direction * barrelLength;
 
@@ -191,7 +195,7 @@ namespace Endless.Sprites
                 }
             }
 
-            // helps track mouse
+            // track mouse for rotating
             rotation = (float)Math.Atan2(targetDirection.Y, targetDirection.X);
             flipped = targetDirection.X < 0;
 

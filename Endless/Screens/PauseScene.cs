@@ -47,7 +47,6 @@ namespace Endless.Screens
                 selectedIndex = (selectedIndex - 1 + menuItems.Count) % menuItems.Count;
             }
 
-            // Move down
             if (IsKeyPressed(Keys.Down, keyboard) ||
                 (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
                 (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
@@ -55,11 +54,10 @@ namespace Endless.Screens
                 selectedIndex = (selectedIndex + 1) % menuItems.Count;
             }
 
-            // Select (Enter or A)
             if (IsKeyPressed(Keys.Enter, keyboard) ||
                 (gamepad.Buttons.A == ButtonState.Pressed && oldPadState.Buttons.A == ButtonState.Released))
             {
-                if (selectedIndex == 0) // start game
+                if (selectedIndex == 0) // resumes game
                 {
                     
                     SceneManager.Instance.RemoveScene();

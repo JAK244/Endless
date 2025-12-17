@@ -98,7 +98,6 @@ namespace Endless.Items
                 animationTimer -= 0.2;
             }
             var source2 = new Rectangle(animationFrame * 64, 0, 64, 64);
-            //float pulse = (float)(Math.Sin(gameTime.TotalGameTime.TotalSeconds * 4) * 0.25f + 1f);
             sb.Draw(teleportMarker, markerPosition, source2, Color.White * 0.8f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
         }
     }

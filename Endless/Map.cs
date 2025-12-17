@@ -17,6 +17,8 @@ namespace Endless
     public class Map
     {
         private Texture2D tileSheet;
+        private const int TileCount = 5;
+        private int[,] tiles;
 
         /// <summary>
         /// the width of the tile
@@ -28,8 +30,6 @@ namespace Endless
         /// </summary>
         public int TileHeight = 16;
 
-        private const int TileCount = 5;
-        private int[,] tiles;
 
         /// <summary>
         /// the map width in tiles
@@ -96,7 +96,7 @@ namespace Endless
             {
                 for (int x = 0; x < mapWidth; x++)
                 {
-                    int[] tileWeights = { 80, 5,5, 5, 5 }; // tiles (0, 1,...)
+                    int[] tileWeights = { 80, 5,5, 5, 5 }; 
                     tiles[y, x] = GetWeightedRandom(tileWeights, rand);
                 }
             }

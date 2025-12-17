@@ -18,10 +18,9 @@ namespace Endless.Sprites
     public class PowerBallSprite
     {
         private Texture2D texture;
-
         private double animationTimer;
-
         private short animationFrame;
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(770, 760), 32, 64);
 
         /// <summary>
         /// the positon of the sprite 
@@ -33,7 +32,6 @@ namespace Endless.Sprites
         /// </summary>
         public bool BallFlipped;
 
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(770, 760), 32, 64);
 
         /// <summary>
         /// the sprites bounds

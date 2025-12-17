@@ -7,10 +7,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Endless.Sprites
 {
+    /// <summary>
+    /// the bosses ooze class
+    /// </summary>
     public class BossOoze
     {
         private float timer;
         private float lifeSpan = 20f;
+        private double animationTimer;
+        private short animationFrame;
+        private BoundingCircle bounds;
 
 
         /// <summary>
@@ -28,9 +34,6 @@ namespace Endless.Sprites
         /// </summary>
         public Vector2 Position;
 
-        private double animationTimer;
-        private short animationFrame;
-        private BoundingCircle bounds;
 
         /// <summary>
         /// the bullet bounds

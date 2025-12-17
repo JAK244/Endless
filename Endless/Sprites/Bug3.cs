@@ -12,7 +12,20 @@ namespace Endless.Sprites
         private Texture2D texture;
         private double dropTimer = 0.0;
         private double dropInterval;
+        private double animationTimer;
+        private short animationFrame;
+        private double hitFlashTimer = 0;
+        private const double HitFlashDuration = 0.1; // 100ms
+        private BoundingCircle bounds;
+
+        /// <summary>
+        /// checks if it can drop ooze
+        /// </summary>
         public bool CanDropOoze => IsAlive;
+
+        /// <summary>
+        /// activates when ooze is droped
+        /// </summary>
         public event Action<Vector2> OnDropOoze;
 
 
@@ -38,13 +51,6 @@ namespace Endless.Sprites
         /// </summary>
         public bool BugFlipped;
 
-        private double animationTimer;
-
-        private short animationFrame;
-
-
-        private double hitFlashTimer = 0;
-        private const double HitFlashDuration = 0.1; // 100ms
 
 
         /// <summary>
@@ -57,7 +63,6 @@ namespace Endless.Sprites
         /// </summary>
         public Color color { get; set; } = Color.White;
 
-        private BoundingCircle bounds;
 
         /// <summary>
         /// the bugs bounds
@@ -81,12 +86,20 @@ namespace Endless.Sprites
             dropInterval = 3.0 + (new Random().NextDouble());
         }
 
+        /// <summary>
+        /// handles taking a hit
+        /// </summary>
         public void TakeHit()
         {
             color = Color.Red;
             hitFlashTimer = HitFlashDuration;
         }
 
+        /// <summary>
+        /// handles droping ooze
+        /// </summary>
+        /// <param name="gameTime">the game time</param>
+        /// <returns></returns>
         public Ooze TryDropOoze(GameTime gameTime)
         {
             if (!IsAlive) return null;

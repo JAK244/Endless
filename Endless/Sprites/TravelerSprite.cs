@@ -15,18 +15,14 @@ namespace Endless.Sprites
     public class TravelerSprite
     {
         private KeyboardState keyboardState;
-
         private GamePadState gamePadState;
-
         private Texture2D texture;
-
         private Vector2 minPos, maxPos;
-
         private double animationTimer;
-
         private short animationFrame;
-
         private bool IsMoving = false;
+        private bool flipped;
+        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 -16,350 -16), 32,64);
 
         /// <summary>
         /// Checks if there health incressed
@@ -53,9 +49,6 @@ namespace Endless.Sprites
         /// </summary>
         public Vector2 position;
 
-        private bool flipped;
-
-        private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 -16,350 -16), 32,64);
 
        
         /// <summary>
@@ -92,8 +85,7 @@ namespace Endless.Sprites
           
             minPos = new Vector2(0, 0);
 
-            // max is bottom-right of map (scaled by tiles)
-            maxPos = new Vector2(mapSize.X * tileSize.X * 2,  // times 2 because you scaled tiles in Map
+            maxPos = new Vector2(mapSize.X * tileSize.X * 2,  
                                  mapSize.Y * tileSize.Y * 2);
         }
 

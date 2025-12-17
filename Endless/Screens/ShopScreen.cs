@@ -26,8 +26,6 @@ namespace Endless.Screens
         private GamePadState oldPadState;
         private Texture2D backGround;
         private Random random = new Random();
-        
-
         private TravelerSprite player;
         private ArmSprite weapon;
 
@@ -130,7 +128,7 @@ namespace Endless.Screens
                 // apply effect
                 selected.ApplyEffect?.Invoke(player,weapon);
 
-                // 🔥 tell main game to add buff icon
+                // tell main game to add buff icon
                 var mg = (MainGameScene)SceneManager.Instance.GetScene<MainGameScene>();
                 mg?.AddBuff(selected.Icon);
 

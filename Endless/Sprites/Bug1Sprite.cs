@@ -20,7 +20,11 @@ namespace Endless.Sprites
     public class Bug1Sprite
     {
         private Texture2D texture;
-
+        private double animationTimer;
+        private short animationFrame;
+        private double hitFlashTimer = 0;
+        private const double HitFlashDuration = 0.1; // 100ms
+        private BoundingCircle bounds;
 
         /// <summary>
         /// the speed of the bugs
@@ -42,14 +46,6 @@ namespace Endless.Sprites
         /// </summary>
         public bool BugFlipped;
 
-        private double animationTimer;
-
-        private short animationFrame;
-
-        private double hitFlashTimer = 0;
-        private const double HitFlashDuration = 0.1; // 100ms
-
-
         /// <summary>
         /// checks if bug is Alive
         /// </summary>
@@ -60,7 +56,6 @@ namespace Endless.Sprites
         /// </summary>
         public Color color { get; set; } = Color.White;
 
-        private BoundingCircle bounds;
 
         /// <summary>
         /// the bugs bounds
@@ -83,7 +78,9 @@ namespace Endless.Sprites
            bounds = new BoundingCircle(position - new Vector2(-64, -110), -16); // moves the bounds
 
         }
-
+        /// <summary>
+        /// handles taking a hit
+        /// </summary>
         public void TakeHit()
         {
             color = Color.Red;

@@ -1,41 +1,50 @@
+SPRITES:
 Content/bug.png - Created by Jack Jara using Asprite, released under public domain 
-
-Content/Power_ball.png - Created by Jack Jara using Asprite, released under public domain 
-
-Content/Traveler.png - Created by Jack Jara using Asprite, released under public domain 
-
-Content/Void-portal.png - Created by Jack Jara using Asprite, released under public domain 
-
-Content/Star.png - Created by Jack Jara using Asprite, released under public domain
-
-Content/HealthHeart.png - Created by Jack Jara using Asprite, released under public domain
-
-Content/TravelerArm.png - Created by Jack Jara using Asprite, released under public domain
-
-Content/RockTileMap-Sheet.png - Created by Jack Jara using Asprite, released under public domain
-
-Content/GunShotSound.Wav - Created by Jack Jara using Bfxr, realeased under public domain
-
+Content/BadPuddle.png - Created by Jack Jara using Asprite, released under public domain
+Content/BOSSBug.png - Created by Jack Jara using Asprite, released under public domain
 Content/Bullet.png - Created by Jack Jara using Asprite, released under public domain
-
+Content/Bug2.png - Created by Jack Jara using Asprite, released under public domain
+Content/Bug3.png - Created by Jack Jara using Asprite, released under public domain
 Content/ControllsPage.png - Created by Jack Jara using Asprite, released under public domain
-
 Content/CurrentItemFrame.png - Created by Jack Jara using Asprite, released under public domain
-
 Content/DuckTravler.png - Created by Jack Jara using Asprite, released under public domain
-
-Content/MEMEThoughts2.mp4 - Created by Jack Jara using Movavi video Editor 26, released under public domain
-
-Content/TelaItem.png - Created by Jack Jara using Asprite, released under public domain
-
+Content/DeadDuck.png - Created by Jack Jara using Asprite, released under public domain
+Content/DEATHScreen.png - Created by Jack Jara using Asprite, released under public domain
+Content/EnamyOrb.png - Created by Jack Jara using Asprite, released under public domain
+Content/Energy drink.png - Created by Jack Jara using Asprite, released under public domain
+Content/HealthHeart.png - Created by Jack Jara using Asprite, released under public domain
+Content/HotSouce.png - Created by Jack Jara using Asprite, released under public domain
+Content/LowPoly_Heart.fbx - Created by mano1creative, released on SketchFab.com (https://sketchfab.com/mano1creative) free use with proper credit given 
+Content/Power_ball.png - Created by Jack Jara using Asprite, released under public domain 
+Content/RockTileMap-Sheet.png - Created by Jack Jara using Asprite, released under public domain
+Content/Star.png - Created by Jack Jara using Asprite, released under public domain
+Content/ShopBackground.png - Created by Jack Jara using Asprite, released under public domain
+Content/Traveler.png - Created by Jack Jara using Asprite, released under public domain 
 Content/TPItemMarker.png - Created by Jack Jara using Asprite, released under public domain
-
+Content/TelaItem.png - Created by Jack Jara using Asprite, released under public domain
+Content/TravelerArm.png - Created by Jack Jara using Asprite, released under public domain
+Content/Void-portal.png - Created by Jack Jara using Asprite, released under public domain 
+Content/TitleScreen.png - Created by Jack Jara using Asprite, released under public domain
 Content/VideoBorderFinal.png - Created by Jack Jara using Asprite, released under public domain
+Content/Void-portal.png - Created by Jack Jara using Asprite, released under public domain
+Content/WinScreen.png - Created by Jack Jara using Asprite, released under public domain
 
+
+SOUNDS/VIDEOS:
+Content/MEMEThoughts2.mp4 - Created by Jack Jara using Movavi video Editor 26, released under public domain
+Content/GunShotSound.Wav - Created by Jack Jara using Bfxr, realeased under public domain
 Content/Arena Theme.mp3 - Created by Steven O'Brien, released on steven-obrien.net (https://www.steven-obrien.net/#popcorn-~-loading-theme) free use with proper credit given 
-
 Content/Synthwave loop.mp3 - Created by Steven O'Brien, released on steven-obrien.net (https://www.steven-obrien.net/#popcorn-~-loading-theme) free use with proper credit given 
-
 Content/If Anyone Dies(instrumental).mp3 - Created by Steven O'Brien, released on steven-obrien.net (https://www.steven-obrien.net/#popcorn-~-loading-theme) free use with proper credit given 
 
+
+FONT:
 Content/Doto/Doto-Black.tff - Doto font created by Óliver Lalan, released on google fonts (https://fonts.google.com/specimen/Doto) under the Open Font License
+
+
+
+
+
+
+
+
