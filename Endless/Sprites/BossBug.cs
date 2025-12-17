@@ -1,5 +1,7 @@
 ﻿using Endless.Collisions;
+using Endless.Managers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -30,6 +32,7 @@ namespace Endless.Sprites
         private float chargeSpeed = 900f;
         private bool visible = true;
         private bool directionLocked = false;
+        private SoundEffect hitSound;
 
         /// <summary>
         /// enum for phase 2
@@ -143,6 +146,7 @@ namespace Endless.Sprites
         {
             color = Color.Red;
             hitFlashTimer = HitFlashDuration;
+            hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
         }
 
         /// <summary>
@@ -212,6 +216,7 @@ namespace Endless.Sprites
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("BOSSBUG");
+            hitSound = content.Load<SoundEffect>("BossHit");
         }
 
         /// <summary>

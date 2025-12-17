@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Endless.Collisions;
+using Endless.Managers;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Content;
-using Endless.Collisions;
 
 
 namespace Endless.Sprites
@@ -20,6 +22,7 @@ namespace Endless.Sprites
     public class Bug1Sprite
     {
         private Texture2D texture;
+        private SoundEffect hitEffect;
         private double animationTimer;
         private short animationFrame;
         private double hitFlashTimer = 0;
@@ -83,6 +86,7 @@ namespace Endless.Sprites
         /// </summary>
         public void TakeHit()
         {
+            hitEffect.Play(AudioSettings.SfxVolume, 0f, 0f);
             color = Color.Red;
             hitFlashTimer = HitFlashDuration;
         }
@@ -95,6 +99,7 @@ namespace Endless.Sprites
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("bug");
+            hitEffect = content.Load<SoundEffect>("bug1Hit");
         }
 
         /// <summary>

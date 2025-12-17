@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Endless.Collisions;
 using SharpDX.MediaFoundation;
+using Microsoft.Xna.Framework.Audio;
 
 
 
@@ -23,6 +24,7 @@ namespace Endless.Sprites
         private bool IsMoving = false;
         private bool flipped;
         private BoundingRectangle bounds = new BoundingRectangle(new Vector2(400 -16,350 -16), 32,64);
+        public SoundEffect hitSound;
 
         /// <summary>
         /// Checks if there health incressed
@@ -71,6 +73,7 @@ namespace Endless.Sprites
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("DuckTravler");
+            hitSound = content.Load<SoundEffect>("PlayerHit");
             
         }
 

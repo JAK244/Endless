@@ -38,6 +38,7 @@ namespace Endless.Screens
         private List<EnemyFire> enemyBullets = new List<EnemyFire>();
         private Song backGroundMusic_nonC;
         private Song backGroundMusic_InC;
+        private Song backGroundMusic_Boss;
         private double damageCooldown = 0;
         private bool showInteractPrompt = false;
         public WaveManager waveManager;
@@ -56,6 +57,7 @@ namespace Endless.Screens
         private bool isDead = false;
         private int CurrentHealth => healths.Count(h => !h.Damaged);
         private List<ActiveBuff> activeBuffs = new List<ActiveBuff>();
+
 
 
         // 3d heart stuff
@@ -104,7 +106,15 @@ namespace Endless.Screens
         {
             waveManager.ShowWaveMessage($"Wave {wave} Start!");
             MediaPlayer.Stop();
-            //MediaPlayer.Play(backGroundMusic_InC);          music                                                 
+            if(waveManager.CurrentWave < 10)
+            {
+                MusicMangaer.Play(backGroundMusic_InC);
+
+            }
+            else if(waveManager.CurrentWave >= 10)
+            {
+                MusicMangaer.Play(backGroundMusic_Boss);
+            }
         }
 
         /// <summary>
@@ -122,7 +132,7 @@ namespace Endless.Screens
             }
 
             MediaPlayer.Stop();
-            //MediaPlayer.Play(backGroundMusic_nonC);        music                                                
+            MusicMangaer.Play(backGroundMusic_nonC);                                                        
         }
 
         /// <summary>
@@ -266,10 +276,10 @@ namespace Endless.Screens
                 rotation = 0.0f;
 
             backGroundMusic_nonC = Content.Load<Song>("if Anyone Dies (instrumental)");
-            backGroundMusic_InC = content.Load<Song>("Arena Theme");
+            backGroundMusic_InC = Content.Load<Song>("Arena Theme");
+            backGroundMusic_Boss = Content.Load<Song>("Gear-Head-(Boss)");
             MediaPlayer.IsRepeating = true;
-            //MediaPlayer.Play(backGroundMusic_nonC);       music                                                                   
-
+            MediaPlayer.Play(backGroundMusic_nonC);       
             
         }
 
@@ -289,6 +299,8 @@ namespace Endless.Screens
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            
 
             KeyboardState currentKeyboardState = Keyboard.GetState();
             GamePadState currentPadState = GamePad.GetState(0);
@@ -327,6 +339,7 @@ namespace Endless.Screens
                     if (damageCooldown <= 0)
                     {
                         Traveler.color = Color.Red;
+                        Traveler.hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
                         TakeDamage();
                         damageCooldown = 1.0;
                         TriggerShake(0.3f, 8f);
@@ -345,6 +358,7 @@ namespace Endless.Screens
                     if (damageCooldown <= 0)
                     {
                         Traveler.color = Color.Red;
+                        Traveler.hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
                         TakeDamage();
                         damageCooldown = 1.0;
                         TriggerShake(0.3f, 8f);
@@ -363,6 +377,7 @@ namespace Endless.Screens
                     if (damageCooldown <= 0)
                     {
                         Traveler.color = Color.Red;
+                        Traveler.hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
                         TakeDamage();
                         damageCooldown = 1.0;
                         TriggerShake(0.3f, 8f);
@@ -389,6 +404,7 @@ namespace Endless.Screens
                     if (damageCooldown <= 0)
                     {
                         Traveler.color = Color.Red;
+                        Traveler.hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
                         TakeDamage();
                         damageCooldown = 1.0;
                         TriggerShake(0.3f, 8f);
@@ -417,6 +433,7 @@ namespace Endless.Screens
                     if (damageCooldown <= 0)
                     {
                         Traveler.color = Color.Red;
+                        Traveler.hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
                         TakeDamage();
                         damageCooldown = 1.0;
                         TriggerShake(0.3f, 8f);
@@ -438,6 +455,7 @@ namespace Endless.Screens
                     if (damageCooldown <= 0)
                     {
                         Traveler.color = Color.Red;
+                        Traveler.hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
                         TakeDamage();
                         damageCooldown = 1.0;
                         TriggerShake(0.3f, 8f);
@@ -462,6 +480,7 @@ namespace Endless.Screens
                     if (damageCooldown <= 0)
                     {
                         Traveler.color = Color.Red;
+                        Traveler.hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
                         TakeDamage();
                         damageCooldown = 1.0;
                         TriggerShake(0.3f, 8f);

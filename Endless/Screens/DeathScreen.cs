@@ -41,10 +41,7 @@ namespace Endless.Screens
         
             background = Content.Load<Texture2D>("DEATHScreen");
             deadDuck = Content.Load<Texture2D>("DeadDuck");
-           
-            //backGroundMusic = Content.Load<Song>("Synthwave Loop");
-            //MediaPlayer.IsRepeating = true;
-            //MediaPlayer.Play(backGroundMusic);              music                                                       
+
             menuItems = new List<string> { "Retry", "MainMenu"};
 
             base.LoadContent(Content);
@@ -56,6 +53,8 @@ namespace Endless.Screens
         public override void UnloadContent()
         {
             base.UnloadContent();
+
+
         }
 
         /// <summary>

@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Endless.Managers;
+﻿using Endless.Managers;
 using Endless.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Metadata;
+using static Endless.Screens.SettingScreen;
 
 namespace Endless.Screens
 {
@@ -20,6 +22,10 @@ namespace Endless.Screens
         private int selectedIndex;
         private KeyboardState oldState;
         private GamePadState oldPadState;
+        private Song backGroundMusic;
+        private Song previousSong;
+        private TimeSpan previousPosition;
+
 
         /// <summary>
         /// Loads the content using a contentManager
@@ -28,7 +34,31 @@ namespace Endless.Screens
         public override void LoadContent(ContentManager content)
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
-            menuItems = new List<string> { "Resume", "Exit Game" };
+            menuItems = new List<string> { "Resume","Settings","Exit Game" };
+
+            // store current game song and position
+            previousSong = MusicMangaer.CurrentSong;
+            previousPosition = MediaPlayer.PlayPosition;
+            MediaPlayer.Pause();
+
+            // play music
+            backGroundMusic = content.Load<Song>("happy-hour-(pause)");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(backGroundMusic);
+        }
+
+        public override void UnloadContent()
+        {
+            base.UnloadContent();
+
+            MediaPlayer.Stop();   // stop pause music
+
+            // Resume previous song 
+            if (previousSong != null)
+            {
+                MediaPlayer.Play(previousSong);
+                MediaPlayer.IsRepeating = true;
+            }
         }
 
         /// <summary>
@@ -40,29 +70,34 @@ namespace Endless.Screens
             var keyboard = Keyboard.GetState();
             var gamepad = GamePad.GetState(0);
 
-            if (IsKeyPressed(Keys.Up, keyboard) ||
+            if (IsKeyPressed(Keys.Up, keyboard) || IsKeyPressed(Keys.W, keyboard) ||
                 (gamepad.DPad.Up == ButtonState.Pressed && oldPadState.DPad.Up == ButtonState.Released) ||
                 (gamepad.ThumbSticks.Left.Y > 0.5f && oldPadState.ThumbSticks.Left.Y <= 0.5f))
             {
                 selectedIndex = (selectedIndex - 1 + menuItems.Count) % menuItems.Count;
             }
 
-            if (IsKeyPressed(Keys.Down, keyboard) ||
+            if (IsKeyPressed(Keys.Down, keyboard) || IsKeyPressed(Keys.S, keyboard) ||
                 (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
                 (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
             {
                 selectedIndex = (selectedIndex + 1) % menuItems.Count;
             }
 
-            if (IsKeyPressed(Keys.Enter, keyboard) ||
+            if (IsKeyPressed(Keys.Enter, keyboard) || IsKeyPressed(Keys.Space, keyboard) ||
                 (gamepad.Buttons.A == ButtonState.Pressed && oldPadState.Buttons.A == ButtonState.Released))
             {
                 if (selectedIndex == 0) // resumes game
                 {
-                    
                     SceneManager.Instance.RemoveScene();
                 }
                 else if (selectedIndex == 1) // exit
+                {
+
+                    SceneManager.Instance.AddScene(new SettingScreen(SettingsReturnMode.PopScene));
+
+                }
+                else if (selectedIndex == 2) // exit
                 {
 
                     System.Environment.Exit(0);

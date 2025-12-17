@@ -1,5 +1,7 @@
 ﻿using Endless.Collisions;
+using Endless.Managers;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -17,6 +19,7 @@ namespace Endless.Sprites
         private double hitFlashTimer = 0;
         private const double HitFlashDuration = 0.1; // 100ms
         private BoundingCircle bounds;
+        private SoundEffect hitSound;
 
         /// <summary>
         /// checks if it can drop ooze
@@ -93,6 +96,7 @@ namespace Endless.Sprites
         {
             color = Color.Red;
             hitFlashTimer = HitFlashDuration;
+            hitSound.Play(AudioSettings.SfxVolume, 0f, 0f);
         }
 
         /// <summary>
@@ -122,6 +126,7 @@ namespace Endless.Sprites
         public void LoadContent(ContentManager content)
         {
             texture = content.Load<Texture2D>("Bug3");
+            hitSound = content.Load<SoundEffect>("bug3Hit");
         }
 
         /// <summary>

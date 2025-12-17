@@ -2,6 +2,7 @@
 using Endless.Managers;
 using Endless.Sprites;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -28,6 +29,7 @@ namespace Endless.Screens
         private Random random = new Random();
         private TravelerSprite player;
         private ArmSprite weapon;
+        private SoundEffect powerUpSound;
 
         /// <summary>
         /// the constructor fo the shopScreen
@@ -48,6 +50,7 @@ namespace Endless.Screens
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
             backGround = content.Load<Texture2D>("ShopBackground");
+            powerUpSound = content.Load<SoundEffect>("PowerUpGet");
 
             allItems = new List<ShopItems>()
             {
@@ -124,6 +127,7 @@ namespace Endless.Screens
             if (state.IsKeyDown(Keys.Enter) && oldState.IsKeyUp(Keys.Enter) || state.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space))
             {
                 var selected = currentItems[selectIndex];
+                powerUpSound.Play(AudioSettings.SfxVolume, 0f, 0f);
 
                 // apply effect
                 selected.ApplyEffect?.Invoke(player,weapon);

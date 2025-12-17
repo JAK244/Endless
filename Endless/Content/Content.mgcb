@@ -67,6 +67,12 @@
 /processorParam:TextureFormat=Color
 /build:BOSSBug.png
 
+#begin BossHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:BossHit.wav
+
 #begin bug.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -78,6 +84,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:bug.png
+
+#begin bug1Hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:bug1Hit.wav
 
 #begin Bug2.png
 /importer:TextureImporter
@@ -91,6 +103,12 @@
 /processorParam:TextureFormat=Color
 /build:Bug2.png
 
+#begin bug2Hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:bug2Hit.wav
+
 #begin Bug3.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -103,6 +121,12 @@
 /processorParam:TextureFormat=Color
 /build:Bug3.png
 
+#begin bug3Hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:bug3Hit.wav
+
 #begin Bullet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -114,6 +138,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Bullet.png
+
+#begin Chill-(Win).mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Chill-(Win).mp3
 
 #begin ControllsPage.png
 /importer:TextureImporter
@@ -218,11 +248,23 @@
 /processorParam:TextureFormat=Color
 /build:ForestBG.png
 
+#begin Gear-Head-(Boss).mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Gear-Head-(Boss).mp3
+
 #begin GunShotSound.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:GunShotSound.wav
+
+#begin happy-hour-(pause).mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:happy-hour-(pause).mp3
 
 #begin HealthHeart.png
 /importer:TextureImporter
@@ -278,6 +320,18 @@
 /processor:VideoProcessor
 /build:MEMEThoughts2.mp4
 
+#begin PlayerHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PlayerHit.wav
+
+#begin Popcorn-(Death).mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Popcorn-(Death).mp3
+
 #begin Power_ball.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -289,6 +343,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Power_ball.png
+
+#begin PowerUpGet.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:PowerUpGet.wav
 
 #begin retical.png
 /importer:TextureImporter
@@ -313,6 +373,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:RockTileMap-Sheet.png
+
+#begin SettingsScreen.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:SettingsScreen.png
 
 #begin ShopBackground.png
 /importer:TextureImporter

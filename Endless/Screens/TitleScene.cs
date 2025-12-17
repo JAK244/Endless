@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
+using static Endless.Screens.SettingScreen;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrayNotify;
 
 namespace Endless.Screens
@@ -69,8 +70,8 @@ namespace Endless.Screens
             powerBall.LoadContent(Content);
             backGroundMusic = Content.Load<Song>("Synthwave Loop");
             MediaPlayer.IsRepeating = true;
-            //MediaPlayer.Play(backGroundMusic);              music                                                       
-            menuItems = new List<string> { "Start Game", "Controls", "Exit" };
+            MediaPlayer.Play(backGroundMusic);              //music                                                       
+            menuItems = new List<string> { "Start Game", "Controls", "Settings", "Exit" };
 
             base.LoadContent(Content);
         }
@@ -126,6 +127,10 @@ namespace Endless.Screens
                     SceneManager.Instance.AddScene(new ControllsScene()); // opens controlls screen
                 }
                 else if (selectedIndex == 2)
+                {
+                    SceneManager.Instance.ChangeScene(new SettingScreen(SettingsReturnMode.GoToTitle)); // opens Settings
+                }
+                else if (selectedIndex == 3)
                 {
                     Environment.Exit(0); // exit
                 }
