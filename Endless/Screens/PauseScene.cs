@@ -22,6 +22,7 @@ namespace Endless.Screens
         private int selectedIndex;
         private KeyboardState oldState;
         private GamePadState oldPadState;
+        private Texture2D PauseImage;
         private Song backGroundMusic;
         private Song previousSong;
         private TimeSpan previousPosition;
@@ -35,6 +36,7 @@ namespace Endless.Screens
         {
             Doto = content.Load<SpriteFont>("Doto-Black");
             menuItems = new List<string> { "Resume","Settings","Exit Game" };
+            PauseImage = content.Load<Texture2D>("PauseBackGround");
 
             // store current game song and position
             previousSong = MusicMangaer.CurrentSong;
@@ -116,8 +118,9 @@ namespace Endless.Screens
         {
             var sb = SceneManager.Instance.SpriteBatch;
             sb.Begin();
+            sb.Draw(PauseImage, Vector2.Zero, Color.White);
 
-                Vector2 pos = new Vector2(0, 0);
+            Vector2 pos = new Vector2(0, 0);
                 
                 for (int i = 0; i < menuItems.Count; i++)
                 {

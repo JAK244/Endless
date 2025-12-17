@@ -70,23 +70,32 @@ namespace Endless.Screens
             var keyboard = Keyboard.GetState();
             var gamepad = GamePad.GetState(0);
 
-            if (IsKeyPressed(Keys.Up, keyboard) || IsKeyPressed(Keys.W, keyboard))
+            if (IsKeyPressed(Keys.Up, keyboard) || IsKeyPressed(Keys.W, keyboard) ||
+                (gamepad.DPad.Up == ButtonState.Pressed && oldPadState.DPad.Up == ButtonState.Released) ||
+                (gamepad.ThumbSticks.Left.Y > 0.5f && oldPadState.ThumbSticks.Left.Y <= 0.5f))
+
                 selectedIndex = (selectedIndex - 1 + menuItems.Count) % menuItems.Count;
 
-            if (IsKeyPressed(Keys.Down, keyboard) || IsKeyPressed(Keys.S, keyboard))
+            if (IsKeyPressed(Keys.Down, keyboard) || IsKeyPressed(Keys.S, keyboard) ||
+                (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
+                (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
+
                 selectedIndex = (selectedIndex + 1) % menuItems.Count;
 
-            if (IsKeyPressed(Keys.Left, keyboard) || IsKeyPressed(Keys.A, keyboard))
+            if (IsKeyPressed(Keys.Left, keyboard) || IsKeyPressed(Keys.A, keyboard) || (gamepad.DPad.Left == ButtonState.Pressed && oldPadState.DPad.Left == ButtonState.Released) ||
+               (gamepad.ThumbSticks.Left.X < -0.5f && oldPadState.ThumbSticks.Left.X >= -0.5f))
             {
                 AdjustSetting(-0.1f);
             }
 
-            if (IsKeyPressed(Keys.Right, keyboard) || IsKeyPressed(Keys.D, keyboard))
+            if (IsKeyPressed(Keys.Right, keyboard) || IsKeyPressed(Keys.D, keyboard) || (gamepad.DPad.Right == ButtonState.Pressed && oldPadState.DPad.Right == ButtonState.Released) ||
+               (gamepad.ThumbSticks.Left.X > 0.5f && oldPadState.ThumbSticks.Left.X <= 0.5f))
             {
                 AdjustSetting(0.1f);
             }
 
-            if (IsKeyPressed(Keys.Space, keyboard) || gamepad.Buttons.B == ButtonState.Pressed && oldPadState.Buttons.B == ButtonState.Released)
+            if (IsKeyPressed(Keys.Space, keyboard) ||
+                (gamepad.Buttons.A == ButtonState.Pressed && oldPadState.Buttons.A == ButtonState.Released))
             {
                 if (selectedIndex == 2) 
                 {

@@ -840,6 +840,7 @@ namespace Endless.Screens
             sb.Draw(ItemFrame, new Vector2(100,80), Color.White);
             Vector2 PointsTextPos = new Vector2(1030, 10);
             sb.DrawString(Doto, "buffs",new Vector2(10,70), Color.Black, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
+            sb.DrawString(Doto, "Press P to Pause", new Vector2(500, 0), Color.Black, 0f, Vector2.Zero, 0.3f, SpriteEffects.None, 0f);
             sb.DrawString(Doto, "Points:" + Points, PointsTextPos, Color.Red,0f,Vector2.Zero,0.3f,SpriteEffects.None,0f);
             playerInventory.Draw(gameTime,sb);
             floatingTextManager.Draw(sb);

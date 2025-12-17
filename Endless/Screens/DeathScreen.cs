@@ -74,16 +74,14 @@ namespace Endless.Screens
                 return; 
             }
 
-            if (IsKeyPressed(Keys.Left, keyboard) || IsKeyPressed(Keys.A, keyboard) ||
-                (gamepad.DPad.Up == ButtonState.Pressed && oldPadState.DPad.Up == ButtonState.Released) ||
-                (gamepad.ThumbSticks.Left.Y > 0.5f && oldPadState.ThumbSticks.Left.Y <= 0.5f))
+            if (IsKeyPressed(Keys.Left, keyboard) || IsKeyPressed(Keys.A, keyboard) || (gamepad.DPad.Left == ButtonState.Pressed && oldPadState.DPad.Left == ButtonState.Released) ||
+               (gamepad.ThumbSticks.Left.X < -0.5f && oldPadState.ThumbSticks.Left.X >= -0.5f))
             {
                 selectedIndex = (selectedIndex - 1 + menuItems.Count) % menuItems.Count;
             }
 
-            if (IsKeyPressed(Keys.Right, keyboard) || IsKeyPressed(Keys.D, keyboard) ||
-                (gamepad.DPad.Down == ButtonState.Pressed && oldPadState.DPad.Down == ButtonState.Released) ||
-                (gamepad.ThumbSticks.Left.Y < -0.5f && oldPadState.ThumbSticks.Left.Y >= -0.5f))
+            if (IsKeyPressed(Keys.Right, keyboard) || IsKeyPressed(Keys.D, keyboard) || (gamepad.DPad.Right == ButtonState.Pressed && oldPadState.DPad.Right == ButtonState.Released) ||
+               (gamepad.ThumbSticks.Left.X > 0.5f && oldPadState.ThumbSticks.Left.X <= 0.5f))
             {
                 selectedIndex = (selectedIndex + 1) % menuItems.Count;
             }

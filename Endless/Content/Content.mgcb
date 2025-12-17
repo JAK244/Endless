@@ -320,6 +320,18 @@
 /processor:VideoProcessor
 /build:MEMEThoughts2.mp4
 
+#begin PauseBackGround.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:PauseBackGround.png
+
 #begin PlayerHit.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

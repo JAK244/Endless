@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using SharpDX.XInput;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,14 +118,21 @@ namespace Endless.Screens
         {
             base.Update(gameTime);
             KeyboardState state = Keyboard.GetState();
+            var gamepad = GamePad.GetState(0);
 
-            if (state.IsKeyDown(Keys.Left) && oldState.IsKeyUp(Keys.Left) || state.IsKeyDown(Keys.A) && oldState.IsKeyUp(Keys.A))
+            if (state.IsKeyDown(Keys.Left) && oldState.IsKeyUp(Keys.Left) || state.IsKeyDown(Keys.A) && oldState.IsKeyUp(Keys.A) || (gamepad.DPad.Left == ButtonState.Pressed && oldPadState.DPad.Left == ButtonState.Released) ||
+               (gamepad.ThumbSticks.Left.X < -0.5f && oldPadState.ThumbSticks.Left.X >= -0.5f))
+
                 selectIndex = Math.Max(0, selectIndex - 1);
-            if (state.IsKeyDown(Keys.Right) && oldState.IsKeyUp(Keys.Right) || state.IsKeyDown(Keys.D) && oldState.IsKeyUp(Keys.D))
+
+            if (state.IsKeyDown(Keys.Right) && oldState.IsKeyUp(Keys.Right) || state.IsKeyDown(Keys.D) && oldState.IsKeyUp(Keys.D) || (gamepad.DPad.Right == ButtonState.Pressed && oldPadState.DPad.Right == ButtonState.Released) ||
+               (gamepad.ThumbSticks.Left.X > 0.5f && oldPadState.ThumbSticks.Left.X <= 0.5f))
+
                 selectIndex = Math.Min(currentItems.Count - 1, selectIndex + 1);
 
             // Buy item
-            if (state.IsKeyDown(Keys.Enter) && oldState.IsKeyUp(Keys.Enter) || state.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space))
+            if (state.IsKeyDown(Keys.Enter) && oldState.IsKeyUp(Keys.Enter) || state.IsKeyDown(Keys.Space) && oldState.IsKeyUp(Keys.Space) ||
+                (gamepad.Buttons.A == ButtonState.Pressed && oldPadState.Buttons.A == ButtonState.Released))
             {
                 var selected = currentItems[selectIndex];
                 powerUpSound.Play(AudioSettings.SfxVolume, 0f, 0f);
@@ -140,6 +148,7 @@ namespace Endless.Screens
             }
 
             oldState = state;
+            oldPadState = gamepad;
 
         }
 
